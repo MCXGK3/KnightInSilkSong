@@ -222,6 +222,7 @@ public class Patch_HeroController_MaxHealth : GeneralPatch
         if (KnightInSilksong.IsKnight)
         {
             Knight.HeroController.instance.MaxHealth();
+            EventRegister.SendEvent("UPDATE BLUE HEALTH");
         }
     }
 }
