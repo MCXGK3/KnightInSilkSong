@@ -486,3 +486,5 @@ $RECYCLE.BIN/
 *.swp
 obj/
 bin/
+../Knight/obj/
+../Knight/bin/
