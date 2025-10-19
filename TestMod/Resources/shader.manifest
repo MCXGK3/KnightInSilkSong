@@ -1,0 +1,131 @@
+ManifestFileVersion: 0
+UnityVersion: 6000.0.53f1
+CRC: 2064685191
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 0fb036b4be1043af18392e5314637133
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: bb8521372c98e74594d3b7eb1b0a7a88
+  IncrementalBuildHash:
+    serializedVersion: 2
+    Hash: 75ab3d0246c62de2864334dce1de56bb
+HashAppended: 0
+ClassTypes:
+- Class: 48
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/Shader/UI_Blur_UIBlur.asset
+- Assets/Shader/UI_BlendModes_Font_Optimized_Subtract.asset
+- Assets/Shader/Sprites_Cherry-Default.asset
+- Assets/Shader/UI_BlendModes_Divide.asset
+- Assets/Shader/UI_BlendModes_Font_Optimized_ColorDodge.asset
+- Assets/Shader/UI_BlendModes_PinLight.asset
+- Assets/Shader/UI_BlendModes_Optimized_PinLight.asset
+- Assets/Shader/Hollow Knight_Grass-Default.asset
+- Assets/Shader/UI_BlendModes_Overlay.asset
+- Assets/Shader/Sprites_Default-ColorFlash.asset
+- Assets/Shader/UI_BlendModes_Optimized_LighterColor.asset
+- Assets/Shader/UI_BlendModes_Font_Difference.asset
+- Assets/Shader/Alpha Masked_Sprites Alpha Masked - World Coords.asset
+- Assets/Shader/UI_BlendModes_Font_Optimized_SoftLight.asset
+- Assets/Shader/UI_BlendModes_Optimized_LinearLight.asset
+- Assets/Shader/UI_BlendModes_LinearBurn.asset
+- Assets/Shader/UI_BlendModes_Font_Exclusion.asset
+- Assets/Shader/UI_BlendModes_Font_Optimized_LinearBurn.asset
+- Assets/Shader/UI_BlendModes_Optimized_LinearDodge.asset
+- Assets/Shader/UI_BlendModes_Font_Multiply.asset
+- Assets/Shader/UI_BlendModes_Font_LinearLight.asset
+- Assets/Shader/PS4_Video.asset
+- Assets/Shader/UI Extensions_SoftMaskShader.asset
+- Assets/Shader/Custom_Screen-Space Blit.asset
+- Assets/Resources/blendvertexcolor.asset
+- Assets/Shader/UI_BlendModes_Font_HardLight.asset
+- Assets/Shader/UI_BlendModes_HardLight.asset
+- Assets/Resources/shaders/tmpro_sdf-surface-mobile.asset
+- Assets/Shader/UI_BlendModes_Optimized_Multiply.asset
+- Assets/Shader/UI_BlendModes_Optimized_DarkerColor.asset
+- Assets/Shader/UI_BlendModes_Font_ColorDodge.asset
+- Assets/Shader/Custom_Brightness Effect.asset
+- Assets/Resources/shaders/tmpro_sdf-surface.asset
+- Assets/Resources/shaders/tmpro_bitmap-mobile.asset
+- Assets/Shader/UI_BlendModes_Optimized_HardMix.asset
+- Assets/Resources/shaders/tmpro_sdf-mobile overlay.asset
+- Assets/Shader/UI_BlendModes_Font_PinLight.asset
+- Assets/Shader/Switch_Video.asset
+- Assets/Shader/UI_BlendModes_LinearLight.asset
+- Assets/Shader/UI_BlendModes_Font_Optimized_Divide.asset
+- Assets/Shader/UI_BlendModes_Optimized_Lighten.asset
+- Assets/Shader/UI_BlendModes_Optimized_SoftLight.asset
+- Assets/Shader/UI_BlendModes_Font_Subtract.asset
+- Assets/Shader/UI_BlendModes_Optimized_ColorBurn.asset
+- Assets/Resources/shaders/tmpro_sdf-mobile.asset
+- Assets/Shader/UI_BlendModes_Optimized_HardLight.asset
+- Assets/Shader/Sprites_Approximate Linear Dodge.asset
+- Assets/Shader/UI_BlendModes_Optimized_Exclusion.asset
+- Assets/Shader/UI_BlendModes_ColorBurn.asset
+- Assets/Shader/UI_BlendModes_HardMix.asset
+- Assets/Shader/Sprites_Approximate Screen.asset
+- Assets/Shader/Sprites_Approximate Linear Light.asset
+- Assets/Shader/Hollow Knight_Light Blur.asset
+- Assets/Shader/UI_BlendModes_Font_Optimized_Darken.asset
+- Assets/Shader/Hollow Knight_Grass-Diffuse.asset
+- Assets/Shader/UI_BlendModes_Font_Optimized_Overlay.asset
+- Assets/Shader/UI_BlendModes_Font_HardMix.asset
+- Assets/Shader/UI_BlendModes_Font_Screen.asset
+- Assets/Shader/UI_BlendModes_Font_Divide.asset
+- Assets/Shader/UI_BlendModes_Exclusion.asset
+- Assets/Shader/UI_BlendModes_Font_DarkerColor.asset
+- Assets/Shader/UI_BlendModes_Font_Optimized_ColorBurn.asset
+- Assets/Shader/UI_BlendModes_Font_Optimized_LinearDodge.asset
+- Assets/Shader/Hidden_ColorCorrectionCurvesSimple.asset
+- Assets/Shader/UI_BlendModes_Font_Optimized_LighterColor.asset
+- Assets/Shader/Hidden_FastBloom.asset
+- Assets/Shader/UI_BlendModes_Font_ColorBurn.asset
+- Assets/Shader/UI_BlendModes_Font_Overlay.asset
+- Assets/Shader/UI_BlendModes_Font_Optimized_DarkerColor.asset
+- Assets/Shader/UI_BlendModes_Font_VividLight.asset
+- Assets/Shader/UI_BlendModes_Subtract.asset
+- Assets/Shader/Alpha Masked_Unlit Alpha Masked - World Coords.asset
+- Assets/Shader/UI_BlendModes_DarkerColor.asset
+- Assets/Shader/UI_BlendModes_Font_Darken.asset
+- Assets/Shader/UI_BlendModes_Font_Optimized_Exclusion.asset
+- Assets/Shader/UI_BlendModes_LinearDodge.asset
+- Assets/Shader/UI_BlendModes_Screen.asset
+- Assets/Resources/shaders/tmpro_sdf overlay.asset
+- Assets/Shader/UI_BlendModes_Multiply.asset
+- Assets/Shader/UI_BlendModes_Optimized_Screen.asset
+- Assets/Shader/UI_BlendModes_Optimized_VividLight.asset
+- Assets/Shader/UI_BlendModes_Optimized_ColorDodge.asset
+- Assets/Shader/UI_BlendModes_Optimized_Darken.asset
+- Assets/Shader/UI_BlendModes_Font_LinearBurn.asset
+- Assets/Shader/UI_BlendModes_Font_SoftLight.asset
+- Assets/Shader/UI_BlendModes_Darken.asset
+- Assets/Shader/UI_BlendModes_Font_Optimized_HardLight.asset
+- Assets/Shader/UI_BlendModes_Optimized_LinearBurn.asset
+- Assets/Shader/UI_BlendModes_Font_Optimized_Multiply.asset
+- Assets/Shader/Sprites_Lit.asset
+- Assets/Shader/Sprites_Diffuse-Beating.asset
+- Assets/Shader/UI_BlendModes_Optimized_Overlay.asset
+- Assets/Shader/UI_BlendModes_Font_Optimized_VividLight.asset
+- Assets/Resources/shaders/tmpro_bitmap.asset
+- Assets/Resources/shaders/tmpro_sdf 3.asset
+- Assets/Shader/UI_BlendModes_Optimized_Divide.asset
+- Assets/Shader/UI_BlendModes_Optimized_Difference.asset
+- Assets/Shader/UI_BlendModes_ColorDodge.asset
+- Assets/Resources/shaders/tmp_sprite.asset
+- Assets/Shader/Hidden_NoiseAndGrain.asset
+- Assets/Shader/Hidden_FastBlur.asset
+- Assets/Shader/UI_BlendModes_Font_Optimized_PinLight.asset
+- Assets/Resources/shaders/tmp_sdf-mobile masking.asset
+- Assets/Shader/Custom_Heat Effect.asset
+- Assets/Shader/UI_BlendModes_VividLight.asset
+- Assets/Shader/UI_BlendModes_Font_Optimized_LinearLight.asset
+- Assets/Shader/UI_BlendModes_SoftLight.asset
+- Assets/Shader/Realtime Reflections_Planar Reflection.asset
+- Assets/Shader/UI_BlendModes_Font_Optimized_HardMix.asset
+- Assets/Shader/UI_BlendModes_Difference.asset
+- Assets/Resources/shaders/tmpro_sdf.asset
+Dependencies: []

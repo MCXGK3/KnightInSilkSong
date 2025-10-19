@@ -1,0 +1,57 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- 
+  Imports silksong path properties only if present in order to allow CI builds. The file should be gitignored.
+  If you are checking out from git and need to create a new one, you can use `dotnet new silksongpath` to generate one.
+  -->
+  <Import Condition="Exists('SilksongPath.props')" Project="SilksongPath.props" />
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <RestoreAdditionalProjectSources>
+        https://nuget.bepinex.dev/v3/index.json
+    </RestoreAdditionalProjectSources>
+      <!--Allow access of private members at runtime.-->
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!--These properties will control the generated plugin info. Version is also used by various parts of the build system.-->
+    <AssemblyTitle>TestMod</AssemblyTitle>
+    <Version>0.1.0</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BepInEx.Analyzers" Version="1.0.8" PrivateAssets="all" />
+    <PackageReference Include="BepInEx.Core" Version="5.4.21" />
+    <PackageReference Include="Hamunii.BepInEx.AutoPlugin" Version="2.0.1" PrivateAssets="all" />
+    <PackageReference Include="UnityEngine.Modules" Version="6000.0.50" IncludeAssets="compile" />
+    <!--If you're unable resolve this dependency, check that you're using the nuget v3 package feed instead of v2.-->
+    <PackageReference Include="Silksong.GameLibs" Version="1.1.0-silksong1.0.28650" />
+    <EmbeddedResource Include="Resources\*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Knight\Knight.csproj" />
+  </ItemGroup>
+
+  <Target Name="CopyMod" AfterTargets="PostBuildEvent" Condition="'$(SilksongFolder)' != ''">
+      <ItemGroup>
+          <Binaries Include="$(TargetPath)" />
+          <Binaries Include="$(TargetDir)/$(TargetName).pdb" />
+      </ItemGroup>
+
+      <Copy SourceFiles="@(Binaries)" DestinationFolder="$(SilksongFolder)/BepInEx/plugins/$(TargetName)" />
+
+      <PropertyGroup>
+          <ExportFolder>bin/Publish</ExportFolder>
+      </PropertyGroup>
+      
+      <RemoveDir Directories="$(IntermediateOutputPath)/archive" />
+      <MakeDir Directories="$(ExportFolder)" />
+      <Copy SourceFiles="@(Binaries)" DestinationFolder="$(IntermediateOutputPath)/archive" />
+      <ZipDirectory SourceDirectory="$(IntermediateOutputPath)/archive" DestinationFile="$(ExportFolder)/$(TargetName).zip" Overwrite="True" />
+  </Target>
+</Project>

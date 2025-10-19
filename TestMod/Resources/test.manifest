@@ -1,0 +1,56 @@
+ManifestFileVersion: 0
+UnityVersion: 6000.0.53f1
+CRC: 1717619420
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 2c842afd83035223b583ea115e106d7e
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 7709895c69a8fb1010f811fdf6aafd35
+  IncrementalBuildHash:
+    serializedVersion: 2
+    Hash: a56f4eef1b98dff7f1b39957db252bbe
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 1384774831, guid: daca89c25bd1813ceecbbbb8555342a7, type: 3}
+- Class: 114
+  Script: {fileID: -302136220, guid: 34e235bc449c58a4284436164362259f, type: 3}
+- Class: 114
+  Script: {fileID: -423199930, guid: 34e235bc449c58a4284436164362259f, type: 3}
+- Class: 114
+  Script: {fileID: -1394378321, guid: 39fe37bcc6b0fdf49abc769319c5ed93, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers:
+- AssemblyName: Assembly-CSharp
+  ClassName: VibrationData
+- AssemblyName: Knight
+  ClassName: Knight.HeroControllerStates
+- AssemblyName: PlayMaker
+  ClassName: HutongGames.PlayMaker.ActionData
+- AssemblyName: PlayMaker
+  ClassName: HutongGames.PlayMaker.Fsm
+- AssemblyName: PlayMaker
+  ClassName: HutongGames.PlayMaker.Fsm/EditorFlags
+- AssemblyName: PlayMaker
+  ClassName: HutongGames.PlayMaker.FsmState
+- AssemblyName: PlayMaker
+  ClassName: HutongGames.PlayMaker.FsmVariables
+- AssemblyName: PlayMaker
+  ClassName: HutongGames.PlayMaker.UiEvents
+- AssemblyName: TeamCherry.TK2D
+  ClassName: tk2dSpriteDefinition
+Assets:
+- Assets/test/GameObject.prefab
+- Assets/test/GameObject 1.prefab
+Dependencies: []

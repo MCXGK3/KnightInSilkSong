@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+     <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <SilksongFolder>F:\SteamLibrary\steamapps\common\Hollow Knight Silksong</SilksongFolder>
+    <UnityFolder> D:\unity\UnityProjects\BETTERALLHK\Assets\Plugins</UnityFolder>
+    <ModName>TestMod</ModName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Silksong.GameLibs" Version="1.1.0-silksong1.0.28650" />
+    <PackageReference Include="UnityEngine.Modules" Version="6000.0.50" IncludeAssets="compile" />
+  </ItemGroup>
+  <Target Name="CopyDLL" AfterTargets="PostBuildEvent" Condition="'$(SilksongFolder)' != ''">
+      <ItemGroup>
+          <Binaries Include="$(TargetPath)" />
+          <Binaries Include="$(TargetDir)/$(TargetName).pdb" />
+      </ItemGroup>
+
+      <Copy SourceFiles="@(Binaries)" DestinationFolder="$(SilksongFolder)/BepInEx/plugins/$(ModName)" />
+      <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(UnityFolder)"/>
+
+  </Target>
+
+</Project>

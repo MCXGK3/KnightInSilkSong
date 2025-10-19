@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "tWlYdaR/NiA=",
+  "success": true,
+  "projectFilePath": "E:\\projects\\Mod\\SilkSong\\KnightInSilkSong\\Knight\\Knight.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\shownyoung\\.nuget\\packages\\silksong.gamelibs\\1.1.0-silksong1.0.28650\\silksong.gamelibs.1.1.0-silksong1.0.28650.nupkg.sha512",
+    "C:\\Users\\shownyoung\\.nuget\\packages\\unityengine.modules\\6000.0.50\\unityengine.modules.6000.0.50.nupkg.sha512"
+  ],
+  "logs": []
+}

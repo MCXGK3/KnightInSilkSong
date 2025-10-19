@@ -1,0 +1,44 @@
+{
+  "runtimeTarget": {
+    "name": ".NETStandard,Version=v2.1/",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETStandard,Version=v2.1": {},
+    ".NETStandard,Version=v2.1/": {
+      "Knight/1.0.0": {
+        "dependencies": {
+          "Silksong.GameLibs": "1.1.0-silksong1.0.28650",
+          "UnityEngine.Modules": "6000.0.50"
+        },
+        "runtime": {
+          "Knight.dll": {}
+        }
+      },
+      "Silksong.GameLibs/1.1.0-silksong1.0.28650": {},
+      "UnityEngine.Modules/6000.0.50": {}
+    }
+  },
+  "libraries": {
+    "Knight/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Silksong.GameLibs/1.1.0-silksong1.0.28650": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-lJnHTcJ7EGDSJUMLJTjkPcqfCbbVdaL9JTKsDK/ilI3hxxywBHeK20ZtOQrE/y5QIrgYm2V+8CNOGeqhcW7yaw==",
+      "path": "silksong.gamelibs/1.1.0-silksong1.0.28650",
+      "hashPath": "silksong.gamelibs.1.1.0-silksong1.0.28650.nupkg.sha512"
+    },
+    "UnityEngine.Modules/6000.0.50": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-hEFz1r4NGzeYXPY2yPh+/btcnwVB6EnEeRjDMCVNi19PD7VvRMvJeu46x1dNH9jYkT0B/ZXuyMBYiuI7YlRnKw==",
+      "path": "unityengine.modules/6000.0.50",
+      "hashPath": "unityengine.modules.6000.0.50.nupkg.sha512"
+    }
+  }
+}

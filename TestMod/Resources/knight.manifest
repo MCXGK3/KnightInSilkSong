@@ -1,0 +1,620 @@
+ManifestFileVersion: 0
+UnityVersion: 6000.0.53f1
+CRC: 1617314931
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 81374c92663f06cd7a2d1aaa541d9e97
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: f0ace2040c53d7c9a989d5c8f6760cbe
+  IncrementalBuildHash:
+    serializedVersion: 2
+    Hash: 10455014f5d62cdda9f64c1c26441b0c
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 49
+  Script: {instanceID: 0}
+- Class: 50
+  Script: {instanceID: 0}
+- Class: 58
+  Script: {instanceID: 0}
+- Class: 60
+  Script: {instanceID: 0}
+- Class: 61
+  Script: {instanceID: 0}
+- Class: 62
+  Script: {instanceID: 0}
+- Class: 74
+  Script: {instanceID: 0}
+- Class: 82
+  Script: {instanceID: 0}
+- Class: 83
+  Script: {instanceID: 0}
+- Class: 91
+  Script: {instanceID: 0}
+- Class: 95
+  Script: {instanceID: 0}
+- Class: 96
+  Script: {instanceID: 0}
+- Class: 102
+  Script: {instanceID: 0}
+- Class: 108
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 11500000, guid: 6ec64418284e5ec0e04d744d83a5f148, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 3cec206b578baa83dcd762b67e165dce, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 782896d3b9d6e8aad30828cc56e65ae7, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: cd3455fc1226cff4f667c459754404ed, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 773fafc69162af3f7d861ab2aa2e4d84, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 57ca4699b10098bff3056702df4ce465, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: ce6ecb82ac1b3c491221119e1f0b262f, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 75387ae578a55cce0fca25b283d91e44, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: fc9cdbb8c1e55a8585215f8c2e251e2d, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 7a1aa1ce92beef26174e892823d2f5bf, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 650a37da013a7cd0fb82b91965149c44, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 8c6ac90cbbb9f36b4fbfc64aadd29f1e, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 432822fce3ab2717bfe6caea84820814, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 9a5c63456b826242e6aee9a3393c3214, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 8b3a2c0da22bb9e4db68576126540780, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: eeaa4bda7931aa8b209bb66265d212b7, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: bbd93b4d33e173060fc7ac05445a7782, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 8b3745fee2affd932f7b328314ae5cf6, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 4be7d9b9b491ce4505c01447beb2c0d5, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: a56e3dc904d39ea62f619bbc9653fe4d, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 161f222da652f183128109f64edcd338, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 8e9b1b7625abc2760182cdea46887a86, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 2ee90b31df1c3555a7e2684af563c039, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 850429aadf57067699e8a4ddce25c7af, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 9dce17883e836a8b91b054fcaef81958, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 7b41304b2c729b6f15e1d58ad5046097, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: a1a76e9538a0a156c5dcf6ab9f061f16, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: dd61a38c0f22c87cf691112739307cf6, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 2aeeabe8f443cdfe70b4da6b5782036b, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 9a4a05480320f7f0c7f74a7198222c9e, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 266a3aecc61f1357ce11f5bedfb7af6e, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 5b2ef5c5e57f7fd8e1e9fc2db016e6f0, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 1b12d2e3787d0fbfa531e99d01debdc2, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 641ee6f5b1012f3655c6199cfe9be7ae, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 6b73cf5b252fff5c70539651283ec326, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 1514c730a4c7204f950cda704cc1fb4a, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 8f71dcebfcf34fffd182109a62c24a3c, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 9f957069e06486ccdd98ba9ee171594f, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 4197d4dc4e15c1eeed0d3eb0745a12d6, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: e667676c1e2581f78ac6219259c46fde, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: f9aef7d06d54fd9430a25532e1ccf6a8, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 7e0b9799fb0157646caefd91bc67f0a6, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 483bfac830acf96ee84c4adb245b3a9f, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 385d5c444b7d92219ef694cafd826ba0, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: f054b9b060d6940b4c59853543d79175, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 3a5f6fe78ad8718cd8e94d1905c7a063, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 2f49a4c16fd9352b9c0d06f6b5165a30, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 2a2ee0c817e14b1fe4b4ce3a0123db90, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 2a6346834e23014a2969b2f8829c1634, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 14cd590b723681e2f5e1bc530cf6dc83, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: c426228f87bb17e48c2c1f1917cd3b0b, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 5390e7dd5107cce3da5fe1ef8e0217f7, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 22b0828540416bd867cc354f59eb4c43, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 3aed61e3c656524133d864ed8f26aef1, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: b291babc783bea215f78de8dca456ea1, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 1c2619332d16de9cc83b756b6f68b243, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 7cb9910ab89ebe9f43c1152789b9f929, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 5ef90820203b89d162bcd8898619821d, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 8117f1df47712417eb0a72da3eeab539, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 4b3921d5e71c160f0691fdb633aede1f, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 1f42ed389da1036c0c3bd14ce50619bc, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 53f5a6f0a5d9d9d8a3146ae6ae974d81, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 604758f2f7a9e4de2d1df63dc5a0f9cd, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 238bfa984a2b56d9cfbeaeb47c779a0d, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: d4695577a50c52e69549b2f7666aa583, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 90f9ab0d777a2d2f5b75e61fdcfd7672, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 214dd4b224d99e42a580f50575bc6776, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 7c70ff108f61f9a21d54e3b1cd75a1b2, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 56dbaf529230197b933a49fb95d85320, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 0e60de11e7429326985b566abd76c03b, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 18de3f34180fdb662d1af17f7f3ba512, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 44393f618d688910988e3c5ebb5d242b, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: e605ecd33e7b9b44a1bbaeef8401c277, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 00f64fed12b1d403015d2a47abd0c687, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 3760009a589b001159b0ab5c0e83a2db, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 2dea255a15c2a5e7836428bf9cd1fda0, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 49c386a20fdaa83a59c1a091a909e14c, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 5148555110c96b609bf2e2be29564458, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 191e6e233f1e81e22ecf36e8975f48d5, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 7795a837f12e2ad09f684aae5611948c, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 400403b587ef0def1b40de34c0f1ebec, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: e11a86c30fcb68fd7563d18ca0824777, type: 3}
+- Class: 114
+  Script: {fileID: 1219815696, guid: daca89c25bd1813ceecbbbb8555342a7, type: 3}
+- Class: 114
+  Script: {fileID: -967985445, guid: daca89c25bd1813ceecbbbb8555342a7, type: 3}
+- Class: 114
+  Script: {fileID: -664232604, guid: daca89c25bd1813ceecbbbb8555342a7, type: 3}
+- Class: 114
+  Script: {fileID: 1079068393, guid: daca89c25bd1813ceecbbbb8555342a7, type: 3}
+- Class: 114
+  Script: {fileID: 1384774831, guid: daca89c25bd1813ceecbbbb8555342a7, type: 3}
+- Class: 114
+  Script: {fileID: -501658088, guid: daca89c25bd1813ceecbbbb8555342a7, type: 3}
+- Class: 114
+  Script: {fileID: -104615663, guid: daca89c25bd1813ceecbbbb8555342a7, type: 3}
+- Class: 114
+  Script: {fileID: -302136220, guid: 34e235bc449c58a4284436164362259f, type: 3}
+- Class: 114
+  Script: {fileID: -184956598, guid: 34e235bc449c58a4284436164362259f, type: 3}
+- Class: 114
+  Script: {fileID: 300139480, guid: 34e235bc449c58a4284436164362259f, type: 3}
+- Class: 114
+  Script: {fileID: -423199930, guid: 34e235bc449c58a4284436164362259f, type: 3}
+- Class: 114
+  Script: {fileID: -473408723, guid: 39fe37bcc6b0fdf49abc769319c5ed93, type: 3}
+- Class: 114
+  Script: {fileID: 334489937, guid: 39fe37bcc6b0fdf49abc769319c5ed93, type: 3}
+- Class: 114
+  Script: {fileID: 1539562384, guid: 39fe37bcc6b0fdf49abc769319c5ed93, type: 3}
+- Class: 114
+  Script: {fileID: -1394378321, guid: 39fe37bcc6b0fdf49abc769319c5ed93, type: 3}
+- Class: 114
+  Script: {fileID: -1312116894, guid: 39fe37bcc6b0fdf49abc769319c5ed93, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+- Class: 128
+  Script: {instanceID: 0}
+- Class: 198
+  Script: {instanceID: 0}
+- Class: 199
+  Script: {instanceID: 0}
+- Class: 210
+  Script: {instanceID: 0}
+- Class: 212
+  Script: {instanceID: 0}
+- Class: 213
+  Script: {instanceID: 0}
+- Class: 222
+  Script: {instanceID: 0}
+- Class: 224
+  Script: {instanceID: 0}
+- Class: 241
+  Script: {instanceID: 0}
+- Class: 243
+  Script: {instanceID: 0}
+- Class: 245
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers:
+- AssemblyName: Assembly-CSharp
+  ClassName: AudioEvent
+- AssemblyName: Assembly-CSharp
+  ClassName: AudioEventRandom
+- AssemblyName: Assembly-CSharp
+  ClassName: BossSequenceController/BossSequenceData
+- AssemblyName: Assembly-CSharp
+  ClassName: BossSequenceDoor/Completion
+- AssemblyName: Assembly-CSharp
+  ClassName: BossStatue/Completion
+- AssemblyName: Assembly-CSharp
+  ClassName: GeoControl/Size
+- AssemblyName: Assembly-CSharp
+  ClassName: HealthManager/HPScaleGG
+- AssemblyName: Assembly-CSharp
+  ClassName: KnightHatchling/TypeDetails
+- AssemblyName: Assembly-CSharp
+  ClassName: MusicCue/MusicChannelInfo
+- AssemblyName: Assembly-CSharp
+  ClassName: PlayerData
+- AssemblyName: Assembly-CSharp
+  ClassName: StartupPool
+- AssemblyName: Assembly-CSharp
+  ClassName: TMProOld.FaceInfo
+- AssemblyName: Assembly-CSharp
+  ClassName: TMProOld.FontCreationSetting
+- AssemblyName: Assembly-CSharp
+  ClassName: TMProOld.KerningPair
+- AssemblyName: Assembly-CSharp
+  ClassName: TMProOld.KerningTable
+- AssemblyName: Assembly-CSharp
+  ClassName: TMProOld.TMP_FontWeights
+- AssemblyName: Assembly-CSharp
+  ClassName: TMProOld.TMP_Glyph
+- AssemblyName: Assembly-CSharp
+  ClassName: TMProOld.TMP_TextInfo
+- AssemblyName: Assembly-CSharp
+  ClassName: TMProOld.VertexGradient
+- AssemblyName: Assembly-CSharp
+  ClassName: VibrationData
+- AssemblyName: Assembly-CSharp
+  ClassName: VibrationTarget
+- AssemblyName: Knight
+  ClassName: Knight.HeroControllerStates
+- AssemblyName: PlayMaker
+  ClassName: HutongGames.PlayMaker.ActionData
+- AssemblyName: PlayMaker
+  ClassName: HutongGames.PlayMaker.Fsm
+- AssemblyName: PlayMaker
+  ClassName: HutongGames.PlayMaker.Fsm/EditorFlags
+- AssemblyName: PlayMaker
+  ClassName: HutongGames.PlayMaker.FsmArray
+- AssemblyName: PlayMaker
+  ClassName: HutongGames.PlayMaker.FsmBool
+- AssemblyName: PlayMaker
+  ClassName: HutongGames.PlayMaker.FsmColor
+- AssemblyName: PlayMaker
+  ClassName: HutongGames.PlayMaker.FsmEnum
+- AssemblyName: PlayMaker
+  ClassName: HutongGames.PlayMaker.FsmEvent
+- AssemblyName: PlayMaker
+  ClassName: HutongGames.PlayMaker.FsmEventTarget
+- AssemblyName: PlayMaker
+  ClassName: HutongGames.PlayMaker.FsmFloat
+- AssemblyName: PlayMaker
+  ClassName: HutongGames.PlayMaker.FsmGameObject
+- AssemblyName: PlayMaker
+  ClassName: HutongGames.PlayMaker.FsmInt
+- AssemblyName: PlayMaker
+  ClassName: HutongGames.PlayMaker.FsmMaterial
+- AssemblyName: PlayMaker
+  ClassName: HutongGames.PlayMaker.FsmObject
+- AssemblyName: PlayMaker
+  ClassName: HutongGames.PlayMaker.FsmOwnerDefault
+- AssemblyName: PlayMaker
+  ClassName: HutongGames.PlayMaker.FsmQuaternion
+- AssemblyName: PlayMaker
+  ClassName: HutongGames.PlayMaker.FsmRect
+- AssemblyName: PlayMaker
+  ClassName: HutongGames.PlayMaker.FsmState
+- AssemblyName: PlayMaker
+  ClassName: HutongGames.PlayMaker.FsmString
+- AssemblyName: PlayMaker
+  ClassName: HutongGames.PlayMaker.FsmTexture
+- AssemblyName: PlayMaker
+  ClassName: HutongGames.PlayMaker.FsmTransition
+- AssemblyName: PlayMaker
+  ClassName: HutongGames.PlayMaker.FsmVar
+- AssemblyName: PlayMaker
+  ClassName: HutongGames.PlayMaker.FsmVariables
+- AssemblyName: PlayMaker
+  ClassName: HutongGames.PlayMaker.FsmVector2
+- AssemblyName: PlayMaker
+  ClassName: HutongGames.PlayMaker.FsmVector3
+- AssemblyName: PlayMaker
+  ClassName: HutongGames.PlayMaker.FunctionCall
+- AssemblyName: PlayMaker
+  ClassName: HutongGames.PlayMaker.UiEvents
+- AssemblyName: TeamCherry.TK2D
+  ClassName: tk2dCollider2DData
+- AssemblyName: TeamCherry.TK2D
+  ClassName: tk2dSpriteAnimationClip
+- AssemblyName: TeamCherry.TK2D
+  ClassName: tk2dSpriteAnimationFrame
+- AssemblyName: TeamCherry.TK2D
+  ClassName: tk2dSpriteDefinition
+- AssemblyName: UnityEngine.CoreModule
+  ClassName: UnityEngine.Events.PersistentCallGroup
+- AssemblyName: UnityEngine.UI
+  ClassName: UnityEngine.UI.MaskableGraphic/CullStateChangedEvent
+Assets:
+- Assets/Knight/Roar Wave Emitter Scream.prefab
+- Assets/Knight/Charm Blocker Cln.prefab
+- Assets/Knight/Screen Cracks Cln.prefab
+- Assets/Knight/Shade Cast Ring.prefab
+- Assets/Knight/fury_effects_v2.prefab
+- Assets/Knight/EnemyHitEffects.prefab
+- Assets/Knight/Knight_1.prefab
+- Assets/Knight/Knight Cutscene Animator.prefab
+- Assets/Knight/Splat Explode Blue.prefab
+- Assets/Knight/HUD_Soulorb_fills.prefab
+- Assets/Knight/Hollow Shade.prefab
+- Assets/Knight/Knight Slug Cln.prefab
+- Assets/Knight/Dream Effects.prefab
+- Assets/Knight/Hero Death.prefab
+- Assets/Knight/Charm Compass.prefab
+- Assets/Knight/Charm Glass Heal.prefab
+- Assets/Knight/Charm Mage.prefab
+- Assets/Knight/Impact Lines.prefab
+- Assets/Knight/Hollow Shade_0.prefab
+- Assets/Knight/Hatcher Baby_0.prefab
+- Assets/Knight/Geo_0.prefab
+- Assets/Knight/Charm EnemyRecoilUp.prefab
+- Assets/Knight/Grubberfly BeamL.prefab
+- Assets/Knight/Orbit Shield.prefab
+- Assets/Knight/HUD Extras Cln.prefab
+- Assets/Knight/HP Up Particles.prefab
+- Assets/Knight/Grubberfly Beam Cln.prefab
+- Assets/Knight/Audio Player Actor 2D.prefab
+- Assets/Knight/Knight Spike Death.prefab
+- Assets/Knight/Charm Grubsoul.prefab
+- Assets/Knight/Charm Blue Health Small.prefab
+- Assets/Knight/Hit Flash Black.prefab
+- Assets/Knight/Slash Effect GhostDark2.prefab
+- Assets/Knight/Knight Effects Cln.prefab
+- Assets/Knight/Corpse Nail Hero.prefab
+- Assets/Knight/Block Hit.prefab
+- Assets/Knight/Weaverling Cln.prefab
+- Assets/Knight/Blue Health.prefab
+- Assets/Knight/Hollow Shade Death.prefab
+- Assets/Knight/Charm Sprintmaster.prefab
+- Assets/Knight/Death Crack.prefab
+- Assets/Knight/Charm Hatchlings.prefab
+- Assets/Knight/Death Wave Infected R.prefab
+- Assets/Knight/Charm Sharp Shadow.prefab
+- Assets/Knight/White Wave Lone.prefab
+- Assets/Knight/Shadow Ring.prefab
+- Assets/Knight/Knight Damage Leak.prefab
+- Assets/Knight/Spell Fluke Dung Lv2.prefab
+- Assets/Knight/Charm Mantis.prefab
+- Assets/Knight/Corpse Acid Steam.prefab
+- Assets/Knight/Fall Effects.prefab
+- Assets/Knight/Shade Orb.prefab
+- Assets/Knight/Debris.prefab
+- Assets/Knight/Run Effects.prefab
+- Assets/Knight/Strikes.prefab
+- Assets/Knight/Spatter Orange.prefab
+- Assets/Knight/Screen Cracks.prefab
+- Assets/Knight/Audio Player UI.prefab
+- Assets/Knight/Charm Blocker Anim.prefab
+- Assets/Knight/Spell Effects Neutral.prefab
+- Assets/Knight/HUD Anim.prefab
+- Assets/Knight/dream_gate_fail.prefab
+- Assets/Knight/Geo Med.prefab
+- Assets/Knight/Nail Clash Effect.prefab
+- Assets/Knight/Charm Grubberfly.prefab
+- Assets/Knight/HP Up Particles Hive.prefab
+- Assets/Knight/Tween Charm Trail D.prefab
+- Assets/Knight/Fireball Top.prefab
+- Assets/Knight/Grubberfly BeamR R.prefab
+- Assets/Knight/Dream Impact.prefab
+- Assets/Knight/Black Water Cln.prefab
+- Assets/Knight/Corpse Splat.prefab
+- Assets/Knight/Knight Hatchling Anim.prefab
+- Assets/Knight/Blocker Bit 3.prefab
+- Assets/Knight/HP Up Particles HiveB.prefab
+- Assets/Knight/Grubberfly BeamD.prefab
+- Assets/Knight/Charm Grimmchild.prefab
+- Assets/Knight/Charm Quick Focus.prefab
+- Assets/Knight/Charm Deep Focus.prefab
+- Assets/Knight/Charm NoRecoil.prefab
+- Assets/Knight/Knight Spore Cloud.prefab
+- Assets/Knight/Shade.prefab
+- Assets/Knight/Hollow Shade Depart.prefab
+- Assets/Knight/SD Crystal.prefab
+- Assets/Knight/Grubberfly BeamD R.prefab
+- Assets/Knight/Hard Land Effect.prefab
+- Assets/Knight/Grimmball.prefab
+- Assets/Knight/Charm Dung.prefab
+- Assets/Knight/Knight Dung Trail.prefab
+- Assets/Knight/Orbit Shield Anim.prefab
+- Assets/Knight/Dust.prefab
+- Assets/Knight/Charm GeoDropUp.prefab
+- Assets/Knight/Knight Hatchling Cln.prefab
+- Assets/Knight/Charms.prefab
+- Assets/Knight/Spell Effects 2.prefab
+- Assets/Knight/Grubberfly Beam Anim.prefab
+- Assets/Knight/Light Effects.prefab
+- Assets/Knight/Spatter Blue.prefab
+- Assets/Knight/Hit Crack.prefab
+- Assets/Knight/Charm Effect Anim.prefab
+- Assets/Knight/BackdashTriple Effect.prefab
+- Assets/Knight/Fireball Blast.prefab
+- Assets/Knight/Shadow Ball.prefab
+- Assets/Knight/Particle Rock Small Shrinker.prefab
+- Assets/Knight/Geo Small.prefab
+- Assets/Sprite/GG_bound_charm_prompt.asset
+- Assets/Knight/Grubberfly BeamU R.prefab
+- Assets/Knight/Blocker Bit 1.prefab
+- Assets/Knight/Grubberfly BeamR.prefab
+- Assets/Knight/HUD_Soulorb_Prefab.prefab
+- Assets/Knight/Audio Player Actor.prefab
+- Assets/Knight/Grubberfly BeamU.prefab
+- Assets/Knight/skull_chip1.prefab
+- Assets/Knight/Acid Splash.prefab
+- Assets/Knight/Blocker Bit 5.prefab
+- Assets/Knight/Tween Charm Trail U.prefab
+- Assets/Knight/Bound Charm Msg.prefab
+- Assets/Knight/dream_gate_object.prefab
+- Assets/Knight/Blocker Bit 2.prefab
+- Assets/Knight/Blue Flash.prefab
+- Assets/Knight/HUD Extras Anim.prefab
+- Assets/Knight/Sharp Shadow Impact.prefab
+- Assets/Knight/Strike Nail R.prefab
+- Assets/Knight/Charm StalwartShell.prefab
+- Assets/Knight/Charm Royal.prefab
+- Assets/Knight/Water_effects.prefab
+- Assets/Knight/Spatter White R.prefab
+- Assets/Knight/Charm Dream.prefab
+- Assets/Knight/Knight Damage Effect.prefab
+- Assets/Knight/Slash Effect Shade.prefab
+- Assets/Knight/Grubberfly BeamL R.prefab
+- Assets/Knight/Dust Land Small R.prefab
+- Assets/Knight/Spell Effects.prefab
+- Assets/Knight/Ash 1.prefab
+- Assets/Knight/Black Wave Default R.prefab
+- Assets/Knight/Fireball2 Spiral.prefab
+- Assets/Knight/Ash 3.prefab
+- Assets/Knight/Flameball Anim.prefab
+- Assets/Knight/Ash 2.prefab
+- Assets/Knight/Charm Slash Speed.prefab
+- Assets/Knight/Charm Weaversong.prefab
+- Assets/Knight/Audio Player NoDestroy.prefab
+- Assets/Knight/Hit Shade.prefab
+- Assets/Knight/Charm Glass Geo.prefab
+- Assets/Knight/Knight_0.prefab
+- Assets/Knight/Geo Large.prefab
+- Assets/Knight/Geo.prefab
+- Assets/Knight/Grimmchild Anim.prefab
+- Assets/Knight/Charm Dreamshield.prefab
+- Assets/Knight/Charm Dashmaster.prefab
+- Assets/Knight/Shadow Burst Down.prefab
+- Assets/Knight/Spatter Brown.prefab
+- Assets/Knight/NewSprite.prefab
+- Assets/Knight/Dust Effects.prefab
+- Assets/Knight/Charm Equip Msg.prefab
+- Assets/Knight/Knight Acid Death.prefab
+- Assets/Knight/skull_chip2.prefab
+- Assets/Knight/HUD Cln.prefab
+- Assets/Knight/Lamp Bug Cln.prefab
+- Assets/Knight/Charm Slug.prefab
+- Assets/Knight/dream_essence_corpse_get.prefab
+- Assets/Knight/Spell Fluke Black.prefab
+- Assets/Knight/Charm Effects Cln.prefab
+- Assets/Knight/Charm Blue Health Large.prefab
+- Assets/Knight/Charm GeoGatherer.prefab
+- Assets/Knight/Fluke Spell Cln.prefab
+- Assets/Knight/Hatcher Baby_1.prefab
+- Assets/Knight/UI Journal Cln.prefab
+- Assets/Knight/Charm Thorn Counter.prefab
+- Assets/Knight/Lantern.prefab
+- Assets/Knight/Slash Impact R.prefab
+- Assets/Knight/Fireball.prefab
+- Assets/Knight/Charm Fury.prefab
+- Assets/Knight/UI Journal Anim.prefab
+- Assets/Knight/Charm Blocker.prefab
+- Assets/Knight/Charm Nailmaster.prefab
+- Assets/Knight/Fluke Spell Anim.prefab
+- Assets/Knight/Orb Get Black.prefab
+- Assets/Knight/Charm Flukeman.prefab
+- Assets/Knight/Fire Ball.prefab
+- Assets/Knight/Knight Dung Cloud.prefab
+- Assets/Knight/Charm Hive.prefab
+- Assets/Knight/Grimmchild Cln.prefab
+- Assets/Knight/Soulorb_fills_animation.prefab
+- Assets/Knight/Grimmchild.prefab
+- Assets/Knight/Blocker Bit 4.prefab
+- Assets/Knight/Spell Effects Black.prefab
+- Assets/Knight/Charm SpellDamageUp.prefab
+- Assets/Knight/Charm SoulDrain.prefab
+- Assets/Knight/Nail Terrain Hit Effect.prefab
+- Assets/Knight/Knight Hatchling.prefab
+- Assets/Knight/Knight.prefab
+- Assets/Knight/Spell Fluke Dung Lv1.prefab
+- Assets/Knight/Water_effects_0.prefab
+- Assets/Knight/Blue Health Hive.prefab
+- Assets/Knight/Prompts Cln.prefab
+- Assets/Knight/Flameball Cln.prefab
+- Assets/Knight/Weaverling Anim.prefab
+- Assets/Knight/Thunk Effect R.prefab
+- Assets/Knight/Fireball2 Top.prefab
+- Assets/Knight/Corpse Head.prefab
+- Assets/Knight/Charm Glass Attack.prefab
+- Assets/Knight/Weaverling.prefab
+- Assets/Knight/Charm Place Effect.prefab
+- Assets/Knight/Shadow Burst.prefab
+- Assets/Knight/White Flash R.prefab
+- Assets/Knight/Knight Effects Anim.prefab
+- Assets/Knight/Journal Update Msg.prefab
+- Assets/Knight/Orbit Shield Cln.prefab
+- Assets/Knight/Lamp_Bug.prefab
+- Assets/Knight/Jump Effects.prefab
+- Assets/Knight/double health hit.prefab
+- Assets/Knight/Fireball Hit.prefab
+- Assets/Knight/Charm JoniBlessing.prefab
+- Assets/Knight/Knight Dream Gate Cln.prefab
+- Assets/Knight/Relic Get Msg.prefab
+- Assets/Knight/Dung Explosion.prefab
+- Assets/Knight/Soft Land Effect.prefab
+- Assets/Knight/Jump Trail Hero.prefab
+- Assets/Knight/Charm Shroom.prefab
+- Assets/Knight/Death Puff Med.prefab
+- Assets/Knight/Spell Fluke.prefab
+- Assets/Knight/Charm SoulDrain 2.prefab
+- Assets/Knight/Hud Canvas.prefab
+- Assets/Knight/Spells Anim.prefab
+- Assets/Knight/Slash Effect GhostDark1.prefab
+- Assets/Knight/Spell Fluke Dung.prefab
+Dependencies:
+- E:/projects/Mod/SilkSong/KnightInSilkSong/TestMod/Resources/shader

@@ -1,0 +1,16 @@
+ManifestFileVersion: 0
+UnityVersion: 6000.0.53f1
+CRC: 2256808024
+HashAppended: 0
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: knight
+      Dependencies:
+        Dependency_0: shader
+    Info_1:
+      Name: test
+      Dependencies: {}
+    Info_2:
+      Name: shader
+      Dependencies: {}

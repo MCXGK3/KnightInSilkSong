@@ -1,0 +1,34 @@
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestMod", "TestMod\TestMod.csproj", "{0E88F4D5-03DD-8A1B-F527-1AAB2784D50A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Knight", "Knight\Knight.csproj", "{B509D683-F7E8-4C7B-B440-68765C2CCD80}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0E88F4D5-03DD-8A1B-F527-1AAB2784D50A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E88F4D5-03DD-8A1B-F527-1AAB2784D50A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E88F4D5-03DD-8A1B-F527-1AAB2784D50A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E88F4D5-03DD-8A1B-F527-1AAB2784D50A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE502538-821A-4DBA-93E6-780A2516CECA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE502538-821A-4DBA-93E6-780A2516CECA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE502538-821A-4DBA-93E6-780A2516CECA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE502538-821A-4DBA-93E6-780A2516CECA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B509D683-F7E8-4C7B-B440-68765C2CCD80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B509D683-F7E8-4C7B-B440-68765C2CCD80}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B509D683-F7E8-4C7B-B440-68765C2CCD80}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B509D683-F7E8-4C7B-B440-68765C2CCD80}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3A87A73C-B645-4CA4-9CF6-F45B2FA553AD}
+	EndGlobalSection
+EndGlobal
