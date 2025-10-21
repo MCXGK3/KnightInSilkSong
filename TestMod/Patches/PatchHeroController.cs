@@ -30,7 +30,12 @@ public class Patch_HeroController_AffectedByGravity : GeneralPatch
     {
         if (KnightInSilksong.IsKnight)
         {
-            Knight.HeroController.instance.AffectedByGravity(gravityApplies);
+            if (Knight.HeroController.instance.transitionState != HeroTransitionState.WAITING_TO_ENTER_LEVEL)
+            {
+                Knight.HeroController.instance.AffectedByGravity(gravityApplies);
+            }
+
+            ("AffectedByGravity Patch " + gravityApplies).LogInfo();
         }
     }
 }
@@ -106,11 +111,11 @@ public class Patch_HeroController_LeavingScene : GeneralPatch
     }
     public static void Postfix(HeroController __instance)
     {
-        if (KnightInSilksong.IsKnight)
-        {
-            "Leaving Scene Patch".LogInfo();
-            Knight.HeroController.instance.LeaveScene();
-        }
+        // if (KnightInSilksong.IsKnight)
+        // {
+        //     "Leaving Scene Patch".LogInfo();
+        //     Knight.HeroController.instance.LeaveScene();
+        // }
     }
 }
 
@@ -119,15 +124,21 @@ public class Patch_HeroController_LeaveScene : GeneralPatch
 {
     public static bool Prefix(HeroController __instance, GatePosition? gate)
     {
-        return true;
-    }
-    public static void Postfix(HeroController __instance, GatePosition? gate)
-    {
         if (KnightInSilksong.IsKnight)
         {
             "Leave Scene Patch".LogInfo();
+            if (gate == GatePosition.top || gate == GatePosition.bottom)
+            {
+                gate.LogInfo();
+            }
             Knight.HeroController.instance.LeaveScene(gate);
+            return false;
         }
+        return true;
+    }
+    public static void Postfix(HeroController __instance, ref GatePosition? gate)
+    {
+
     }
 }
 
@@ -136,17 +147,21 @@ public class Patch_HeroController_LeaveScene : GeneralPatch
 [HarmonyPatch(typeof(HeroController), "EnterScene", MethodType.Normal)]
 public class Patch_HeroController_EnterScene : GeneralPatch
 {
-    public static bool Prefix(HeroController __instance)
-    {
-        return true;
-    }
-    public static void Postfix(HeroController __instance, TransitionPoint enterGate, float delayBeforeEnter)
+    public static bool Prefix(HeroController __instance, TransitionPoint enterGate, float delayBeforeEnter)
     {
         if (KnightInSilksong.IsKnight)
         {
             GameManager.instance.StartCoroutine(Knight.HeroController.instance.EnterScene(enterGate, delayBeforeEnter));
+            enterGate.GetGatePosition().LogInfo();
+            "EnterScene Patch".LogInfo();
+            Time.time.LogInfo();
 
         }
+        return true;
+    }
+    public static void Postfix(HeroController __instance, TransitionPoint enterGate, float delayBeforeEnter)
+    {
+
     }
 }
 [HarmonyPatch(typeof(HeroController), "EnterSceneDreamGate", MethodType.Normal)]
@@ -154,15 +169,16 @@ public class Patch_HeroController_EnterSceneDreamGate : GeneralPatch
 {
     public static bool Prefix(HeroController __instance)
     {
-        return true;
-    }
-    public static void Postfix(HeroController __instance)
-    {
         if (KnightInSilksong.IsKnight)
         {
             Knight.HeroController.instance.EnterSceneDreamGate();
             HeroController.instance.gameObject.GetComponent<MeshRenderer>().enabled = false;
         }
+        return true;
+    }
+    public static void Postfix(HeroController __instance)
+    {
+
     }
 }
 [HarmonyPatch(typeof(HeroController), "SceneInit", MethodType.Normal)]
@@ -314,6 +330,114 @@ public class Patch_HeroController_UnPause : GeneralPatch
         {
             Knight.HeroController.instance.UnPause();
         }
+    }
+}
+[HarmonyPatch(typeof(HeroController), "RecoilRight", MethodType.Normal)]
+public class Patch_HeroController_RecoilRight : GeneralPatch
+{
+    public static bool Prefix(HeroController __instance)
+    {
+        if (KnightInSilksong.IsKnight)
+        {
+            Knight.HeroController.instance.RecoilRight();
+            return false;
+        }
+        return true;
+    }
+    public static void Postfix(HeroController __instance)
+    {
+    }
+}
+[HarmonyPatch(typeof(HeroController), "RecoilLeft", MethodType.Normal)]
+public class Patch_HeroController_RecoilLeft : GeneralPatch
+{
+    public static bool Prefix(HeroController __instance)
+    {
+        if (KnightInSilksong.IsKnight)
+        {
+            Knight.HeroController.instance.RecoilLeft();
+            return false;
+        }
+        return true;
+    }
+    public static void Postfix(HeroController __instance)
+    {
+    }
+}
+[HarmonyPatch(typeof(HeroController), "RecoilDown", MethodType.Normal)]
+public class Patch_HeroController_RecoilDown : GeneralPatch
+{
+    public static bool Prefix(HeroController __instance)
+    {
+        if (KnightInSilksong.IsKnight)
+        {
+            Knight.HeroController.instance.RecoilDown();
+            return false;
+        }
+        return true;
+    }
+    public static void Postfix(HeroController __instance)
+    {
+    }
+}
+[HarmonyPatch(typeof(HeroController), "DownspikeBounce", MethodType.Normal)]
+public class Patch_HeroController_DownspikeBounce : GeneralPatch
+{
+    public static bool Prefix(HeroController __instance, bool harpoonRecoil, HeroSlashBounceConfig bounceConfig = null)
+    {
+        if (KnightInSilksong.IsKnight)
+        {
+            Traverse.Create(Knight.HeroController.instance).Method("CancelBounce").GetValue();
+            Knight.HeroController.instance.ShroomBounce();//shroom or general bounce?
+            "ShroomBounce".LogInfo();
+            return false;
+        }
+        return true;
+    }
+    public static void Postfix(HeroController __instance, bool harpoonRecoil, HeroSlashBounceConfig bounceConfig = null)
+    {
+
+    }
+}
+[HarmonyPatch(typeof(HeroController), "FinishedEnteringScene", MethodType.Normal)]
+public class Patch_HeroController_FinishedEnteringScene : GeneralPatch
+{
+    public static bool Prefix(HeroController __instance)
+    {
+        return true;
+    }
+    public static void Postfix(HeroController __instance)
+    {
+        "Hornet FinishedEnteringScene Patch".LogInfo();
+        Time.time.LogInfo();
+    }
+}
+[HarmonyPatch(typeof(HeroController), "Awake", MethodType.Normal)]
+public class Patch_HeroController_Awake : GeneralPatch
+{
+    public static bool Prefix(HeroController __instance)
+    {
+        KnightInSilksong.Instance.InstKnight();
+        Knight.HeroController.instance.gameObject.SetActive(false);
+        "Create Knight".LogInfo();
+        return true;
+    }
+    public static void Postfix(HeroController __instance)
+    {
+
+    }
+}
+[HarmonyPatch(typeof(HeroController), "OnDestroy", MethodType.Normal)]
+public class Patch_HeroController_OnDestroy : GeneralPatch
+{
+    public static bool Prefix(HeroController __instance)
+    {
+        return true;
+    }
+    public static void Postfix(HeroController __instance)
+    {
+        GameObject.DestroyImmediate(Knight.HeroController.instance.gameObject);
+        "Destroy Knight".LogInfo();
     }
 }
 
