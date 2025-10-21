@@ -7,6 +7,6 @@ public class Patch_HitTaker_Hit : GeneralPatch
     }
     public static void Postfix(GameObject targetGameObject, ref HitInstance damageInstance, int recursionDepth = 3)
     {
-        ("Hit " + targetGameObject.name + " " + damageInstance.DamageDealt).LogInfo();
+        ("Hit " + targetGameObject.name + " " + damageInstance.DamageDealt + " " + damageInstance.IsFirstHit).LogInfo();
     }
 }
