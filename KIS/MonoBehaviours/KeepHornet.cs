@@ -24,6 +24,7 @@ internal class KeepHornet : MonoBehaviour
         boxSize = box.size;
         box.size = base.GetComponent<BoxCollider2D>().size;
         box.offset = base.GetComponent<BoxCollider2D>().offset;
+        Hornet.GetComponent<HeroWaterController>().enabled = false;
 
     }
     private void Update()
@@ -39,5 +40,6 @@ internal class KeepHornet : MonoBehaviour
         var box = Hornet.GetComponent<BoxCollider2D>();
         box.offset = offset;
         box.size = boxSize;
+        Hornet.GetComponent<HeroWaterController>().enabled = true;
     }
 }

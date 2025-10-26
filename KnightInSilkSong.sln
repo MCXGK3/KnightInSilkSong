@@ -2,7 +2,7 @@
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestMod", "TestMod\TestMod.csproj", "{0E88F4D5-03DD-8A1B-F527-1AAB2784D50A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KIS", "KIS\KIS.csproj", "{0E88F4D5-03DD-8A1B-F527-1AAB2784D50A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Knight", "Knight\Knight.csproj", "{B509D683-F7E8-4C7B-B440-68765C2CCD80}"
 EndProject

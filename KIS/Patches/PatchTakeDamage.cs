@@ -21,7 +21,8 @@ public class Patch_TakeDamage_OnEnter : GeneralPatch
                 MoveDirection = __instance.MoveDirection.Value,
                 Multiplier = (__instance.Multiplier.IsNone ? 1f : __instance.Multiplier.Value),
                 SpecialType = (SpecialTypes)(__instance.SpecialType.Value | KnightInSilksong.KnightDamage),
-                IsFirstHit = true
+                IsFirstHit = true,
+                IsHeroDamage = true
             });
             __instance.Finish();
             return false;

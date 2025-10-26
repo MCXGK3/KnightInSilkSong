@@ -94,6 +94,21 @@ class PatchDoMethodCall : GeneralPatch
     {
         KnightInSilksong.logger.LogInfo(msg);
     }
+    public static void WarpToDreamGate(GameManager gm)
+    {
+        gm.entryGateName = "dreamGate";
+        gm.targetScene = Knight.PlayerData.instance.GetString("dreamGateScene");
+        gm.entryDelay = 0f;
+        gm.cameraCtrl.FreezeInPlace(false);
+        gm.BeginSceneTransition(new GameManager.SceneLoadInfo
+        {
+            AlwaysUnloadUnusedAssets = true,
+            EntryGateName = "dreamGate",
+            PreventCameraFadeOut = true,
+            SceneName = Knight.PlayerData.instance.GetString("dreamGateScene"),
+            Visualization = GameManager.SceneLoadVisualizations.ThreadMemory
+        });
+    }
 
     private static void Modified_DoMethodCall(CallMethodProper __instance)
     {
@@ -108,11 +123,60 @@ class PatchDoMethodCall : GeneralPatch
             if (CharmIconList.Instance != null)
             {
                 __instance.parameters[0].UpdateValue();
-                ((int)__instance.parameters[0].intValue).LogInfo();
                 __instance.storeResult.SetValue(CharmIconList.Instance.GetSprite((int)__instance.parameters[0].intValue));
             }
             __instance.Finish();
             return;
+        }
+        if (KnightInSilksong.IsKnight)
+        {
+            if (__instance.behaviour.value == "HeroController")
+            {
+                if (__instance.methodName.value == "TakeQuickDamage")
+                {
+                    bool temp_inv = Knight.PlayerData.instance.isInvincible;
+                    Knight.PlayerData.instance.isInvincible = false;
+                    Knight.HeroController.instance.TakeDamage(null, GlobalEnums.CollisionSide.other, __instance.parameters[0].intValue, (int)KnightInSilksong.HazardType_NORESPOND);
+                    Knight.PlayerData.instance.isInvincible = temp_inv;
+                    __instance.Finish();
+                    return;
+                }
+                else if (__instance.methodName.value == "TakeQuickDamageSimple")
+                {
+                    bool temp_inv = Knight.PlayerData.instance.isInvincible;
+                    Knight.PlayerData.instance.isInvincible = false;
+                    Knight.HeroController.instance.TakeDamage(null, GlobalEnums.CollisionSide.other, __instance.parameters[0].intValue, (int)KnightInSilksong.HazardType_NORESPOND);
+                    Knight.PlayerData.instance.isInvincible = temp_inv;
+                    __instance.Finish();
+                    return;
+                }
+                else if (__instance.methodName.value == "WillDoBellBindHit")
+                {
+                    __instance.storeResult.SetValue(false);
+                    __instance.Finish();
+                    return;
+                }
+                else if (__instance.methodName.value == "ActivateVoidAcid")
+                {
+                    __instance.Finish();
+                    return;
+                }
+                else if (__instance.methodName.value == "CanTakeDamage")
+                {
+                    __instance.storeResult.SetValue(Traverse.Create(Knight.HeroController.instance).Method("CanTakeDamage").GetValue<bool>());
+                    __instance.Finish();
+                    return;
+                }
+            }
+            if (__instance.behaviour.value == "GameManager")
+            {
+                if (__instance.methodName.value == "WarpToDreamGate")
+                {
+                    WarpToDreamGate(GameManager.instance);
+                    __instance.Finish();
+                    return;
+                }
+            }
         }
 
         GameObject ownerDefaultTarget = __instance.Fsm.GetOwnerDefaultTarget(__instance.gameObject);

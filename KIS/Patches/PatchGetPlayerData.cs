@@ -98,18 +98,21 @@ public class Patch_GetPlayerDataVector3_OnEnter : GeneralPatch
 [HarmonyPatch(typeof(PlayerDataBoolTest), "OnEnter", MethodType.Normal)]
 public class Patch_PlayerDataBoolTest_OnEnter : GeneralPatch
 {
+    static List<string> in_knight_bool = new List<string>()
+    {
+        "isInvincible"
+    };
     public static bool Prefix(PlayerDataBoolTest __instance)
     {
-        if (KnightInSilksong.IsKnight && __instance.fsm.GetVariable<FsmBool>("FromKnight") != null)
+        if (KnightInSilksong.IsKnight)
         {
-            if (__instance.boolName.value == "EncounteredLostLace")
+            if (__instance.fsm.GetVariable<FsmBool>("FromKnight") != null || __instance.boolName.Value.IsAny(in_knight_bool.ToArray()))
             {
-                (__instance.fsm.name + " " + __instance.State.name + " PlayerDataBoolTest").LogInfo();
+                bool boolCheck = Knight.PlayerData.instance.GetBool(__instance.boolName.Value);
+                __instance.fsm.Event(boolCheck ? __instance.isTrue : __instance.isFalse);
+                __instance.Finish();
+                return false;
             }
-            bool boolCheck = Knight.PlayerData.instance.GetBool(__instance.boolName.Value);
-            __instance.fsm.Event(boolCheck ? __instance.isTrue : __instance.isFalse);
-            __instance.Finish();
-            return false;
         }
         return true;
     }
@@ -144,6 +147,7 @@ public class Patch_PlayerDataBoolAllTrue_DoAllTrue : GeneralPatch
             }
 
             __instance.storeResult.Value = flag;
+            __instance.Finish();
             return false;
         }
         return true;
@@ -168,6 +172,7 @@ public class Patch_PlayerDataBoolTrueAndFalse_OnEnter : GeneralPatch
             {
                 __instance.Fsm.Event(__instance.isFalse);
             }
+            __instance.Finish();
             return false;
         }
         return true;

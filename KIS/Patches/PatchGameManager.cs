@@ -25,9 +25,18 @@ public class Patch_GameManager_SetIsInventoryOpen : GeneralPatch
     }
     public static void Postfix(GameManager __instance, bool value)
     {
-        if (KnightInSilksong.IsKnight && value)
+        if (KnightInSilksong.IsKnight)
         {
-            __instance.SetTimeScale(1f);
+            if (value)
+            {
+                __instance.SetTimeScale(1f);
+                Knight.HeroController.instance.RelinquishControl();
+            }
+            else
+            {
+                Knight.HeroController.instance.RegainControl();
+            }
+
         }
     }
 }

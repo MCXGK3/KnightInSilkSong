@@ -30,12 +30,16 @@ public class Patch_HeroController_AffectedByGravity : GeneralPatch
     {
         if (KnightInSilksong.IsKnight)
         {
-            if (Knight.HeroController.instance.transitionState != HeroTransitionState.WAITING_TO_ENTER_LEVEL)
+            if (Knight.HeroController.instance.transitionState != HeroTransitionState.WAITING_TO_ENTER_LEVEL && Knight.HeroController.instance.cState.swimming == false)
             {
-                Knight.HeroController.instance.AffectedByGravity(gravityApplies);
+                if (Knight.HeroController.instance.gameObject.LocateMyFSM("Surface Water").ActiveStateName == "Inactive")
+                {
+                    Knight.HeroController.instance.AffectedByGravity(gravityApplies);
+                    ("AffectedByGravity Patch " + gravityApplies).LogInfo();
+                }
             }
 
-            ("AffectedByGravity Patch " + gravityApplies).LogInfo();
+
         }
     }
 }
@@ -151,6 +155,14 @@ public class Patch_HeroController_EnterScene : GeneralPatch
     {
         if (KnightInSilksong.IsKnight)
         {
+            if (Knight.HeroController.instance.cState.superDashing)
+            {
+                Knight.HeroController.instance.SetSuperDashExit();
+            }
+            if (Knight.HeroController.instance.cState.spellQuake)
+            {
+                Knight.HeroController.instance.SetQuakeExit();
+            }
             GameManager.instance.StartCoroutine(Knight.HeroController.instance.EnterScene(enterGate, delayBeforeEnter));
             enterGate.GetGatePosition().LogInfo();
             "EnterScene Patch".LogInfo();
@@ -440,5 +452,68 @@ public class Patch_HeroController_OnDestroy : GeneralPatch
         "Destroy Knight".LogInfo();
     }
 }
+[HarmonyPatch(typeof(HeroController), "IsSwimming", MethodType.Normal)]
+public class Patch_HeroController_IsSwimming : GeneralPatch
+{
+    public static bool Prefix(HeroController __instance)
+    {
+        return true;
+    }
+    public static void Postfix(HeroController __instance)
+    {
+        if (KnightInSilksong.IsKnight)
+        {
+
+            "IsSwimming Patch".LogInfo();
+        }
+    }
+}
+[HarmonyPatch(typeof(HeroController), "NotSwimming", MethodType.Normal)]
+public class Patch_HeroController_NotSwimming : GeneralPatch
+{
+    public static bool Prefix(HeroController __instance)
+    {
+        return true;
+    }
+    public static void Postfix(HeroController __instance)
+    {
+        if (KnightInSilksong.IsKnight)
+        {
+
+        }
+    }
+}
+[HarmonyPatch(typeof(HeroController), "StartAnimationControlToIdle", MethodType.Normal)]
+public class Patch_HeroController_StartAnimationControlToIdle : GeneralPatch
+{
+    public static bool Prefix(HeroController __instance)
+    {
+        return true;
+    }
+    public static void Postfix(HeroController __instance)
+    {
+        if (KnightInSilksong.IsKnight)
+        {
+            Knight.HeroController.instance.StartAnimationControl();
+        }
+    }
+}
+
+[HarmonyPatch(typeof(HeroController), "StartAnimationControlToIdleForcePlay", MethodType.Normal)]
+public class Patch_HeroController_StartAnimationControlToIdleForcePlay : GeneralPatch
+{
+    public static bool Prefix(HeroController __instance)
+    {
+        return true;
+    }
+    public static void Postfix(HeroController __instance)
+    {
+        if (KnightInSilksong.IsKnight)
+        {
+            Knight.HeroController.instance.StartAnimationControl();
+        }
+    }
+}
+
 
 

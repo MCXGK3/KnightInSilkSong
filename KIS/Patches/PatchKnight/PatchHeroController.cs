@@ -63,3 +63,26 @@ public class Patch_Knight_HeroController_FinishedEnteringScene : GeneralPatch
         Time.time.LogInfo();
     }
 }
+
+[HarmonyPatch(typeof(Knight.HeroController), "TakeDamage", MethodType.Normal)]
+public class Patch_Knight_HeroController_TakeDamage : GeneralPatch
+{
+    public static bool Prefix(Knight.HeroController __instance, GameObject go, CollisionSide damageSide, int damageAmount, ref int hazardType)
+    {
+        if (KnightInSilksong.IsKnight)
+        {
+            if (hazardType == (int)HazardType.LAVA)
+            {
+                hazardType = (int)HazardType.PIT;
+            }
+            else if (hazardType == KnightInSilksong.HazardType_NORESPOND)
+            {
+                hazardType = (int)HazardType.LAVA;
+            }
+        }
+        return true;
+    }
+    public static void Postfix(Knight.HeroController __instance, GameObject go, CollisionSide damageSide, int damageAmount, int hazardType)
+    {
+    }
+}

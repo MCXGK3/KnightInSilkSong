@@ -12,7 +12,14 @@ class Patch_PlayerData_SetBool : GeneralPatch
     {
         if (KnightInSilksong.IsKnight)
         {
-            Knight.PlayerData.instance.SetBool(boolName, value);
+            try
+            {
+                Knight.PlayerData.instance.SetBool(boolName, value);
+            }
+            catch (ArgumentException e)
+            {
+                ("ArgumentException " + boolName + " " + value).LogError();
+            }
         }
     }
 }

@@ -6,7 +6,7 @@
     <Nullable>disable</Nullable>
     <SilksongFolder>F:\SteamLibrary\steamapps\common\Hollow Knight Silksong</SilksongFolder>
     <UnityFolder> D:\unity\UnityProjects\BETTERALLHK\Assets\Plugins</UnityFolder>
-    <ModName>TestMod</ModName>
+    <ModName>KnightInSilkSong</ModName>
   </PropertyGroup>
 
   <ItemGroup>

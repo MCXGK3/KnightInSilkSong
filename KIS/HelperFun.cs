@@ -5,6 +5,38 @@ using UnityEngine;
 
 public static class HelperFun
 {
+    public static string GetPlayerDataPath()
+    {
+        return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "PlayerData.json");
+    }
+    public static void SavePlayerData()
+    {
+        Knight.PlayerData pd = Knight.PlayerData.instance;
+        if (pd == null) return;
+        string json = JsonUtility.ToJson(pd, true);
+        File.WriteAllText(GetPlayerDataPath(), json);
+    }
+    public static bool LoadPlayerData()
+    {
+        string path = GetPlayerDataPath();
+        if (File.Exists(path))
+        {
+            string json = File.ReadAllText(path);
+            try
+            {
+                Knight.PlayerData pd = Knight.PlayerData.instance;
+                JsonUtility.FromJsonOverwrite(json, pd);
+                "Load OK".LogInfo();
+            }
+            catch (Exception e)
+            {
+                e.LogError();
+                return false;
+            }
+            return true;
+        }
+        return false;
+    }
     public static Texture2D LoadTexture(Stream stream)
     {
         byte[] bytes = new byte[stream.Length];

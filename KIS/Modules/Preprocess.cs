@@ -33,7 +33,7 @@ internal class PreProcess : IModule
 
     public override void Init()
     {
-        using (StreamReader reader = new(Assembly.GetExecutingAssembly().GetManifestResourceStream("TestMod.Resources.MaterialShaderMap.json")))
+        using (StreamReader reader = new(Assembly.GetExecutingAssembly().GetManifestResourceStream("KIS.Resources.MaterialShaderMap.json")))
         {
             string json = reader.ReadToEnd();
             material_shader_map = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
@@ -93,9 +93,13 @@ internal class PreProcess : IModule
         SetErrorCollider2D();
         SetErrorFsm();
         knight.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeRotation;
-        Knight.PlayerData.instance.AddGGPlayerDataOverrides();
+        if (!HelperFun.LoadPlayerData())
+        {
+            Knight.PlayerData.instance.AddGGPlayerDataOverrides();
+            Knight.PlayerData.instance.royalCharmState = 4;
+        }
         knight.AddComponent<KeepHornet>();
-        
+
 
 
 

@@ -17,8 +17,9 @@ public class Patch_GrassCut_ShouldCut : GeneralPatch
             }
             if (!__result)
                 return true;
+            else return false;
         }
-        return false;
+        return true;
     }
     public static void Postfix(Collider2D collision)
     {

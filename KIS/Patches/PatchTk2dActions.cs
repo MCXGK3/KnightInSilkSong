@@ -8,7 +8,7 @@ public class Patch_Tk2dPlayAnimation_DoPlayAnimation : GeneralPatch
     static List<string> KnightAnims = new List<string> {
        "Sit"
     };
-    static Dictionary<string, string> hornet_to_knight_anime = new()
+    public static Dictionary<string, string> hornet_to_knight_anime = new()
     {
         {"Sit","Sit"},
         {"Taunt Back Up","Challenge Start" },
@@ -17,7 +17,12 @@ public class Patch_Tk2dPlayAnimation_DoPlayAnimation : GeneralPatch
         {"Taunt Straight Back","Challenge Start"},
         {"Sit Fall Asleep","Sit Fall Asleep"},
         {"Sit Idle","Sit" },
-        {"Get Off","Get Off" }
+        {"Get Off","Get Off" },
+        {"Challenge Strong","Roar Lock"},
+        {"ChallengeStrongToIdle","Idle"},
+        {"HardLand Greymoor","HardLand"}
+
+
     };
     public static bool Prefix(Tk2dPlayAnimation __instance)
     {

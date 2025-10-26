@@ -6,11 +6,12 @@ using System.Reflection;
 using BepInEx.Logging;
 using System.Collections.Generic;
 using KIS.Utils;
+using HutongGames.PlayMaker.Actions;
 
 namespace KIS;
 
 // TODO - adjust the plugin guid as needed
-[BepInAutoPlugin(id: "io.github.shownyoung.testmod")]
+[BepInAutoPlugin(id: "io.github.shownyoung.knightinsilksong")]
 public partial class KnightInSilksong : BaseUnityPlugin
 {
     Fsm fsm = null;
@@ -34,6 +35,7 @@ public partial class KnightInSilksong : BaseUnityPlugin
     internal static bool IsKnight => Instance.iskight;
     bool iskight = false;
     public static Int32 KnightDamage => 1 << 30;
+    public const int HazardType_NORESPOND = 4096;
     public Harmony self_hormony;
     public Action<bool> OnToggleKnight = null;
 
@@ -45,7 +47,7 @@ public partial class KnightInSilksong : BaseUnityPlugin
         Logger.LogInfo($"Plugin {Name} ({Id}) has loaded!");
         Logger.LogInfo($"Game version: {Application.version}");
         Logger.LogInfo($"Unity version: {Application.unityVersion}");
-        hk = AssetBundle.LoadFromStream(Assembly.GetExecutingAssembly().GetManifestResourceStream("TestMod.Resources.knight"));
+        hk = AssetBundle.LoadFromStream(Assembly.GetExecutingAssembly().GetManifestResourceStream("KIS.Resources.knight"));
         var gos = hk.LoadAllAssets<GameObject>();
         foreach (var go in gos)
         {
@@ -159,7 +161,7 @@ public partial class KnightInSilksong : BaseUnityPlugin
         knight.GetComponent<Knight.HeroController>().hardLandingEffectPrefab = HeroController.instance.hardLandingEffectPrefab;
         knight.GetComponent<Knight.HeroController>().softLandingEffectPrefab = HeroController.instance.softLandingEffectPrefab;
         GameObject.Instantiate(knight);
-        KnightController.gameObject.FindGameObjectInChildren("Attacks").Find("Slash").LocateMyFSM("damages_enemy").InsertCustomAction("Send Event", () => { "Send Event".LogInfo(); }, 0);
+        // KnightController.gameObject.FindGameObjectInChildren("Attacks").Find("Slash").LocateMyFSM("damages_enemy").InsertCustomAction("Send Event", () => { "Send Event".LogInfo(); }, 0);
         KnightController.gameObject.FindGameObjectInChildren("Charm Effects").LocateMyFSM("Fury").AddCustomAction("Get Ref", (fsm) =>
         {
             fsm.GetVariable<FsmGameObject>("Fury Vignette").Value = fury_effect_instance;
@@ -167,6 +169,15 @@ public partial class KnightInSilksong : BaseUnityPlugin
         KnightController.gameObject.Find("Vignette").SetActive(false);
         KnightController.gameObject.Find("white_light_donut").SetActive(false);
         KnightController.gameObject.Find("Attacks").Find("Sharp Shadow").tag = "Sharp Shadow";
+        var death = KnightController.heroDeathPrefab.LocateMyFSM("Hero Death Anim");
+        death.GetAction<HutongGames.PlayMaker.Actions.SetPlayerDataBool>("Limit Soul", 2).value = false;
+        death.GetAction<SetBoolValue>("Limit Soul", 3).boolValue = false;
+        GameObject centre = new GameObject("Centre");
+        centre.transform.SetParent(KnightController.transform, false);
+        centre.transform.localPosition = new Vector3(0f, 0f, 0f);
+        var roar = KnightController.gameObject.AddComponent<PlayMakerFSM>();
+        roar.Fsm = new Fsm(HeroController.instance.gameObject.LocateMyFSM("Roar and Wound States").Fsm);
+
     }
     private void Update()
     {
@@ -179,6 +190,10 @@ public partial class KnightInSilksong : BaseUnityPlugin
         {
 
         }
+    }
+    private void OnApplicationQuit()
+    {
+        HelperFun.SavePlayerData();
     }
 
 }

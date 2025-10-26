@@ -9,8 +9,6 @@ public class Patch_HealthManager_Hit : GeneralPatch
     }
     public static void Postfix(HealthManager __instance, HitInstance hitInstance, ref IHitResponder.HitResponse __result)
     {
-        if (KnightInSilksong.IsKnight)
-            __result.LogInfo();
     }
 }
 [HarmonyPatch(typeof(HealthManager), "Invincible", new Type[] { typeof(HitInstance) })]
