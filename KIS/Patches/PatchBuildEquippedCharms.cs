@@ -8,6 +8,7 @@ public class Patch_BuildEquippedCharms_BuildCharmList : GeneralPatch
         if (KnightInSilksong.IsKnight)
         {
             __instance.equippedCharms = Knight.PlayerData.instance.equippedCharms;
+            // Knight.PlayerData.instance.CalculateNotchesUsed();
         }
         return true;
     }

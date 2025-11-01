@@ -15,6 +15,7 @@ using GlobalEnums;
 using HutongGames.PlayMaker;
 using KIS.Utils;
 using TMProOld;
+using UnityEngine.Audio;
 
 internal class PreProcess : IModule
 {
@@ -22,11 +23,12 @@ internal class PreProcess : IModule
     {
         Instance = this;
     }
-    public PreProcess Instance;
+    public static PreProcess Instance;
     internal bool shader_initialized = false;
     private Dictionary<string, string> material_shader_map;
     private Dictionary<string, Shader> shaders = new();
     public Sprite charm_icon;
+    public HashSet<AudioMixer> share_mixer_group = new();
 
 
 
@@ -43,6 +45,7 @@ internal class PreProcess : IModule
         SSizeKnight();
         SSizeHud();
         SSizeCharm();
+        SetAuidoVolume();
 
 
     }
@@ -81,6 +84,7 @@ internal class PreProcess : IModule
         if (KnightInSilksong.Instance.hud_canvas == null) return;
         var hud = KnightInSilksong.Instance.hud_canvas;
         hud.LocateMyFSM("Globalise").enabled = true;
+        hud.FindGameObjectInChildren("Geo Counter").SetActive(false);
 
 
     }
@@ -99,6 +103,12 @@ internal class PreProcess : IModule
             Knight.PlayerData.instance.royalCharmState = 4;
         }
         knight.AddComponent<KeepHornet>();
+        knight.AddComponent<DreamHelper>();
+        KnightInSilksong.loaded_gos["Grimmchild"].tag = "Grimmchild";
+        KnightInSilksong.loaded_gos["Weaverling"].tag = "Weaverling";
+        KnightInSilksong.loaded_gos["Knight Hatchling"].tag = "Knight Hatchling";
+        KnightInSilksong.loaded_gos["Orbit Shield"].tag = "Orbit Shield";
+
 
 
 
@@ -244,6 +254,18 @@ internal class PreProcess : IModule
             }
         }
     }
+    void SetAuidoVolume()
+    {
+        foreach (var go_pair in KnightInSilksong.loaded_gos)
+        {
+            var go = go_pair.Value;
+            foreach (var audioSource in go.GetComponentsInChildren<AudioSource>(true))
+            {
+                if (audioSource != null && audioSource.outputAudioMixerGroup != null && audioSource.outputAudioMixerGroup.audioMixer != null)
+                    share_mixer_group.Add(audioSource.outputAudioMixerGroup.audioMixer);
+            }
+        }
+    }
     void SetErrorFsm()
     {
         foreach (var go_pair in KnightInSilksong.loaded_gos)
@@ -255,10 +277,12 @@ internal class PreProcess : IModule
                 if (fsm.UsesTemplate)
                 {
                     fsm.fsmTemplate.fsm.GetAddVariable<FsmBool>("FromKnight", true);
+                    fsm.fsmTemplate.fsm.preprocessed = false;
                 }
                 else
                 {
                     fsm.GetAddVariable<FsmBool>("FromKnight", true);
+                    fsm.fsm.preprocessed = false;
                 }
 
             }

@@ -163,7 +163,9 @@ class PatchDoMethodCall : GeneralPatch
                 }
                 else if (__instance.methodName.value == "CanTakeDamage")
                 {
-                    __instance.storeResult.SetValue(Traverse.Create(Knight.HeroController.instance).Method("CanTakeDamage").GetValue<bool>());
+                    bool result = false;
+                    result |= Traverse.Create(Knight.HeroController.instance).Method("CanTakeDamage").GetValue<bool>();
+                    __instance.storeResult.SetValue(result);
                     __instance.Finish();
                     return;
                 }

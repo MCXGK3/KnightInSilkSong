@@ -4215,7 +4215,7 @@ public class HeroController : MonoBehaviour
 		}
 	}
 
-	private IEnumerator StartRecoil(CollisionSide impactSide, bool spawnDamageEffect, int damageAmount)
+	public IEnumerator StartRecoil(CollisionSide impactSide, bool spawnDamageEffect, int damageAmount)
 	{
 		if (cState.recoiling)
 		{

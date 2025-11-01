@@ -25,6 +25,11 @@ internal class KeepHornet : MonoBehaviour
         box.size = base.GetComponent<BoxCollider2D>().size;
         box.offset = base.GetComponent<BoxCollider2D>().offset;
         Hornet.GetComponent<HeroWaterController>().enabled = false;
+        List<string> slashes = ["Slash", "AltSlash", "DownSlash", "UpSlash", "WallSlash"];
+        foreach (var slash in slashes)
+        {
+            base.gameObject.FindGameObjectInChildren("Attacks").FindGameObjectInChildren(slash).FindGameObjectInChildren("Clash Tink").tag = "Nail Attack";
+        }
 
     }
     private void Update()

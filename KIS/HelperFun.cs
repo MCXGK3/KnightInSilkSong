@@ -1,5 +1,7 @@
+using System.Collections;
 using System.IO;
 using System.Linq;
+using GlobalEnums;
 using KIS;
 using UnityEngine;
 
@@ -93,23 +95,28 @@ public static class HelperFun
     }
     public static void LogInfo(this object msg)
     {
-        KnightInSilksong.logger.LogInfo(msg);
+        if (KnightInSilksong.allowLog.Value)
+            KnightInSilksong.logger.LogInfo(msg);
     }
     public static void LogWarning(this object msg)
     {
-        KnightInSilksong.logger.LogWarning(msg);
+        if (KnightInSilksong.allowLog.Value)
+            KnightInSilksong.logger.LogWarning(msg);
     }
     public static void LogError(this object msg)
     {
-        KnightInSilksong.logger.LogError(msg);
+        if (KnightInSilksong.allowLog.Value)
+            KnightInSilksong.logger.LogError(msg);
     }
     public static void LogDebug(this object msg)
     {
-        KnightInSilksong.logger.LogDebug(msg);
+        if (KnightInSilksong.allowLog.Value)
+            KnightInSilksong.logger.LogDebug(msg);
     }
     public static void LogFatal(this object msg)
     {
-        KnightInSilksong.logger.LogFatal(msg);
+        if (KnightInSilksong.allowLog.Value)
+            KnightInSilksong.logger.LogFatal(msg);
     }
 
 }

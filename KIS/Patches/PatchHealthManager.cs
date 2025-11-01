@@ -36,8 +36,6 @@ public class Patch_HealthManager_TakeDamage
     }
     public static void Postfix(HealthManager __instance, ref HitInstance hitInstance)
     {
-        if (KnightInSilksong.IsKnight)
-            "TakeDamage".LogInfo();
     }
 }
 [HarmonyPatch(typeof(HealthManager), "NonFatalHit", new Type[] { typeof(bool) })]
@@ -56,5 +54,38 @@ public class Patch_HealthManager_NonFatalHit : GeneralPatch
                 __instance.evasionByHitRemaining = 0.2f;
             }
         }
+    }
+}
+[HarmonyPatch(typeof(HealthManager), "IsBlockingByDirection", MethodType.Normal)]
+public class Patch_HealthManager_IsBlockingByDirection : GeneralPatch
+{
+    public static bool Prefix(HealthManager __instance, int cardinalDirection, AttackTypes attackType, ref SpecialTypes specialType)
+    {
+        return true;
+    }
+    public static void Postfix(HealthManager __instance, int cardinalDirection, AttackTypes attackType, SpecialTypes specialType, ref bool __result)
+    {
+    }
+}
+[HarmonyPatch(typeof(HealthManager), "IsInvincible", MethodType.Setter)]
+public class Patch_HealthManager_IsInvincible : GeneralPatch
+{
+    public static bool Prefix(HealthManager __instance, bool value)
+    {
+        return true;
+    }
+    public static void Postfix(HealthManager __instance)
+    {
+    }
+}
+[HarmonyPatch(typeof(HealthManager), "InvincibleFromDirection", MethodType.Setter)]
+public class Patch_HealthManager_InvincibleFromDirection : GeneralPatch
+{
+    public static bool Prefix(HealthManager __instance, int value)
+    {
+        return true;
+    }
+    public static void Postfix(HealthManager __instance)
+    {
     }
 }

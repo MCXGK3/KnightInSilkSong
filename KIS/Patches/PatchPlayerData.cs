@@ -14,7 +14,19 @@ class Patch_PlayerData_SetBool : GeneralPatch
         {
             try
             {
+
                 Knight.PlayerData.instance.SetBool(boolName, value);
+                if (boolName == "atBench")
+                {
+                    if (value)
+                    {
+                        PlayMakerFSM.BroadcastEvent("BENCHREST");
+                    }
+                    else
+                    {
+                        PlayMakerFSM.BroadcastEvent("BENCHREST END");
+                    }
+                }
             }
             catch (ArgumentException e)
             {

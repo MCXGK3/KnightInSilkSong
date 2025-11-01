@@ -13,7 +13,7 @@ public class Patch_KnightHatchling_OnEnable : GeneralPatch
                 __instance.openEffect = new("openEffect");
                 __instance.openEffect.transform.SetParent(__instance.transform);
             }
-            Object.DontDestroyOnLoad(__instance.gameObject);
+            // Object.DontDestroyOnLoad(__instance.gameObject);
         }
         return true;
     }
