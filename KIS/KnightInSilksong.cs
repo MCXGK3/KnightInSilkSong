@@ -210,10 +210,7 @@ public partial class KnightInSilksong : BaseUnityPlugin
         {
             ToggleKnight();
         }
-        if (Input.GetKeyDown(KeyCode.F6))
-        {
 
-        }
     }
     private void OnApplicationQuit()
     {
