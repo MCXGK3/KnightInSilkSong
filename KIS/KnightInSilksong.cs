@@ -210,6 +210,7 @@ public partial class KnightInSilksong : BaseUnityPlugin
         {
             ToggleKnight();
         }
+        ProgressionManager.setProgression();
 
     }
     private void OnApplicationQuit()
