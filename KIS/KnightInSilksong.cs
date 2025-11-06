@@ -209,6 +209,7 @@ public partial class KnightInSilksong : BaseUnityPlugin
         if (Input.GetKeyDown(KeyCode.F5))
         {
             ToggleKnight();
+            ProgressionManager.setup();
         }
         ProgressionManager.setProgression();
 
