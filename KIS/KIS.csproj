@@ -16,6 +16,7 @@
       <!--Allow access of private members at runtime.-->
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <ModName>KnightInSilkSong</ModName>
+    <PublishFolder>E:\Github_Projects\Mod\SS</PublishFolder>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -37,22 +38,31 @@
   <ItemGroup>
     <ProjectReference Include="..\Knight\Knight.csproj" />
   </ItemGroup>
-
-  <Target Name="CopyMod" AfterTargets="PostBuildEvent" Condition="'$(SilksongFolder)' != ''">
-      <ItemGroup>
+  <ItemGroup>
           <Binaries Include="$(TargetPath)" />
           <Binaries Include="$(TargetDir)/$(TargetName).pdb" />
       </ItemGroup>
 
-      <Copy SourceFiles="@(Binaries)" DestinationFolder="$(SilksongFolder)/BepInEx/plugins/$(ModName)" />
-
-      <PropertyGroup>
-          <ExportFolder>bin/Publish</ExportFolder>
-      </PropertyGroup>
+  <Target Name="CopyMod" AfterTargets="PostBuildEvent" Condition="'$(SilksongFolder)' != ''">
       
-      <RemoveDir Directories="$(IntermediateOutputPath)/archive" />
-      <MakeDir Directories="$(ExportFolder)" />
-      <Copy SourceFiles="@(Binaries)" DestinationFolder="$(IntermediateOutputPath)/archive" />
-      <ZipDirectory SourceDirectory="$(IntermediateOutputPath)/archive" DestinationFile="$(ExportFolder)/$(TargetName).zip" Overwrite="True" />
+
+      <Copy SourceFiles="@(Binaries)" DestinationFolder="$(SilksongFolder)/BepInEx/plugins/$(ModName)" />
+      <Copy SourceFiles="../ReadMe.md" DestinationFolder="$(SilksongFolder)/BepInEx/plugins/$(ModName)" />
   </Target>
+  <Target Name="BuildPushishPack" AfterTargets="CopyMod" Condition="'$(PublishFolder)' != ''">
+      <ItemGroup>
+          <Package Include="../ReadMe.md" />
+          <Package Include="../CHANGELOG.md" />
+          <Package Include="../manifest.json" />
+          <Package Include="../icon.png" /> 
+      </ItemGroup>
+
+      <Copy SourceFiles="@(Binaries)" DestinationFolder="$(PublishFolder)/$(ModName)/ThunderStore" />
+      <Copy SourceFiles="@(Binaries)" DestinationFolder="$(PublishFolder)/$(ModName)/GitHub" />
+      <Copy SourceFiles="@(Package)" DestinationFolder="$(PublishFolder)/$(ModName)/ThunderStore" />
+      <Copy SourceFiles="../ReadMe.md" DestinationFolder="$(PublishFolder)/$(ModName)/GitHub" />
+      <Copy SourceFiles="../CHANGELOG.md" DestinationFolder="$(PublishFolder)/$(ModName)/GitHub" />
+      <ZipDirectory SourceDirectory="$(PublishFolder)/$(ModName)/ThunderStore" DestinationFile="$(PublishFolder)/$(ModName)/$(ModName)$(Version)_for_thunderstore.zip" Overwrite="True" />
+      <ZipDirectory SourceDirectory="$(PublishFolder)/$(ModName)/GitHub" DestinationFile="$(PublishFolder)/$(ModName)/$(ModName)$(Version).zip" Overwrite="True" />
+      </Target>
 </Project>

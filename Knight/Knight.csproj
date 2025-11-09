@@ -6,6 +6,7 @@
     <Nullable>disable</Nullable>
     <SilksongFolder>F:\SteamLibrary\steamapps\common\Hollow Knight Silksong</SilksongFolder>
     <UnityFolder> D:\unity\UnityProjects\BETTERALLHK\Assets\Plugins</UnityFolder>
+    <PublishFolder>E:\Github_Projects\Mod\SS</PublishFolder>
     <ModName>KnightInSilkSong</ModName>
   </PropertyGroup>
 
@@ -23,5 +24,13 @@
       <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(UnityFolder)"/>
 
   </Target>
+  <Target Name="BuildPushishPack" AfterTargets="CopyDLL" Condition="'$(PublishFolder)' != ''">
+      <ItemGroup>
+          <Binaries Include="$(TargetPath)" />
+          <Binaries Include="$(TargetDir)/$(TargetName).pdb" />
+      </ItemGroup>
+      <Copy SourceFiles="@(Binaries)" DestinationFolder="$(PublishFolder)/$(ModName)/ThunderStore" />
+      <Copy SourceFiles="@(Binaries)" DestinationFolder="$(PublishFolder)/$(ModName)/GitHub" />
+      </Target>
 
 </Project>
