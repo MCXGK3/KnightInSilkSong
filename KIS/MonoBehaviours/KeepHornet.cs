@@ -7,10 +7,11 @@ internal class KeepHornet : MonoBehaviour
     private Vector3 offset;
     private Vector2 boxSize;
     private Vector2 boxOffset;
+    private Rigidbody2D hornet_rb;
 
     private void Awake()
     {
-
+        hornet_rb = Hornet.GetComponent<Rigidbody2D>();
     }
     private void Start()
     {
@@ -30,7 +31,6 @@ internal class KeepHornet : MonoBehaviour
         {
             base.gameObject.FindGameObjectInChildren("Attacks").FindGameObjectInChildren(slash).FindGameObjectInChildren("Clash Tink").tag = "Nail Attack";
         }
-        Hornet.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
 
     }
     private void Update()
@@ -39,7 +39,14 @@ internal class KeepHornet : MonoBehaviour
     }
     private void FixedUpdate()
     {
-
+        if (Mathf.Abs(hornet_rb.linearVelocityY) > 1)
+        {
+            hornet_rb.linearVelocityY = 0;
+        }
+        if (Mathf.Abs(hornet_rb.linearVelocityX) > 1)
+        {
+            hornet_rb.linearVelocityX = 0;
+        }
     }
     private void OnDisable()
     {
@@ -47,6 +54,5 @@ internal class KeepHornet : MonoBehaviour
         box.offset = offset;
         box.size = boxSize;
         Hornet.GetComponent<HeroWaterController>().enabled = true;
-        Hornet.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
     }
 }
