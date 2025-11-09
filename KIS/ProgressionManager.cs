@@ -45,7 +45,7 @@ public class ProgressionManager
             placePlatform(32f, 12f);
             placePlatform(72.5f, 47.5f);
             placePlatform(62.5f, 57f);
-            placePlatform(54f, 65f);
+            placePlatform(54f, 64f);
             placePlatform(103f, 72f);
             placePlatform(103f, 82f);
         }
