@@ -114,6 +114,7 @@ public partial class KnightInSilksong : BaseUnityPlugin
                 HeroController.instance.gameObject.FindGameObjectInChildren("HeroBox").SetActive(true);
                 HudCanvas.instance.gameObject.SetActive(true);
             }
+            DialogueBox._instance.hudFSM = HudCanvas.instance.gameObject.LocateMyFSM("Slide Out");
         }
         else
         {
@@ -150,6 +151,7 @@ public partial class KnightInSilksong : BaseUnityPlugin
             {
                 hud_instance.SetActive(true);
             }
+            DialogueBox._instance.hudFSM = hud_instance.LocateMyFSM("Slide Out");
         }
         OnToggleKnight?.Invoke(iskight);
 
