@@ -31,6 +31,7 @@ public partial class KnightInSilksong : BaseUnityPlugin
     public GameObject fury_effect = null;
     public GameObject fury_effect_instance = null;
     public static ConfigEntry<bool> allowLog;
+    public static ConfigEntry<KeyCode> toggleButton;
 
     internal static bool IsKnight => Instance.iskight;
     bool iskight = false;
@@ -52,6 +53,8 @@ public partial class KnightInSilksong : BaseUnityPlugin
     {
         logger = Logger;
         allowLog = Config.Bind<bool>("General", "AllowLog", false);
+        toggleButton = Config.Bind<KeyCode>("General", "ToggleButton", KeyCode.F5);
+
         Instance = this;
         // Put your initialization logic here
         Logger.LogInfo($"Plugin {Name} ({Id}) has loaded!");
@@ -205,8 +208,7 @@ public partial class KnightInSilksong : BaseUnityPlugin
     }
     private void Update()
     {
-
-        if (Input.GetKeyDown(KeyCode.F5))
+        if (Input.GetKeyDown(toggleButton.Value))
         {
             ToggleKnight();
         }
