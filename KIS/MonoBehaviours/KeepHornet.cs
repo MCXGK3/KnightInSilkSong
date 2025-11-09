@@ -30,6 +30,7 @@ internal class KeepHornet : MonoBehaviour
         {
             base.gameObject.FindGameObjectInChildren("Attacks").FindGameObjectInChildren(slash).FindGameObjectInChildren("Clash Tink").tag = "Nail Attack";
         }
+        Hornet.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
 
     }
     private void Update()
@@ -46,5 +47,6 @@ internal class KeepHornet : MonoBehaviour
         box.offset = offset;
         box.size = boxSize;
         Hornet.GetComponent<HeroWaterController>().enabled = true;
+        Hornet.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
     }
 }
