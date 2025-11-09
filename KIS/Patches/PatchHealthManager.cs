@@ -89,3 +89,28 @@ public class Patch_HealthManager_InvincibleFromDirection : GeneralPatch
     {
     }
 }
+
+[HarmonyPatch(typeof(HealthManager), "ApplyDamageScaling", MethodType.Normal)]
+public class Patch_HealthManager_ApplyDamageScaling : GeneralPatch
+{
+    public static bool Prefix(HealthManager __instance, ref HitInstance hitInstance, ref HitInstance __result)
+    {
+
+        if (KnightInSilksong.IsKnight)
+        {
+            if (KnightInSilksong.apply_damage_scaling.Value == false) return true;
+            if ((((int)hitInstance.SpecialType) & KnightInSilksong.KnightDamage) != 0)
+            {
+                int level = (Knight.PlayerData.instance.nailDamage / 4) - 1;
+                float multFromLevel = __instance.damageScaling.GetMultFromLevel(level);
+                hitInstance.DamageDealt = Mathf.RoundToInt((float)hitInstance.DamageDealt * multFromLevel);
+                __result = hitInstance;
+                return false;
+            }
+        }
+        return true;
+    }
+    public static void Postfix(HealthManager __instance, HitInstance hitInstance)
+    {
+    }
+}
