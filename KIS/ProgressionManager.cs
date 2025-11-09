@@ -6,6 +6,10 @@ public class ProgressionManager
 {
     private static GameObject smallPlatform;
 
+    private static int oldKnightHealth = 0;
+    private static int oldKnightMPCharge = 0;
+    private static int knightSoulRemainder = 0;
+
     public static void setup()
     {
         setupPlatform();
@@ -41,40 +45,64 @@ public class ProgressionManager
             placePlatform(32f, 12f);
             placePlatform(72.5f, 47.5f);
             placePlatform(62.5f, 57f);
-            placePlatform(54f, 63f);
+            placePlatform(54f, 65f);
+            placePlatform(103f, 72f);
+            placePlatform(103f, 82f);
         }
+        if (scene == "bone_04")
+            placePlatform(75f, 10f);
         if (scene == "mosstown_01")
             placePlatform(30.5f, 16f);
     }
 
     public static void setProgression()
     {
+        PlayerData hData = PlayerData.instance;
+        Knight.PlayerData kData = Knight.PlayerData.instance;
         // movement
-        Knight.PlayerData.instance.hasDash = PlayerData.instance.hasDash;
-        Knight.PlayerData.instance.canDash = PlayerData.instance.hasDash;
-        Knight.PlayerData.instance.hasWalljump = PlayerData.instance.hasWalljump;
-        Knight.PlayerData.instance.hasDoubleJump = PlayerData.instance.hasDoubleJump;
-        Knight.PlayerData.instance.hasSuperDash = PlayerData.instance.hasHarpoonDash;
+        kData.hasDash = hData.hasDash;
+        kData.canDash = hData.hasDash;
+        kData.hasWalljump = hData.hasWalljump;
+        kData.hasDoubleJump = hData.hasDoubleJump;
+        kData.hasSuperDash = hData.hasHarpoonDash;
 
         // spells
-        if (PlayerData.instance.hasNeedleThrow)
+        if (hData.hasNeedleThrow)
         {
-            Knight.PlayerData.instance.fireballLevel = 1;
+            kData.fireballLevel = 1;
         }
         else
         {
-            Knight.PlayerData.instance.fireballLevel = 0;
+            kData.fireballLevel = 0;
         }
 
         // upgrades
-        Knight.PlayerData.instance.nailDamage = PlayerData.instance.nailDamage;
-        Knight.PlayerData.instance.maxHealth = PlayerData.instance.maxHealth;
-        Knight.PlayerData.instance.MPReserve = PlayerData.instance.silkSpoolParts / 2;
+        kData.nailDamage = hData.nailDamage;
+        kData.maxHealth = hData.maxHealth;
+        kData.MPReserve = hData.silkSpoolParts / 2;
 
         // misc
-        Knight.PlayerData.instance.hasDreamNail = PlayerData.instance.hasNeedolin;
-        Knight.PlayerData.instance.permadeathMode = (int)PlayerData.instance.permadeathMode;
-        Knight.PlayerData.instance.bossRushMode = PlayerData.instance.bossRushMode;
+        kData.hasDreamNail = hData.hasNeedolin;
+        kData.permadeathMode = (int)hData.permadeathMode;
+        kData.bossRushMode = hData.bossRushMode;
 
+        // interesting code for syncing Hornet's and the Knight's health/soul
+        if (kData.health != oldKnightHealth)
+        {
+            Console.WriteLine("CHANGED H HEALTH");
+            hData.health = kData.health;
+        }
+
+        if (kData.MPCharge != oldKnightMPCharge)
+        {
+            hData.silk = kData.MPCharge / 11;
+            knightSoulRemainder = kData.MPCharge % 11;
+        }
+
+        kData.health = hData.health;
+        kData.MPCharge = hData.silk * 11 + knightSoulRemainder;
+
+        oldKnightHealth = kData.health;
+        oldKnightMPCharge = kData.MPCharge;
     }
 }
