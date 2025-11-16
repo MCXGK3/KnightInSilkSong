@@ -1,6 +1,7 @@
 using KIS;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Silksong.FsmUtil;
 
 public class ProgressionManager
 {
@@ -9,6 +10,8 @@ public class ProgressionManager
     private static int oldKnightHealth = 0;
     private static int oldKnightMPCharge = 0;
     private static int knightSoulRemainder = 0;
+
+    private static bool bypassedSilkHeart = false;
 
     public static void setup()
     {
@@ -49,7 +52,10 @@ public class ProgressionManager
         if (scene == "tut_03")
             disableWeaknessCutscene();
         if (scene == "bonetown")
+        {
+            PlayerData.instance.churchKeeperIntro = true;
             disableWeaknessCutscene();
+        }
 
         // platforms
         if (scene == "tut_02")
@@ -69,6 +75,14 @@ public class ProgressionManager
             placePlatform(75f, 10f);
         if (scene == "mosstown_01")
             placePlatform(30.5f, 16f);
+        if (scene == "bone_east_01")
+            placePlatform(11f, 29f);
+        if (scene == "crawl_03")
+            placePlatform(171f, 62f);
+        if (scene == "crawl_01")
+            placePlatform(55f, 51f);
+        if (scene == "aspid_01")
+            placePlatform(57f, 19f);
     }
 
     public static void setProgression()
@@ -119,6 +133,30 @@ public class ProgressionManager
 
         oldKnightHealth = kData.health;
         oldKnightMPCharge = kData.MPCharge;
+
+
+        // fixes
+        if (SceneManager.GetActiveScene().name.ToLower() == "bone_05")
+        {
+            if (!bypassedSilkHeart)
+                bypassedSilkHeart = bypassSilkHeart();
+        }
+        else
+            bypassedSilkHeart = false;
+    }
+
+    private static bool bypassSilkHeart()
+    {
+        GameObject ob = GameObject.Find("Boss Scene");
+
+        if (ob == null)
+            return false;
+
+        PlayMakerFSM fsm = ob.GetFsmPreprocessed("Battle End");
+
+        fsm.ChangeTransition("Idle", "BATTLE END", "End Pause");
+
+        return true;
     }
 
     private static void patchIntroCutscenes()
