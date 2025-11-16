@@ -50,6 +50,9 @@ public partial class KnightInSilksong : BaseUnityPlugin
         }
     }
 
+    // maybe not the best way to do this
+    public static bool shouldToggleKnight = false;
+
     private void Awake()
     {
         logger = Logger;
@@ -215,10 +218,12 @@ public partial class KnightInSilksong : BaseUnityPlugin
     }
     private void Update()
     {
-        if (Input.GetKeyDown(toggleButton.Value))
+        if (Input.GetKeyDown(toggleButton.Value) || shouldToggleKnight)
         {
             ToggleKnight();
             ProgressionManager.setup();
+
+            shouldToggleKnight = false;
         }
         ProgressionManager.setProgression();
 

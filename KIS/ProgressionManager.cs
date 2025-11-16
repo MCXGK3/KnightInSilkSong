@@ -12,6 +12,9 @@ public class ProgressionManager
 
     public static void setup()
     {
+        if (smallPlatform != null)
+            return;
+
         setupPlatform();
         SceneManager.activeSceneChanged += onActiveSceneChanged;
     }
@@ -36,6 +39,19 @@ public class ProgressionManager
     private static void onActiveSceneChanged(Scene from, Scene to)
     {
         String scene = to.name.ToLower();
+
+        // fixes
+        if (scene == "tut_01")
+        {
+            patchIntroCutscenes();
+            disableWeaknessCutscene();
+        }
+        if (scene == "tut_03")
+            disableWeaknessCutscene();
+        if (scene == "bonetown")
+            disableWeaknessCutscene();
+
+        // platforms
         if (scene == "tut_02")
             placePlatform(83.5f, 15f);
         if (scene == "tut_03")
@@ -89,7 +105,6 @@ public class ProgressionManager
         // interesting code for syncing Hornet's and the Knight's health/soul
         if (kData.health != oldKnightHealth)
         {
-            Console.WriteLine("CHANGED H HEALTH");
             hData.health = kData.health;
         }
 
@@ -104,5 +119,26 @@ public class ProgressionManager
 
         oldKnightHealth = kData.health;
         oldKnightMPCharge = kData.MPCharge;
+    }
+
+    private static void patchIntroCutscenes()
+    {
+        if (PlayerData.instance.bindCutscenePlayed == true)
+        {
+            return;
+        }
+        PlayerData.instance.bindCutscenePlayed = true;
+
+        // put knight high up
+        HeroController.instance.transform.position = new Vector2(50f, 30f);
+
+
+        KnightInSilksong.shouldToggleKnight = true;
+    }
+
+    private static void disableWeaknessCutscene()
+    {
+        GameObject weaknessCutscene = GameObject.Find("Weakness Scene");
+        weaknessCutscene.active = false;
     }
 }
