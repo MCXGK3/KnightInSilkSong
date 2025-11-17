@@ -32,6 +32,13 @@ public class Patch_HealthManager_TakeDamage
 {
     public static bool Prefix(HealthManager __instance, ref HitInstance hitInstance)
     {
+        if (KnightInSilksong.IsKnight)
+        {
+            if (((int)hitInstance.SpecialType & KnightInSilksong.KnightDamage) != 0)
+            {
+                __instance.WillAwardJournalKill = true;
+            }
+        }
         return true;
     }
     public static void Postfix(HealthManager __instance, ref HitInstance hitInstance)
