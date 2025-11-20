@@ -433,9 +433,18 @@ public class Patch_HeroController_DownspikeBounce : GeneralPatch
         if (KnightInSilksong.IsKnight)
         {
             Traverse.Create(Knight.HeroController.instance).Method("CancelBounce").GetValue();
+            "ShroomBounce".LogInfo();
+
+            Rigidbody2D rb2d = Knight.HeroController.instance.GetComponent<Rigidbody2D>();
+            if (rb2d.linearVelocity.y == Knight.HeroController.instance.SHROOM_BOUNCE_VELOCITY)
+            {
+                // attempting to detect a shroombounce and not override it
+                // maybe not the best way to do so but this works
+                Knight.HeroController.instance.ShroomBounce();
+                return false;
+            }
             Knight.HeroController.instance.Bounce();
             // Knight.HeroController.instance.ShroomBounce();//shroom or general bounce?
-            "ShroomBounce".LogInfo();
             return false;
         }
         return true;

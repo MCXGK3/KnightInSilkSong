@@ -39,6 +39,17 @@ public class ProgressionManager
         plat.SetActive(true);
     }
 
+    // assumes one exists in the current scene
+    private static void placeBounceBloom(float x, float y, string name)
+    {
+        Vector2 pos = new Vector2(x, y);
+
+        GameObject firstBloom = GameObject.Find(name);
+        GameObject plat = UnityEngine.Object.Instantiate(firstBloom);
+        plat.GetComponent<Transform>().position = pos;
+        plat.SetActive(true);
+    }
+
     private static void onActiveSceneChanged(Scene from, Scene to)
     {
         String scene = to.name.ToLower();
@@ -68,7 +79,7 @@ public class ProgressionManager
             placePlatform(72.5f, 47.5f);
             placePlatform(62.5f, 57f);
             placePlatform(54f, 64f);
-            placePlatform(103f, 72f);
+            placePlatform(103f, 71.5f);
             placePlatform(103f, 82f);
         }
         if (scene == "bone_04")
@@ -83,6 +94,12 @@ public class ProgressionManager
             placePlatform(55f, 51f);
         if (scene == "aspid_01")
             placePlatform(57f, 19f);
+
+        if (scene == "shellwood_03")
+            placeBounceBloom(10f, 21.5f, "Shellwood Bounce Bloom");
+        if (scene == "shellwood_10")
+            placePlatform(65f, 14f);
+
     }
 
     public static void setProgression()
@@ -143,6 +160,9 @@ public class ProgressionManager
         }
         else
             bypassedSilkHeart = false;
+
+        // HeroPerformanceRegion.IsPerforming = true;
+        // HeroPerformanceRegion._instance.SetIsPerforming(true);
     }
 
     private static bool bypassSilkHeart()
