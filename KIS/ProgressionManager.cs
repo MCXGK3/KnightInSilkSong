@@ -2,6 +2,7 @@ using KIS;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Silksong.FsmUtil;
+using HutongGames.PlayMaker;
 
 public class ProgressionManager
 {
@@ -11,7 +12,7 @@ public class ProgressionManager
     private static int oldKnightMPCharge = 0;
     private static int knightSoulRemainder = 0;
 
-    private static bool bypassedSilkHeart = false;
+    private static bool managedFsmChange = false;
 
     public static void setup()
     {
@@ -66,6 +67,10 @@ public class ProgressionManager
         {
             PlayerData.instance.churchKeeperIntro = true;
             disableWeaknessCutscene();
+        }
+        if (scene == "memory_needolin")
+        {
+            managedFsmChange = fixNeedolinEntry();
         }
 
         // platforms
@@ -155,14 +160,38 @@ public class ProgressionManager
         // fixes
         if (SceneManager.GetActiveScene().name.ToLower() == "bone_05")
         {
-            if (!bypassedSilkHeart)
-                bypassedSilkHeart = bypassSilkHeart();
+            if (!managedFsmChange)
+                managedFsmChange = bypassSilkHeart();
+        }
+        else if (SceneManager.GetActiveScene().name.ToLower() == "belltown_shrine")
+        {
+            if (!managedFsmChange)
+                managedFsmChange = bypassHornetBind();
+        }
+        else if (SceneManager.GetActiveScene().name.ToLower() == "memory_needolin")
+        {
+            if (!managedFsmChange)
+                managedFsmChange = fixNeedolinEntry();
         }
         else
-            bypassedSilkHeart = false;
+            managedFsmChange = false;
 
         // HeroPerformanceRegion.IsPerforming = true;
         // HeroPerformanceRegion._instance.SetIsPerforming(true);
+    }
+
+    private static bool bypassHornetBind()
+    {
+        GameObject ob = GameObject.Find("Spinner Boss");
+
+        if (ob == null)
+            return false;
+
+        PlayMakerFSM fsm = ob.GetFsmPreprocessed("Control");
+
+        fsm.ChangeTransition("Death Stagger", "FINISHED", "Fade");
+
+        return true;
     }
 
     private static bool bypassSilkHeart()
@@ -175,6 +204,32 @@ public class ProgressionManager
         PlayMakerFSM fsm = ob.GetFsmPreprocessed("Battle End");
 
         fsm.ChangeTransition("Idle", "BATTLE END", "End Pause");
+
+        return true;
+    }
+
+    private static bool fixNeedolinEntry()
+    {
+        GameObject ob = GameObject.Find("door_wakeOnGround");
+
+        if (ob == null)
+            return false;
+
+        PlayMakerFSM fsm = ob.GetFsmPreprocessed("Wake Up");
+
+        FsmState state = fsm.GetState("Fade Screen");
+
+        try {
+            state.ChangeTransition("FINISHED", "Fade Up");
+
+            // there is something else wrong here
+            // the fader is still making the screen black otherwise
+            ScreenFaderUtils.SetColour(new Color(0f, 0f, 0f, 0f));
+            PlayerData.instance.hasNeedolin = true;
+        }
+        catch {
+            return false;
+        }
 
         return true;
     }
