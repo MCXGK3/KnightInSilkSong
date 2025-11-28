@@ -56,6 +56,9 @@ public class ProgressionManager
         String scene = to.name.ToLower();
         managedFsmChange = false;
 
+        if (PlayerData.instance.hasHarpoonDash)
+            makeHarpoonRingsPogoable();
+
         // fixes
         if (scene == "tut_01")
         {
@@ -107,6 +110,8 @@ public class ProgressionManager
             placePlatform(77f, 8f);
         if (scene == "under_17")
             placePlatform(7f, 7f);
+        if (scene == "hang_01")
+            moveHang01RingDown();
 
     }
 
@@ -183,6 +188,16 @@ public class ProgressionManager
         }
         else
             managedFsmChange = false;
+    }
+
+    private static void makeHarpoonRingsPogoable()
+    {
+        GameObject[] allRings = GameObject.FindGameObjectsWithTag("Harpoon Ring");
+
+        foreach (GameObject ring in allRings)
+        {
+            ring.RemoveComponent<NonBouncer>();
+        }
     }
 
     private static bool bypassHornetBind()
@@ -297,5 +312,14 @@ public class ProgressionManager
             return;
 
         pickup.transform.localPosition = new Vector2(pickup.transform.position.x, 3.6264f);
+    }
+
+    private static void moveHang01RingDown()
+    {
+        GameObject ring = GameObject.Find("Harpoon Ring Citadel (1)");
+        if (ring == null)
+            return;
+
+        ring.transform.localPosition = new Vector2(ring.transform.position.x, 18.3f);
     }
 }
