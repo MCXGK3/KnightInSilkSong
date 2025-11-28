@@ -54,6 +54,7 @@ public class ProgressionManager
     private static void onActiveSceneChanged(Scene from, Scene to)
     {
         String scene = to.name.ToLower();
+        managedFsmChange = false;
 
         // fixes
         if (scene == "tut_01")
@@ -68,10 +69,8 @@ public class ProgressionManager
             PlayerData.instance.churchKeeperIntro = true;
             disableWeaknessCutscene();
         }
-        if (scene == "memory_needolin")
-        {
-            managedFsmChange = fixNeedolinEntry();
-        }
+        if (scene == "library_10")
+            movePsalmCylinderDown();
 
         // platforms
         if (scene == "tut_02")
@@ -104,6 +103,10 @@ public class ProgressionManager
             placeBounceBloom(10f, 21.5f, "Shellwood Bounce Bloom");
         if (scene == "shellwood_10")
             placePlatform(65f, 14f);
+        if (scene == "shellwood_13")
+            placePlatform(77f, 8f);
+        if (scene == "under_17")
+            placePlatform(7f, 7f);
 
     }
 
@@ -161,12 +164,17 @@ public class ProgressionManager
         if (SceneManager.GetActiveScene().name.ToLower() == "bone_05")
         {
             if (!managedFsmChange)
-                managedFsmChange = bypassSilkHeart();
+                managedFsmChange = bypassSilkHeartBeast();
+        }
+        if (SceneManager.GetActiveScene().name.ToLower() == "song_tower_01")
+        {
+            if (!managedFsmChange)
+                managedFsmChange = bypassSilkHeartLace();
         }
         else if (SceneManager.GetActiveScene().name.ToLower() == "belltown_shrine")
         {
             if (!managedFsmChange)
-                managedFsmChange = bypassHornetBind();
+                managedFsmChange = bypassHornetBind() && fixNeedolinExit();
         }
         else if (SceneManager.GetActiveScene().name.ToLower() == "memory_needolin")
         {
@@ -175,9 +183,6 @@ public class ProgressionManager
         }
         else
             managedFsmChange = false;
-
-        // HeroPerformanceRegion.IsPerforming = true;
-        // HeroPerformanceRegion._instance.SetIsPerforming(true);
     }
 
     private static bool bypassHornetBind()
@@ -194,7 +199,7 @@ public class ProgressionManager
         return true;
     }
 
-    private static bool bypassSilkHeart()
+    private static bool bypassSilkHeartBeast()
     {
         GameObject ob = GameObject.Find("Boss Scene");
 
@@ -204,6 +209,22 @@ public class ProgressionManager
         PlayMakerFSM fsm = ob.GetFsmPreprocessed("Battle End");
 
         fsm.ChangeTransition("Idle", "BATTLE END", "End Pause");
+
+        return true;
+    }
+
+    private static bool bypassSilkHeartLace()
+    {
+        GameObject ob = GameObject.Find("Silk Heart");
+
+        if (ob == null)
+            return false;
+
+        // only gets here once the silk heart is active
+        GameObject gate = GameObject.Find("song_tower_right_gate");
+
+        gate.GetComponent<Gate>().Open();
+
 
         return true;
     }
@@ -234,6 +255,20 @@ public class ProgressionManager
         return true;
     }
 
+    public static bool fixNeedolinExit()
+    {
+        GameObject ob = GameObject.Find("door_wakeOnGround");
+
+        if (ob == null)
+            return false;
+
+        PlayMakerFSM fsm = ob.GetFsmPreprocessed("Wake Up");
+
+        fsm.DisableAction("Get Up", 1);
+
+        return true;
+    }
+
     private static void patchIntroCutscenes()
     {
         if (PlayerData.instance.bindCutscenePlayed == true)
@@ -253,5 +288,14 @@ public class ProgressionManager
     {
         GameObject weaknessCutscene = GameObject.Find("Weakness Scene");
         weaknessCutscene.active = false;
+    }
+
+    private static void movePsalmCylinderDown()
+    {
+        GameObject pickup = GameObject.Find("Collectable Item Pickup - Melody");
+        if (pickup == null)
+            return;
+
+        pickup.transform.localPosition = new Vector2(pickup.transform.position.x, 3.6264f);
     }
 }
