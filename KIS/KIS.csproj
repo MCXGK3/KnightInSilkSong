@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <!-- 
+  <!--
   Imports silksong path properties only if present in order to allow CI builds. The file should be gitignored.
   If you are checking out from git and need to create a new one, you can use `dotnet new silksongpath` to generate one.
   -->
@@ -16,7 +16,6 @@
       <!--Allow access of private members at runtime.-->
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <ModName>KnightInSilkSong</ModName>
-    <PublishFolder>E:\Github_Projects\Mod\SS</PublishFolder>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -29,14 +28,15 @@
     <PackageReference Include="BepInEx.Analyzers" Version="1.0.8" PrivateAssets="all" />
     <PackageReference Include="BepInEx.Core" Version="5.4.21" />
     <PackageReference Include="Hamunii.BepInEx.AutoPlugin" Version="2.0.1" PrivateAssets="all" />
+    <PackageReference Include="Silksong.FsmUtil" Version="0.3.1" />
     <PackageReference Include="UnityEngine.Modules" Version="6000.0.50" IncludeAssets="compile" />
     <!--If you're unable resolve this dependency, check that you're using the nuget v3 package feed instead of v2.-->
     <PackageReference Include="Silksong.GameLibs" Version="*-*" />
-    <EmbeddedResource Include="Resources\*" />
+    <EmbeddedResource Include="Resources/*" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Knight\Knight.csproj" />
+    <ProjectReference Include="../Knight/Knight.csproj" />
   </ItemGroup>
   <ItemGroup>
           <Binaries Include="$(TargetPath)" />
@@ -44,7 +44,7 @@
       </ItemGroup>
 
   <Target Name="CopyMod" AfterTargets="PostBuildEvent" Condition="'$(SilksongFolder)' != ''">
-      
+
 
       <Copy SourceFiles="@(Binaries)" DestinationFolder="$(SilksongFolder)/BepInEx/plugins/$(ModName)" />
       <Copy SourceFiles="../ReadMe.md" DestinationFolder="$(SilksongFolder)/BepInEx/plugins/$(ModName)" />
@@ -53,8 +53,6 @@
       <ItemGroup>
           <Package Include="../ReadMe.md" />
           <Package Include="../CHANGELOG.md" />
-          <Package Include="../manifest.json" />
-          <Package Include="../icon.png" /> 
       </ItemGroup>
 
       <Copy SourceFiles="@(Binaries)" DestinationFolder="$(PublishFolder)/$(ModName)/ThunderStore" />

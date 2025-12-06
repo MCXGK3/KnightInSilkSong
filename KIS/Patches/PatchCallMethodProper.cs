@@ -169,6 +169,14 @@ class PatchDoMethodCall : GeneralPatch
                     __instance.Finish();
                     return;
                 }
+                else if (__instance.methodName.value == "GetEntryGateName")
+                {
+                    string result = GameManager.instance.GetEntryGateName();
+                    __instance.storeResult.SetValue(result);
+                    __instance.Finish();
+
+                    return;
+                }
             }
             if (__instance.behaviour.value == "GameManager")
             {

@@ -362,6 +362,21 @@ public class Patch_HeroController_RecoilRight : GeneralPatch
     {
     }
 }
+[HarmonyPatch(typeof(HeroController))]
+[HarmonyPatch("RecoilRightLong")]
+public class Patch_HeroController_RecoilRightLong : GeneralPatch
+{
+    static bool Prefix()
+    {
+        if (KnightInSilksong.IsKnight)
+        {
+            Knight.HeroController.instance.RecoilRightLong();
+            return false;
+        }
+        return true;
+    }
+    public static void Postfix() {}
+}
 [HarmonyPatch(typeof(HeroController), "RecoilLeft", MethodType.Normal)]
 public class Patch_HeroController_RecoilLeft : GeneralPatch
 {
@@ -370,6 +385,22 @@ public class Patch_HeroController_RecoilLeft : GeneralPatch
         if (KnightInSilksong.IsKnight)
         {
             Knight.HeroController.instance.RecoilLeft();
+            return false;
+        }
+        return true;
+    }
+    public static void Postfix(HeroController __instance)
+    {
+    }
+}
+[HarmonyPatch(typeof(HeroController), "RecoilLeftLong", MethodType.Normal)]
+public class Patch_HeroController_RecoilLeftLong : GeneralPatch
+{
+    public static bool Prefix(HeroController __instance)
+    {
+        if (KnightInSilksong.IsKnight)
+        {
+            Knight.HeroController.instance.RecoilLeftLong();
             return false;
         }
         return true;
@@ -402,9 +433,18 @@ public class Patch_HeroController_DownspikeBounce : GeneralPatch
         if (KnightInSilksong.IsKnight)
         {
             Traverse.Create(Knight.HeroController.instance).Method("CancelBounce").GetValue();
+            "ShroomBounce".LogInfo();
+
+            Rigidbody2D rb2d = Knight.HeroController.instance.GetComponent<Rigidbody2D>();
+            if (rb2d.linearVelocity.y == Knight.HeroController.instance.SHROOM_BOUNCE_VELOCITY)
+            {
+                // attempting to detect a shroombounce and not override it
+                // maybe not the best way to do so but this works
+                Knight.HeroController.instance.ShroomBounce();
+                return false;
+            }
             Knight.HeroController.instance.Bounce();
             // Knight.HeroController.instance.ShroomBounce();//shroom or general bounce?
-            "ShroomBounce".LogInfo();
             return false;
         }
         return true;

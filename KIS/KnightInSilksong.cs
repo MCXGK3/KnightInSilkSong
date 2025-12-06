@@ -14,6 +14,7 @@ namespace KIS;
 
 // TODO - adjust the plugin guid as needed
 [BepInAutoPlugin(id: "io.github.shownyoung.knightinsilksong")]
+[BepInDependency("org.silksong-modding.fsmutil")]
 public partial class KnightInSilksong : BaseUnityPlugin
 {
     internal static KnightInSilksong Instance = null;
@@ -49,6 +50,9 @@ public partial class KnightInSilksong : BaseUnityPlugin
             return master;
         }
     }
+
+    // maybe not the best way to do this
+    public static bool shouldToggleKnight = false;
 
     private void Awake()
     {
@@ -215,10 +219,14 @@ public partial class KnightInSilksong : BaseUnityPlugin
     }
     private void Update()
     {
-        if (Input.GetKeyDown(toggleButton.Value))
+        if (Input.GetKeyDown(toggleButton.Value) || shouldToggleKnight)
         {
             ToggleKnight();
+            ProgressionManager.setup();
+
+            shouldToggleKnight = false;
         }
+        ProgressionManager.setProgression();
 
     }
     private void OnApplicationQuit()
