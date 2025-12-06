@@ -16,16 +16,11 @@ public class Patch_CheckHeroPerformanceRegionBase_DoAction : GeneralPatch
         GameObject knight = Knight.HeroController.instance.gameObject;
         PlayMakerFSM dnailFsm = knight.GetComponent<PlayMakerFixedUpdate>().playMakerFSMs[6];
 
-        if (dnailFsm.ActiveStateName != "Inactive")
+        if (dnailFsm.ActiveStateName == "Slash")
         {
             HeroPerformanceRegion.IsPerforming = true;
             __instance.delay = 0.001f;
         }
-        if (dnailFsm.ActiveStateName == "Slash")
-            __instance.delay = 0.001f;
-        else
-        {
-            HeroPerformanceRegion.IsPerforming = false;
-        }
     }
 }
+
