@@ -104,13 +104,16 @@ namespace KIS
             // Health cycle
             if (Input.GetKeyDown(module.HealthKey))
             {
-                PD.maxHealth = (PD.maxHealth < 5 || PD.maxHealth >= 9) ? 5 : PD.maxHealth + 1;
-                PD.health = PD.maxHealth;
+                // Cycle max health between 5 and 9
+                int nextMaxHealth = (PD.maxHealth < 5 || PD.maxHealth >= 9)
+                    ? 5
+                    : PD.maxHealth + 1;
 
-                ("Max health set to " + PD.maxHealth + " (current " + PD.health + ")").LogInfo();
-
-                // small hack for refreshing HUD but might not be working
-                HeroController.instance.AddHealth(0);
+                // Apply consistently to all relevant fields
+                PD.maxHealth = nextMaxHealth;
+                PD.maxHealthBase = nextMaxHealth;
+                PD.prevHealth = nextMaxHealth;
+                PD.health = nextMaxHealth;
             }
 
             // Nail damage cycle (H)
@@ -121,9 +124,6 @@ namespace KIS
                 PD.nailDamage = (idx == -1 || idx == cycle.Length - 1) ? cycle[0] : cycle[idx + 1];
 
                 ("Nail damage set to " + PD.nailDamage).LogInfo();
-
-                // small hack for refreshing HUD but might not be working
-                HeroController.instance.AddHealth(0);
             }
 
             // Fireball cycle (J)
@@ -137,4 +137,5 @@ namespace KIS
         }
     }
 }
+
 
