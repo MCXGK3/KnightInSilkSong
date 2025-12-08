@@ -42,4 +42,4 @@ It allows you to switch between the Knight and Hornet in the game.\
 | Under certain circumstances, The Knight's HUD might not appear. Opening and closing the Inventory should restore it. | | Yes |
 | Under certain circumstances, Weaverlings or Grimmchild might instantly kill enemies, potentially causing softlocks. Please use them with discretion. | #25 |  |
 | Under certain circumstances, The Knight might not play the corresponding animation or Hornet's animation might appear instead. This is a normal phenomenon; please ignore it. | | Yes |
-| When dying and respawning the health of the knight resets back to 9 | | | 
+| When dying and respawning the health of the knight resets back to 9 | | Yes | 
