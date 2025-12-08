@@ -26,6 +26,8 @@ It allows you to switch between the Knight and Hornet in the game.\
 在游戏中，按下你所设下的切换键（默认为F5）来进行小骑士与大黄蜂间的切换。
 3. To adjust the status of the knight (such as nail damage, etc.), you can modify the 'PlayerData.json' file in the same directory of the mod (which appears after playing once), and other settings (such as damage modifier, etc.) can be modified by editing 'Hollow Knight SilksongBepInExconfigio.github.shownyoung.knightinsilksong.cfg'.\
 要对小骑士的状态（如骨钉伤害等）进行调整，可以修改mod同目录下的`PlayerData.json`文件（游玩一次后出现），其他设置（如伤害修正等）可以修改`Hollow Knight Silksong\BepInEx\config\io.github.shownyoung.knightinsilksong.cfg`来完成。
+3.5 NEW To adjust the status of the knight you can now also use hotkeys (configurable with BeplnEx). For health or naildamage please refresh by switching back and forth to Hornet to update the knight's status and register the changes in health or naildamage .\
+要对小骑士的状态进行调整，现在也可以使用快捷键（可通过 BepInEx 配置）。 对于生命值或骨钉伤害，请通过在小骑士与大黄蜂之间来回切换来刷新，以更新小骑士的状态并注册生命值或骨钉伤害的变化。
 
 ## List of Known issues
 
@@ -40,3 +42,4 @@ It allows you to switch between the Knight and Hornet in the game.\
 | Under certain circumstances, The Knight's HUD might not appear. Opening and closing the Inventory should restore it. | | Yes |
 | Under certain circumstances, Weaverlings or Grimmchild might instantly kill enemies, potentially causing softlocks. Please use them with discretion. | #25 |  |
 | Under certain circumstances, The Knight might not play the corresponding animation or Hornet's animation might appear instead. This is a normal phenomenon; please ignore it. | | Yes |
+| When dying and respawning the health of the knight resets back to 9 | | | 
