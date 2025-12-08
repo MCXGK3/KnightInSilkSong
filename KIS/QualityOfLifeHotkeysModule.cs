@@ -105,7 +105,7 @@ namespace KIS
             if (Input.GetKeyDown(module.HealthKey))
             {
                 PD.maxHealth = (PD.maxHealth < 5 || PD.maxHealth >= 9) ? 5 : PD.maxHealth + 1;
-                if (PD.health > PD.maxHealth) PD.health = PD.maxHealth;
+                PD.health = PD.maxHealth;
 
                 ("Max health set to " + PD.maxHealth + " (current " + PD.health + ")").LogInfo();
 
@@ -137,3 +137,4 @@ namespace KIS
         }
     }
 }
+
