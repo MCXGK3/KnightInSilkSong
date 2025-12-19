@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Silksong.FsmUtil;
 using HutongGames.PlayMaker;
+using HutongGames.PlayMaker.Actions;
 
 public class ProgressionManager
 {
@@ -91,6 +92,13 @@ public class ProgressionManager
         }
         if (scene == "bone_04")
             placePlatform(75f, 10f);
+        if (scene == "bone_08")
+        {
+            placePlatform(19.5f, 25f);
+            placePlatform(13.5f, 39f);
+            placePlatform(11f, 44f);
+            placePlatform(14.7f, 53.5f);
+        }
         if (scene == "mosstown_01")
             placePlatform(30.5f, 16f);
         if (scene == "bone_east_01")
@@ -179,12 +187,17 @@ public class ProgressionManager
         else if (SceneManager.GetActiveScene().name.ToLower() == "belltown_shrine")
         {
             if (!managedFsmChange)
-                managedFsmChange = bypassHornetBind() && fixNeedolinExit();
+                managedFsmChange = bypassHornetBind();
         }
         else if (SceneManager.GetActiveScene().name.ToLower() == "memory_needolin")
         {
+            // if (!managedFsmChange)
+            //     managedFsmChange = fixNeedolinEntry();
+        }
+        else if (SceneManager.GetActiveScene().name.ToLower() == "cradle_03")
+        {
             if (!managedFsmChange)
-                managedFsmChange = fixNeedolinEntry();
+                managedFsmChange = bypassCinematicEndingA();
         }
         else
             managedFsmChange = false;
@@ -244,6 +257,32 @@ public class ProgressionManager
         return true;
     }
 
+    private static bool bypassCinematicEndingA()
+    {
+        GameObject ob = GameObject.Find("Death Sequence");
+
+        if (ob == null)
+            return false;
+
+        PlayMakerFSM fsm = ob.GetFsmPreprocessed("Control");
+
+        CallMethodProper action = fsm.GetAction<CallMethodProper>("To End Cinematic A", 5);
+
+        action.parameters[0].SetValue("End_Credits");
+
+        if (fsm.ActiveStateName == "Bind Burst 4")
+        {
+            // back to hornet
+            if (KnightInSilksong.IsKnight)
+                KnightInSilksong.shouldToggleKnight = true;
+
+            Console.WriteLine("AAAAAAAAAAAAA");
+            return true;
+        }
+
+        return false;
+    }
+
     private static bool fixNeedolinEntry()
     {
         GameObject ob = GameObject.Find("door_wakeOnGround");
@@ -266,20 +305,6 @@ public class ProgressionManager
         catch {
             return false;
         }
-
-        return true;
-    }
-
-    public static bool fixNeedolinExit()
-    {
-        GameObject ob = GameObject.Find("door_wakeOnGround");
-
-        if (ob == null)
-            return false;
-
-        PlayMakerFSM fsm = ob.GetFsmPreprocessed("Wake Up");
-
-        fsm.DisableAction("Get Up", 1);
 
         return true;
     }
