@@ -130,19 +130,34 @@ public class ProgressionManager
         // movement
         kData.hasDash = hData.hasDash;
         kData.canDash = hData.hasDash;
+        kData.canShadowDash = false;
+        kData.hasShadowDash = false;
         kData.hasWalljump = hData.hasWalljump;
         kData.hasDoubleJump = hData.hasDoubleJump;
-        kData.hasSuperDash = hData.hasHarpoonDash;
+        kData.hasSuperDash = hData.hasBrolly;
 
         // spells
-        if (hData.hasNeedleThrow)
-        {
+        if (hData.hasSilkCharge)
+            kData.fireballLevel = 2;
+        else if (hData.hasNeedleThrow)
             kData.fireballLevel = 1;
-        }
         else
-        {
             kData.fireballLevel = 0;
-        }
+
+        if (hData.hasSilkBossNeedle)
+            kData.quakeLevel = 2;
+        else if (hData.hasParry)
+            kData.quakeLevel = 1;
+        else
+            kData.quakeLevel = 0;
+
+        if (hData.hasSilkBomb)
+            kData.screamLevel = 2;
+        else if (hData.hasThreadSphere)
+            kData.screamLevel = 1;
+        else
+            kData.screamLevel = 0;
+
 
         // upgrades
         kData.nailDamage = hData.nailDamage;
@@ -151,8 +166,15 @@ public class ProgressionManager
 
         // misc
         kData.hasDreamNail = hData.hasNeedolin;
+        kData.hasDreamGate = hData.UnlockedFastTravelTeleport;
         kData.permadeathMode = (int)hData.permadeathMode;
         kData.bossRushMode = hData.bossRushMode;
+        kData.salubraBlessing = hData.HasBoundCrestUpgrader;
+
+        kData.hasCyclone = hData.hasChargeSlash;
+        kData.hasDashSlash = hData.hasChargeSlash;
+        kData.hasUpwardSlash = hData.hasChargeSlash;
+        kData.hasNailArt = hData.hasChargeSlash;
 
         // interesting code for syncing Hornet's and the Knight's health/soul
         if (kData.health != oldKnightHealth)
