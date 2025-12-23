@@ -136,7 +136,6 @@ public class Patch_HeroController_LeaveScene : GeneralPatch
                 gate.LogInfo();
             }
             Knight.HeroController.instance.LeaveScene(gate);
-            return false;
         }
         return true;
     }
