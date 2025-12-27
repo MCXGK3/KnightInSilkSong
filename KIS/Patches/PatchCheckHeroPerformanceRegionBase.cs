@@ -14,7 +14,7 @@ public class Patch_CheckHeroPerformanceRegionBase_DoAction : GeneralPatch
             return;
 
         GameObject knight = Knight.HeroController.instance.gameObject;
-        PlayMakerFSM dnailFsm = knight.GetComponent<PlayMakerFixedUpdate>().playMakerFSMs[6];
+        PlayMakerFSM dnailFsm = knight.LocateMyFSM("Dream Nail");
 
         if (dnailFsm.ActiveStateName == "Slash")
         {
