@@ -1,6 +1,7 @@
 using Knight;
 using KIS;
 using GlobalEnums;
+
 [HarmonyPatch(typeof(Knight.HeroController), "LocateSpawnPoint", MethodType.Normal)]
 public class Patch_HeroController_LocateSpawnPoint : GeneralPatch
 {

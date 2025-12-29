@@ -114,3 +114,4 @@ public class Patch_HealthManager_ApplyDamageScaling : GeneralPatch
     {
     }
 }
+

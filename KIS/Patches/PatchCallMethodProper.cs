@@ -177,6 +177,13 @@ class PatchDoMethodCall : GeneralPatch
 
                     return;
                 }
+                else if (__instance.methodName.value == "AddSilk")
+                {
+                    Knight.HeroController.instance.AddMPCharge(__instance.parameters[0].intValue * 9);
+                    __instance.Finish();
+
+                    return;
+                }
             }
             if (__instance.behaviour.value == "GameManager")
             {
