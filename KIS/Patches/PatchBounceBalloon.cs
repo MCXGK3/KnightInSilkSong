@@ -14,8 +14,4 @@ public class Patch_BounceBallon_RaiseMovement : GeneralPatch
         }
         return true;
     }
-
-    public static void Postfix(BounceBalloon __instance)
-    {
-    }
 }

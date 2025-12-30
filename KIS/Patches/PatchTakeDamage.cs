@@ -30,7 +30,4 @@ public class Patch_TakeDamage_OnEnter : GeneralPatch
         }
         return true;
     }
-    public static void Postfix(TakeDamage __instance)
-    {
-    }
 }

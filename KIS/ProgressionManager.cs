@@ -202,11 +202,6 @@ public class ProgressionManager
             if (!managedFsmChange)
                 managedFsmChange = bypassSilkHeartLace();
         }
-        else if (SceneManager.GetActiveScene().name.ToLower() == "memory_needolin")
-        {
-            // if (!managedFsmChange)
-            //     managedFsmChange = fixNeedolinEntry();
-        }
         else if (SceneManager.GetActiveScene().name.ToLower() == "cradle_03")
         {
             if (!managedFsmChange)
@@ -265,32 +260,6 @@ public class ProgressionManager
         }
 
         return false;
-    }
-
-    private static bool fixNeedolinEntry()
-    {
-        GameObject ob = GameObject.Find("door_wakeOnGround");
-
-        if (ob == null)
-            return false;
-
-        PlayMakerFSM fsm = ob.GetFsm("Wake Up");
-
-        FsmState state = fsm.GetState("Fade Screen");
-
-        try {
-            state.ChangeTransition("FINISHED", "Fade Up");
-
-            // there is something else wrong here
-            // the fader is still making the screen black otherwise
-            ScreenFaderUtils.SetColour(new Color(0f, 0f, 0f, 0f));
-            PlayerData.instance.hasNeedolin = true;
-        }
-        catch {
-            return false;
-        }
-
-        return true;
     }
 
     private static void patchIntroCutscenes()

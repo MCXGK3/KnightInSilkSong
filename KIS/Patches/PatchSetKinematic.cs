@@ -4,10 +4,6 @@ using KIS;
 [HarmonyPatch(typeof(SetIsKinematic2d), "DoSetIsKinematic", MethodType.Normal)]
 public class Patch_SetIsKinematic2d_DoSetIsKinematic //: GeneralPatch
 {
-    public static bool Prefix(SetIsKinematic2d __instance)
-    {
-        return true;
-    }
     public static void Postfix(SetIsKinematic2d __instance)
     {
         if (KnightInSilksong.IsKnight)

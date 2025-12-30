@@ -18,3 +18,4 @@ public class Patch_CheckHeroPerformanceRegion_SendEvents : GeneralPatch
         return true;
     }
 }
+

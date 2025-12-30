@@ -21,7 +21,4 @@ public class Patch_Tk2dWatchAnimationEvents_OnUpdate : GeneralPatch
         }
         return true;
     }
-    public static void Postfix(Tk2dWatchAnimationEvents __instance)
-    {
-    }
 }

@@ -37,10 +37,8 @@ public class Patch_ConveyorZone_OnTriggerEnter2D : GeneralPatch
         }
         return true;
     }
-    public static void Postfix(ConveyorZone __instance, Collider2D collision)
-    {
-    }
 }
+
 [HarmonyPatch(typeof(ConveyorZone), "OnTriggerExit2D", MethodType.Normal)]
 public class Patch_ConveyorZone_OnTriggerExit2D : GeneralPatch
 {
@@ -69,10 +67,8 @@ public class Patch_ConveyorZone_OnTriggerExit2D : GeneralPatch
         }
         return true;
     }
-    public static void Postfix(ConveyorZone __instance, Collider2D collision)
-    {
-    }
 }
+
 [HarmonyPatch(typeof(ConveyorZone), "OnDisable", MethodType.Normal)]
 public class Patch_ConveyorZone_OnDisable : GeneralPatch
 {
@@ -104,7 +100,5 @@ public class Patch_ConveyorZone_OnDisable : GeneralPatch
         }
         return true;
     }
-    public static void Postfix(ConveyorZone __instance)
-    {
-    }
 }
+
