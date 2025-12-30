@@ -1,9 +1,11 @@
 using KIS;
+using KIS.Utils;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Silksong.FsmUtil;
 using HutongGames.PlayMaker;
 using HutongGames.PlayMaker.Actions;
+
+namespace KIS;
 
 public class ProgressionManager
 {
@@ -120,7 +122,6 @@ public class ProgressionManager
             placePlatform(7f, 7f);
         if (scene == "hang_01")
             moveHang01RingDown();
-
     }
 
     public static void setProgression()
@@ -196,20 +197,10 @@ public class ProgressionManager
 
 
         // fixes
-        if (SceneManager.GetActiveScene().name.ToLower() == "bone_05")
-        {
-            if (!managedFsmChange)
-                managedFsmChange = bypassSilkHeartBeast();
-        }
         if (SceneManager.GetActiveScene().name.ToLower() == "song_tower_01")
         {
             if (!managedFsmChange)
                 managedFsmChange = bypassSilkHeartLace();
-        }
-        else if (SceneManager.GetActiveScene().name.ToLower() == "belltown_shrine")
-        {
-            if (!managedFsmChange)
-                managedFsmChange = bypassHornetBind();
         }
         else if (SceneManager.GetActiveScene().name.ToLower() == "memory_needolin")
         {
@@ -235,34 +226,6 @@ public class ProgressionManager
         }
     }
 
-    private static bool bypassHornetBind()
-    {
-        GameObject ob = GameObject.Find("Spinner Boss");
-
-        if (ob == null)
-            return false;
-
-        PlayMakerFSM fsm = ob.GetFsmPreprocessed("Control");
-
-        fsm.ChangeTransition("Death Stagger", "FINISHED", "Fade");
-
-        return true;
-    }
-
-    private static bool bypassSilkHeartBeast()
-    {
-        GameObject ob = GameObject.Find("Boss Scene");
-
-        if (ob == null)
-            return false;
-
-        PlayMakerFSM fsm = ob.GetFsmPreprocessed("Battle End");
-
-        fsm.ChangeTransition("Idle", "BATTLE END", "End Pause");
-
-        return true;
-    }
-
     private static bool bypassSilkHeartLace()
     {
         GameObject ob = GameObject.Find("Silk Heart");
@@ -286,7 +249,7 @@ public class ProgressionManager
         if (ob == null)
             return false;
 
-        PlayMakerFSM fsm = ob.GetFsmPreprocessed("Control");
+        PlayMakerFSM fsm = ob.GetFsm("Control");
 
         CallMethodProper action = fsm.GetAction<CallMethodProper>("To End Cinematic A", 5);
 
@@ -298,7 +261,6 @@ public class ProgressionManager
             if (KnightInSilksong.IsKnight)
                 KnightInSilksong.shouldToggleKnight = true;
 
-            Console.WriteLine("AAAAAAAAAAAAA");
             return true;
         }
 
@@ -312,7 +274,7 @@ public class ProgressionManager
         if (ob == null)
             return false;
 
-        PlayMakerFSM fsm = ob.GetFsmPreprocessed("Wake Up");
+        PlayMakerFSM fsm = ob.GetFsm("Wake Up");
 
         FsmState state = fsm.GetState("Fade Screen");
 

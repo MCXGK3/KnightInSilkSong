@@ -57,7 +57,7 @@ class PatchCallMethodProper : GeneralPatch
 
         if (__instance.cachedMethodInfo == null)
         {
-            __instance.errorString = __instance.errorString + "Method Name is invalid: " + __instance.methodName.Value + "\n";
+            __instance.errorString = $"{__instance.errorString} CallMethodProper Method Name is invalid: {__instance.behaviour.Value}::{__instance.methodName.Value}\n";
         }
         else
         {
@@ -149,6 +149,10 @@ class PatchDoMethodCall : GeneralPatch
                     Knight.PlayerData.instance.isInvincible = temp_inv;
                     __instance.Finish();
                     return;
+                }
+                else if (__instance.methodName.value == "CancelDamageRecoilSimple")
+                {
+                    __instance.methodName.value = "CancelDamageRecoil";
                 }
                 else if (__instance.methodName.value == "WillDoBellBindHit")
                 {

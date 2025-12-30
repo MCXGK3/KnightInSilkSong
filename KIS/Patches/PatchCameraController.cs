@@ -1,3 +1,6 @@
+using KIS;
+using KIS.Utils;
+
 [HarmonyPatch(typeof(CameraController), "DoPositionToHero", MethodType.Normal)]
 public class Patch_CameraController_DoPositionToHero : GeneralPatch
 {

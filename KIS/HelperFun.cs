@@ -118,5 +118,5 @@ public static class HelperFun
         if (KnightInSilksong.allowLog.Value)
             KnightInSilksong.logger.LogFatal(msg);
     }
-
 }
+

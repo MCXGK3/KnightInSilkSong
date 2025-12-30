@@ -14,7 +14,6 @@ namespace KIS;
 
 // TODO - adjust the plugin guid as needed
 [BepInAutoPlugin(id: "io.github.shownyoung.knightinsilksong")]
-[BepInDependency("org.silksong-modding.fsmutil")]
 public partial class KnightInSilksong : BaseUnityPlugin
 {
     internal static KnightInSilksong Instance = null;
