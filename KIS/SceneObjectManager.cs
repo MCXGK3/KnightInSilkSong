@@ -32,6 +32,13 @@ public class SceneObjectManager
         Scene scene = SceneManager.GetSceneByName(sceneName);
         Console.WriteLine($"Scene {scene.name} successfully loaded");
 
+        GameObject sceneManagerToDisable = SceneObjectManager.findObjectInScene(scene, "_SceneManager");
+
+        if (sceneManagerToDisable != null)
+        {
+            sceneManagerToDisable.SetActive(false);
+        }
+
         GameObject go = SceneObjectManager.findObjectInScene(scene, objectToRetrieve);
         go_copy = GameObject.Instantiate(go);
         GameObject.DontDestroyOnLoad(go_copy);
