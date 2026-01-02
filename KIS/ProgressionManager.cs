@@ -59,9 +59,6 @@ public class ProgressionManager
         String scene = to.name.ToLower();
         managedFsmChange = false;
 
-        if (PlayerData.instance.hasHarpoonDash)
-            makeHarpoonRingsPogoable();
-
         // fixes
         if (scene == "tut_01")
         {
@@ -205,20 +202,10 @@ public class ProgressionManager
         else if (SceneManager.GetActiveScene().name.ToLower() == "cradle_03")
         {
             if (!managedFsmChange)
-                managedFsmChange = bypassCinematicEndingA();
+                managedFsmChange = fixEndSequence();
         }
         else
             managedFsmChange = false;
-    }
-
-    private static void makeHarpoonRingsPogoable()
-    {
-        GameObject[] allRings = GameObject.FindGameObjectsWithTag("Harpoon Ring");
-
-        foreach (GameObject ring in allRings)
-        {
-            ring.RemoveComponent<NonBouncer>();
-        }
     }
 
     private static bool bypassSilkHeartLace()
@@ -237,7 +224,7 @@ public class ProgressionManager
         return true;
     }
 
-    private static bool bypassCinematicEndingA()
+    private static bool fixEndSequence()
     {
         GameObject ob = GameObject.Find("Death Sequence");
 
@@ -246,11 +233,7 @@ public class ProgressionManager
 
         PlayMakerFSM fsm = ob.GetFsm("Control");
 
-        CallMethodProper action = fsm.GetAction<CallMethodProper>("To End Cinematic A", 5);
-
-        action.parameters[0].SetValue("End_Credits");
-
-        if (fsm.ActiveStateName == "Bind Burst 4")
+        if (fsm.ActiveStateName == "Final Bind")
         {
             // back to hornet
             if (KnightInSilksong.IsKnight)

@@ -3,14 +3,15 @@ using KIS.Utils;
 using HarmonyLib;
 using UnityEngine;
 
-[HarmonyPatch(typeof(BounceBalloon), "RaiseMovement")]
-public class Patch_BounceBallon_RaiseMovement : GeneralPatch
+[HarmonyPatch(typeof(BounceBalloon), "Bounce")]
+public class Patch_BounceBallon_Bounce : GeneralPatch
 {
-    public static bool Prefix(BounceBalloon __instance, ref Rigidbody2D body)
+    public static bool Prefix()
     {
         if (KnightInSilksong.IsKnight)
         {
-            body = Knight.HeroController.instance.GetComponent<Rigidbody2D>();
+            Knight.HeroController.instance.ShroomBounce();
+            return false;
         }
         return true;
     }

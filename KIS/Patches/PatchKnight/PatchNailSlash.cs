@@ -1,4 +1,5 @@
 using KIS;
+using KIS.Utils;
 using Knight;
 using HutongGames.PlayMaker;
 using UnityEngine.SceneManagement;
@@ -6,7 +7,7 @@ using UnityEngine.SceneManagement;
 [HarmonyPatch(typeof(Knight.NailSlash), "OnTriggerEnter2D")]
 public class Patch_NailSlash_OnTriggerEnter2D : GeneralPatch
 {
-    public static bool Prefix(Knight.PlayerData __instance, Collider2D otherCollider)
+    public static bool Prefix(Knight.NailSlash __instance, Collider2D otherCollider)
     {
         if (!PlayerData.instance.hasHarpoonDash)
             return true;
@@ -14,7 +15,8 @@ public class Patch_NailSlash_OnTriggerEnter2D : GeneralPatch
         if (otherCollider.gameObject.tag == "Harpoon Ring")
         {
             GameObject ring = otherCollider.gameObject;
-            Console.WriteLine(ring.name);
+            UnityEngine.Object.Destroy(ring.GetComponent<NonBouncer>());
+            $"Hit ring {ring.name}".LogInfo();
 
             PlayMakerFSM rideFSM = null;
             foreach (PlayMakerFSM fsm in ring.GetComponents<PlayMakerFSM>())
