@@ -27,6 +27,7 @@ class Patch_PlayerData_SetBool : GeneralPatch
                         PlayMakerFSM.BroadcastEvent("BENCHREST END");
                     }
                 }
+                SyncManager.Instance.H2KSyncData(boolName);
             }
             catch (ArgumentException e)
             {
@@ -43,6 +44,7 @@ class Patch_PlayerData_SetInt : GeneralPatch
         if (KnightInSilksong.IsKnight)
         {
             Knight.PlayerData.instance.SetInt(intName, value);
+            SyncManager.Instance.H2KSyncData(intName);
         }
     }
 }
@@ -54,6 +56,7 @@ class Patch_PlayerData_IncrementInt : GeneralPatch
         if (KnightInSilksong.IsKnight)
         {
             Knight.PlayerData.instance.IncrementInt(intName);
+            SyncManager.Instance.H2KSyncData(intName);
         }
     }
 }
@@ -65,6 +68,7 @@ class Patch_PlayerData_IntAdd : GeneralPatch
         if (KnightInSilksong.IsKnight)
         {
             Knight.PlayerData.instance.IntAdd(intName, amount);
+            SyncManager.Instance.H2KSyncData(intName);
         }
     }
 }
@@ -76,6 +80,7 @@ class Patch_PlayerData_SetFloat : GeneralPatch
         if (KnightInSilksong.IsKnight)
         {
             Knight.PlayerData.instance.SetFloat(floatName, value);
+            SyncManager.Instance.H2KSyncData(floatName);
         }
     }
 }
@@ -87,6 +92,7 @@ class Patch_PlayerData_DecrementInt : GeneralPatch
         if (KnightInSilksong.IsKnight)
         {
             Knight.PlayerData.instance.DecrementInt(intName);
+            SyncManager.Instance.H2KSyncData(intName);
         }
     }
 }
@@ -98,6 +104,7 @@ class Patch_PlayerData_SetString : GeneralPatch
         if (KnightInSilksong.IsKnight)
         {
             Knight.PlayerData.instance.SetString(stringName, value);
+            SyncManager.Instance.H2KSyncData(stringName);
         }
     }
 }
@@ -109,6 +116,7 @@ class Patch_PlayerData_SetVector3 : GeneralPatch
         if (KnightInSilksong.IsKnight)
         {
             Knight.PlayerData.instance.SetVector3(vectorName, value);
+            SyncManager.Instance.H2KSyncData(vectorName);
         }
     }
 }

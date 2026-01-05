@@ -17,6 +17,8 @@ public class ProgressionManager
 
     private static bool managedFsmChange = false;
 
+    private static SyncManager syncManager = new();
+
     public static void setup()
     {
         if (smallPlatform != null)
@@ -125,8 +127,9 @@ public class ProgressionManager
     {
         PlayerData hData = PlayerData.instance;
         Knight.PlayerData kData = Knight.PlayerData.instance;
+        // syncManager.H2KSyncData();
         // movement
-        kData.hasDash = hData.hasDash;
+        /*kData.hasDash = hData.hasDash;
         kData.canDash = hData.hasDash;
         kData.canShadowDash = false;
         kData.hasShadowDash = false;
@@ -172,25 +175,26 @@ public class ProgressionManager
         kData.hasCyclone = hData.hasChargeSlash;
         kData.hasDashSlash = hData.hasChargeSlash;
         kData.hasUpwardSlash = hData.hasChargeSlash;
-        kData.hasNailArt = hData.hasChargeSlash;
+        kData.hasNailArt = hData.hasChargeSlash;*/
 
         // interesting code for syncing Hornet's and the Knight's health/soul
-        if (kData.health != oldKnightHealth)
-        {
-            hData.health = kData.health;
-        }
 
-        if (kData.MPCharge != oldKnightMPCharge)
-        {
-            hData.silk = kData.MPCharge / 11;
-            knightSoulRemainder = kData.MPCharge % 11;
-        }
+        // if (kData.health != oldKnightHealth)
+        // {
+        //     hData.health = kData.health;
+        // }
 
-        kData.health = hData.health;
-        kData.MPCharge = hData.silk * 11 + knightSoulRemainder;
+        // if (kData.MPCharge != oldKnightMPCharge)
+        // {
+        //     hData.silk = kData.MPCharge / 11;
+        //     knightSoulRemainder = kData.MPCharge % 11;
+        // }
 
-        oldKnightHealth = kData.health;
-        oldKnightMPCharge = kData.MPCharge;
+        // kData.health = hData.health;
+        // kData.MPCharge = hData.silk * 11 + knightSoulRemainder;
+
+        // oldKnightHealth = kData.health;
+        // oldKnightMPCharge = kData.MPCharge;
 
 
         // fixes
