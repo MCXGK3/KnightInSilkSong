@@ -44,9 +44,9 @@ internal partial class SyncManager
     {
         return new(null, null, kdPath, kdValue, false);
     }
-    private SyncBaseInfo Tool2Charm(Tool tool, Charm charm)
+    private SyncBaseInfo Tool2Charm(Tool tool, Charm charm, bool always_equal = true)
     {
-        return new(FromTool.prefix + tool.GetToolName(), null, charm.GetCharmName(), null, true);
+        return new(FromTool.prefix + tool.GetToolName(), true, charm.GetCharmName(), true, always_equal);
     }
 
 
@@ -88,7 +88,56 @@ internal partial class SyncManager
 
             //charm
             new(FromUnlockedSlots.CheckKey,null,nameof(kd.charmSlots),null,true),
-            Tool2Charm(Tool.Compass,Charm.WaywardCompass)
+            Tool2Charm(Tool.Compass,Charm.WaywardCompass),
+            Tool2Charm(Tool.Sting_Shard,Charm.Weaversong),
+            Tool2Charm(Tool.Pimpilo,Charm.DefendersCrest),
+            Tool2Charm(Tool.Lightning_Rod,Charm.MarkOfPride),
+            Tool2Charm(Tool.Flintstone,Charm.UnbreakableStrength),
+            Tool2Charm(Tool.Flea_Brew,Charm.QuickSlash),
+            Tool2Charm(Tool.Lifeblood_Syringe,Charm.JonisBlessing),
+            DefaultValue(Charm.Grubsong.GetCharmName(),false),
+            Tool2Charm(Tool.Mosscreep_Tool_1,Charm.Grubsong,false),
+            Tool2Charm(Tool.Mosscreep_Tool_2,Charm.Grubsong,false),
+            Tool2Charm(Tool.Bell_Bind,Charm.BaldurShell),
+            Tool2Charm(Tool.Poison_Pouch,Charm.Flukenest),
+            Tool2Charm(Tool.Lava_Charm,Charm.StalwartShell),
+            Tool2Charm(Tool.Fractured_Mask,Charm.LifebloodHeart),
+            Tool2Charm(Tool.Multibind,Charm.DeepFocus),
+            Tool2Charm(Tool.White_Ring,Charm.SoulEater),
+            Tool2Charm(Tool.Brolly_Spike,Charm.SharpShadow),
+            Tool2Charm(Tool.Quickbind,Charm.QuickFocus),
+            Tool2Charm(Tool.Spool_Extender,Charm.SpellTwister),
+            Tool2Charm(Tool.Reserve_Bind,Charm.Hiveblood),
+            DefaultValue(Charm.SporeShroom.GetCharmName(),false),
+            Tool2Charm(Tool.Dazzle_Bind,Charm.SporeShroom),
+            Tool2Charm(Tool.Dazzle_Bind_Upgraded,Charm.SporeShroom),
+            Tool2Charm(Tool.Revenge_Crystal,Charm.ThornsOfAgony),
+            Tool2Charm(Tool.Zap_Imbuement,Charm.ShamanStone),
+            Tool2Charm(Tool.Quick_Sling,Charm.SoulCatcher),
+            Tool2Charm(Tool.Maggot_Charm,Charm.LifebloodCore),
+            Tool2Charm(Tool.Longneedle,Charm.Longnail),
+            Tool2Charm(Tool.Wisp_Lantern,Charm.GlowingWomb),
+            Tool2Charm(Tool.Flea_Charm,Charm.GrubberflysElegy),
+            Tool2Charm(Tool.Pinstress_Tool,Charm.NailmastersGlory),
+            Tool2Charm(Tool.Bone_Necklace,Charm.HeavyBlow),
+            Tool2Charm(Tool.Rosary_Magnet,Charm.GatheringSwarm),
+            Tool2Charm(Tool.Weighted_Anklet,Charm.SteadyBody),
+            Tool2Charm(Tool.Barbed_Wire,Charm.FuryOfTheFallen),
+            DefaultValue(Charm.UnbreakableHeart.GetCharmName(),false),
+            Tool2Charm(Tool.Dead_Mans_Purse,Charm.UnbreakableHeart,false),
+            Tool2Charm(Tool.Shell_Satchel,Charm.UnbreakableHeart,false),
+            DefaultValue(Charm.Grimmchild.GetCharmName(),false),
+            DefaultValue(nameof(kd.grimmChildLevel),4),
+            Tool2Charm(Tool.Cogwork_Flier,Charm.Grimmchild,false),
+            // new(FromTool.prefix+Tool.Cogwork_Flier.GetToolName(),true,nameof(kd.grimmChildLevel),4),
+            Tool2Charm(Tool.Magnetite_Dice,Charm.Grimmchild,false),
+            new(FromTool.prefix+Tool.Magnetite_Dice.GetToolName(),true,nameof(kd.grimmChildLevel),5,false),
+            Tool2Charm(Tool.Scuttlebrace,Charm.Dashmaster),
+            Tool2Charm(Tool.Sprintmaster,Charm.Sprintmaster),
+            Tool2Charm(Tool.Musician_Charm,Charm.DreamWielder),
+            Tool2Charm(Tool.Thief_Charm,Charm.UnbreakableGreed),
+            Tool2Charm(Tool.Wallcling,Charm.ShapeOfUnn),
+            Tool2Charm(Tool.Cogwork_Saw,Charm.Dreamshield)
 
 
         ];
