@@ -7,6 +7,23 @@ namespace KIS.Utils
     /// </summary>
     public static partial class FsmUtil
     {
+        /// <summary>
+        /// Gets an FSM by name from a GameObject
+        /// </summary>
+        /// <param name="go"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static PlayMakerFSM GetFsm(this GameObject go, string name)
+        {
+            foreach (PlayMakerFSM fsm in go.GetComponents<PlayMakerFSM>())
+            {
+                if (fsm.FsmName == name)
+                {
+                    return fsm;
+                }
+            }
+            return null;
+        }
 
         /// <summary>
         /// AddState

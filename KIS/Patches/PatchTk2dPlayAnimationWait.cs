@@ -4,10 +4,6 @@ using KIS;
 [HarmonyPatch(typeof(Tk2dPlayAnimationWait), "OnEnter", MethodType.Normal)]
 public class Patch_Tk2dPlayAnimationWait_OnEnter : GeneralPatch
 {
-    public static bool Prefix(Tk2dPlayAnimationWait __instance)
-    {
-        return true;
-    }
     public static void Postfix(Tk2dPlayAnimationWait __instance)
     {
         if (KnightInSilksong.IsKnight)

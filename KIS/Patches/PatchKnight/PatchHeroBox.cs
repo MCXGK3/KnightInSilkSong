@@ -5,10 +5,7 @@ using KIS;
 public class Patch_Knight_HeroBox_CheckForDamage : GeneralPatch
 {
     public static DamagePropertyFlags flags;
-    public static bool Prefix(Knight.HeroBox __instance, Collider2D otherCollider)
-    {
-        return true;
-    }
+
     public static void Postfix(Knight.HeroBox __instance, Collider2D otherCollider)
     {
         if (KnightInSilksong.IsKnight)
@@ -38,8 +35,5 @@ public class Patch_Knight_HeroBox_ApplyBufferedHit : GeneralPatch
             }
         }
         return true;
-    }
-    public static void Postfix(Knight.HeroBox __instance)
-    {
     }
 }

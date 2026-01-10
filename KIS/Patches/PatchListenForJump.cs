@@ -18,9 +18,6 @@ public class Patch_ListenForJump_OnEnter : GeneralPatch
         }
         return true;
     }
-    public static void Postfix(ListenForJump __instance)
-    {
-    }
 }
 [HarmonyPatch(typeof(ListenForJump), "CheckInput", MethodType.Normal)]
 public class Patch_ListenForJump_CheckInput : GeneralPatch
@@ -38,9 +35,7 @@ public class Patch_ListenForJump_CheckInput : GeneralPatch
         }
         return true;
     }
-    public static void Postfix(ListenForJump __instance)
-    {
-    }
+
     private static void CheckInput(ListenForJump __instance)
     {
         if (GameManager.instance.isPaused || (!__instance.activeBool.IsNone && !__instance.activeBool.Value))

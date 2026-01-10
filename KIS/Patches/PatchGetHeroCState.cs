@@ -23,7 +23,4 @@ public class Patch_GetHeroCState_DoAction : GeneralPatch
 
         return true;
     }
-    public static void Postfix(GetHeroCState __instance)
-    {
-    }
 }

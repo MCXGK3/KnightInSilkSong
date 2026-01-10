@@ -19,7 +19,4 @@ public class Patch_FSMUtility_SendEventToGameObject : GeneralPatch
         }
         return true;
     }
-    public static void Postfix(GameObject go, FsmEvent ev, bool isRecursive = false)
-    {
-    }
 }

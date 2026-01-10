@@ -27,6 +27,7 @@ class Patch_PlayerData_SetBool : GeneralPatch
                         PlayMakerFSM.BroadcastEvent("BENCHREST END");
                     }
                 }
+                SyncManager.Instance.H2KSyncData(boolName);
             }
             catch (ArgumentException e)
             {
@@ -43,6 +44,7 @@ class Patch_PlayerData_SetInt : GeneralPatch
         if (KnightInSilksong.IsKnight)
         {
             Knight.PlayerData.instance.SetInt(intName, value);
+            SyncManager.Instance.H2KSyncData(intName);
         }
     }
 }
@@ -54,6 +56,7 @@ class Patch_PlayerData_IncrementInt : GeneralPatch
         if (KnightInSilksong.IsKnight)
         {
             Knight.PlayerData.instance.IncrementInt(intName);
+            SyncManager.Instance.H2KSyncData(intName);
         }
     }
 }
@@ -65,6 +68,7 @@ class Patch_PlayerData_IntAdd : GeneralPatch
         if (KnightInSilksong.IsKnight)
         {
             Knight.PlayerData.instance.IntAdd(intName, amount);
+            SyncManager.Instance.H2KSyncData(intName);
         }
     }
 }
@@ -76,6 +80,7 @@ class Patch_PlayerData_SetFloat : GeneralPatch
         if (KnightInSilksong.IsKnight)
         {
             Knight.PlayerData.instance.SetFloat(floatName, value);
+            SyncManager.Instance.H2KSyncData(floatName);
         }
     }
 }
@@ -87,6 +92,7 @@ class Patch_PlayerData_DecrementInt : GeneralPatch
         if (KnightInSilksong.IsKnight)
         {
             Knight.PlayerData.instance.DecrementInt(intName);
+            SyncManager.Instance.H2KSyncData(intName);
         }
     }
 }
@@ -98,6 +104,7 @@ class Patch_PlayerData_SetString : GeneralPatch
         if (KnightInSilksong.IsKnight)
         {
             Knight.PlayerData.instance.SetString(stringName, value);
+            SyncManager.Instance.H2KSyncData(stringName);
         }
     }
 }
@@ -109,16 +116,13 @@ class Patch_PlayerData_SetVector3 : GeneralPatch
         if (KnightInSilksong.IsKnight)
         {
             Knight.PlayerData.instance.SetVector3(vectorName, value);
+            SyncManager.Instance.H2KSyncData(vectorName);
         }
     }
 }
 [HarmonyPatch(typeof(PlayerData), "SetBenchRespawn", new Type[] { typeof(RespawnMarker), typeof(string), typeof(int) })]
 public class Patch_PlayerData_SetBenchRespawn : GeneralPatch
 {
-    public static bool Prefix(PlayerData __instance, RespawnMarker spawnMarker, string sceneName, int spawnType)
-    {
-        return true;
-    }
     public static void Postfix(PlayerData __instance, RespawnMarker spawnMarker, string sceneName, int spawnType)
     {
         if (KnightInSilksong.IsKnight)
@@ -132,10 +136,6 @@ public class Patch_PlayerData_SetBenchRespawn : GeneralPatch
 [HarmonyPatch(typeof(PlayerData), "SetBenchRespawn", new Type[] { typeof(string), typeof(string), typeof(bool) })]
 public class Patch_PlayerData_SetBenchRespawn2 : GeneralPatch
 {
-    public static bool Prefix(PlayerData __instance, string spawnMarker, string sceneName, bool facingRight)
-    {
-        return true;
-    }
     public static void Postfix(PlayerData __instance, string spawnMarker, string sceneName, bool facingRight)
     {
         if (KnightInSilksong.IsKnight)
@@ -148,10 +148,6 @@ public class Patch_PlayerData_SetBenchRespawn2 : GeneralPatch
 [HarmonyPatch(typeof(PlayerData), "SetBenchRespawn", new Type[] { typeof(string), typeof(string), typeof(int), typeof(bool) })]
 public class Patch_PlayerData_SetBenchRespawn3 : GeneralPatch
 {
-    public static bool Prefix(PlayerData __instance, string spawnMarker, string sceneName, int spawnType, bool facingRight)
-    {
-        return true;
-    }
     public static void Postfix(PlayerData __instance, string spawnMarker, string sceneName, int spawnType, bool facingRight)
     {
         if (KnightInSilksong.IsKnight)
@@ -168,10 +164,6 @@ public class Patch_PlayerData_SetBenchRespawn3 : GeneralPatch
 [HarmonyPatch(typeof(PlayerData), "SetHazardRespawn", new Type[] { typeof(HazardRespawnMarker) })]
 public class Patch_PlayerData_SetHazardRespawn : GeneralPatch
 {
-    public static bool Prefix(PlayerData __instance, HazardRespawnMarker location)
-    {
-        return true;
-    }
     public static void Postfix(PlayerData __instance, HazardRespawnMarker location)
     {
         if (KnightInSilksong.IsKnight)
@@ -183,10 +175,6 @@ public class Patch_PlayerData_SetHazardRespawn : GeneralPatch
 [HarmonyPatch(typeof(PlayerData), "SetHazardRespawn", new Type[] { typeof(Vector3), typeof(bool) })]
 public class Patch_PlayerData_SetHazardRespawn_2 : GeneralPatch
 {
-    public static bool Prefix(PlayerData __instance, Vector3 position, bool facingRight)
-    {
-        return true;
-    }
     public static void Postfix(PlayerData __instance, Vector3 position, bool facingRight)
     {
         if (KnightInSilksong.IsKnight)
@@ -198,10 +186,6 @@ public class Patch_PlayerData_SetHazardRespawn_2 : GeneralPatch
 [HarmonyPatch(typeof(PlayerData), "EquipCharm", typeof(int))]
 public class Patch_PlayerData_EquipCharm : GeneralPatch
 {
-    public static bool Prefix(PlayerData __instance, int charmNum)
-    {
-        return true;
-    }
     public static void Postfix(PlayerData __instance, int charmNum)
     {
         if (KnightInSilksong.IsKnight)
@@ -213,10 +197,6 @@ public class Patch_PlayerData_EquipCharm : GeneralPatch
 [HarmonyPatch(typeof(PlayerData), "UnequipCharm", typeof(int))]
 public class Patch_PlayerData_UnequipCharm : GeneralPatch
 {
-    public static bool Prefix(PlayerData __instance, int charmNum)
-    {
-        return true;
-    }
     public static void Postfix(PlayerData __instance, int charmNum)
     {
         if (KnightInSilksong.IsKnight)

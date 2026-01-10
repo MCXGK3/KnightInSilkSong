@@ -17,10 +17,8 @@ public class Patch_Extensions_SetPosition2D : GeneralPatch
         }
         return true;
     }
-    public static void Postfix(Transform t, float x, float y)
-    {
-    }
 }
+
 [HarmonyPatch(typeof(Extensions), "SetPosition2D", [typeof(Transform), typeof(Vector2)])]
 public class Patch_Extensions_SetPosition2D2 : GeneralPatch
 {
@@ -36,7 +34,5 @@ public class Patch_Extensions_SetPosition2D2 : GeneralPatch
         }
         return true;
     }
-    public static void Postfix(Transform t, Vector2 position)
-    {
-    }
 }
+

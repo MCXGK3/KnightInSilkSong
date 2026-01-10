@@ -1,17 +1,5 @@
 using KIS;
 
-[HarmonyPatch(typeof(CameraLockArea), "OnInsideStateChanged", MethodType.Normal)]
-public class Patch_CameraLockArea_OnInsideStateChanged : GeneralPatch
-{
-    public static bool Prefix(CameraLockArea __instance, bool isInside)
-    {
-
-        return true;
-    }
-    public static void Postfix(CameraLockArea __instance, bool isInside)
-    {
-    }
-}
 [HarmonyPatch(typeof(CameraLockArea), "IsInApplicableGameState", MethodType.Normal)]
 public class Patch_CameraLockArea_IsInApplicableGameState : GeneralPatch
 {
@@ -29,8 +17,5 @@ public class Patch_CameraLockArea_IsInApplicableGameState : GeneralPatch
             }
         }
         return true;
-    }
-    public static void Postfix()
-    {
     }
 }

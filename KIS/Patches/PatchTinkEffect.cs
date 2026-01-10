@@ -26,9 +26,6 @@ public class Patch_TinkEffect_Hit : GeneralPatch
 
         return true;
     }
-    public static void Postfix(TinkEffect __instance)
-    {
-    }
 
     private static float GetActualHitDirectionWithoutDE(TinkEffect __instance, ref HitInstance hitInstance)
     {
@@ -397,7 +394,5 @@ public class Patch_TinkEffect_Hit : GeneralPatch
 
         return true;
     }
-
-
-
 }
+

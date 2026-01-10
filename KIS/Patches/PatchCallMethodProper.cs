@@ -57,7 +57,7 @@ class PatchCallMethodProper : GeneralPatch
 
         if (__instance.cachedMethodInfo == null)
         {
-            __instance.errorString = __instance.errorString + "Method Name is invalid: " + __instance.methodName.Value + "\n";
+            __instance.errorString = $"{__instance.errorString} CallMethodProper Method Name is invalid: {__instance.behaviour.Value}::{__instance.methodName.Value}\n";
         }
         else
         {
@@ -150,6 +150,10 @@ class PatchDoMethodCall : GeneralPatch
                     __instance.Finish();
                     return;
                 }
+                else if (__instance.methodName.value == "CancelDamageRecoilSimple")
+                {
+                    __instance.methodName.value = "CancelDamageRecoil";
+                }
                 else if (__instance.methodName.value == "WillDoBellBindHit")
                 {
                     __instance.storeResult.SetValue(false);
@@ -167,6 +171,21 @@ class PatchDoMethodCall : GeneralPatch
                     result |= Traverse.Create(Knight.HeroController.instance).Method("CanTakeDamage").GetValue<bool>();
                     __instance.storeResult.SetValue(result);
                     __instance.Finish();
+                    return;
+                }
+                else if (__instance.methodName.value == "GetEntryGateName")
+                {
+                    string result = GameManager.instance.GetEntryGateName();
+                    __instance.storeResult.SetValue(result);
+                    __instance.Finish();
+
+                    return;
+                }
+                else if (__instance.methodName.value == "AddSilk")
+                {
+                    Knight.HeroController.instance.AddMPCharge(__instance.parameters[0].intValue * 9);
+                    __instance.Finish();
+
                     return;
                 }
             }

@@ -3,16 +3,10 @@ using KIS;
 [HarmonyPatch(typeof(CharmDisplay), "Start", MethodType.Normal)]
 public class Patch_CharmDisplay_Start : GeneralPatch
 {
-    public static bool Prefix(CharmDisplay __instance)
-    {
-        return true;
-    }
     public static void Postfix(CharmDisplay __instance)
     {
         if (KnightInSilksong.IsKnight)
         {
-
-
             Sprite sprite = null;
             Knight.PlayerData pd = Knight.PlayerData.instance;
             switch (__instance.id)

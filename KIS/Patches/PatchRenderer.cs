@@ -14,8 +14,4 @@ public class Patch_Renderer_enabled : GeneralPatch
         }
         return true;
     }
-    public static void Postfix(Renderer __instance)
-    {
-
-    }
 }

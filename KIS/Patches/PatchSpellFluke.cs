@@ -3,10 +3,6 @@ using KIS;
 [HarmonyPatch(typeof(SpellFluke), "OnEnable", MethodType.Normal)]
 public class Patch_SpellFluke_OnEnable : GeneralPatch
 {
-    public static bool Prefix(SpellFluke __instance)
-    {
-        return true;
-    }
     public static void Postfix(SpellFluke __instance)
     {
         if (KnightInSilksong.IsKnight)

@@ -34,9 +34,4 @@ class PatchGetComponent : GeneralPatch
                 return true;
         }
     }
-
-    public static void Postfix(GameObject __instance)
-    {
-
-    }
 }

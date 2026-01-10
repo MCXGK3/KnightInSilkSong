@@ -21,13 +21,8 @@ public class Patch_Tk2dPlayAnimation_DoPlayAnimation : GeneralPatch
         {"Challenge Strong","Roar Lock"},
         {"ChallengeStrongToIdle","Idle"},
         {"HardLand Greymoor","HardLand"}
-
-
     };
-    public static bool Prefix(Tk2dPlayAnimation __instance)
-    {
-        return true;
-    }
+
     public static void Postfix(Tk2dPlayAnimation __instance)
     {
         if (__instance._sprite != null && KnightInSilksong.IsKnight &&

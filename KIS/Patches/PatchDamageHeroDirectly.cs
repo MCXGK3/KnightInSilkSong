@@ -38,7 +38,5 @@ public class Patch_DamageHeroDirectly_OnEnter : GeneralPatch
         }
         return true;
     }
-    public static void Postfix(DamageHeroDirectly __instance)
-    {
-    }
 }
+
