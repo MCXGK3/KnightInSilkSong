@@ -8,10 +8,8 @@ public class Patch_PlayerData_SetHazardRespawn2 : GeneralPatch
         __instance.hazardRespawnLocation = location.transform.position;
         return false;
     }
-    public static void Postfix(Knight.PlayerData __instance)
-    {
-    }
 }
+
 [HarmonyPatch(typeof(Knight.PlayerData), "TakeHealth", MethodType.Normal)]
 public class Patch_PlayerData_TakeHealth : GeneralPatch
 {
@@ -19,10 +17,8 @@ public class Patch_PlayerData_TakeHealth : GeneralPatch
     {
         return true;
     }
-    public static void Postfix(Knight.PlayerData __instance, int amount)
-    {
-    }
 }
+
 [HarmonyPatch(typeof(Knight.PlayerData), "StartSoulLimiter", MethodType.Normal)]
 public class Patch_Knight_PlayerData_StartSoulLimiter : GeneralPatch
 {
@@ -35,7 +31,5 @@ public class Patch_Knight_PlayerData_StartSoulLimiter : GeneralPatch
         }
         return true;
     }
-    public static void Postfix(Knight.PlayerData __instance)
-    {
-    }
 }
+

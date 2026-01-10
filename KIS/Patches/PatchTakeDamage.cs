@@ -14,6 +14,7 @@ public class Patch_TakeDamage_OnEnter : GeneralPatch
                 AttackType = (AttackTypes)__instance.AttackType.Value,
                 CircleDirection = __instance.CircleDirection.Value,
                 DamageDealt = __instance.DamageDealt.Value,
+                StunDamage = 1f,
                 Direction = __instance.Direction.Value,
                 IgnoreInvulnerable = __instance.IgnoreInvulnerable.Value,
                 MagnitudeMultiplier = __instance.MagnitudeMultiplier.Value,
@@ -28,8 +29,5 @@ public class Patch_TakeDamage_OnEnter : GeneralPatch
             return false;
         }
         return true;
-    }
-    public static void Postfix(TakeDamage __instance)
-    {
     }
 }

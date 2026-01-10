@@ -12,9 +12,7 @@ public class Patch_GetNailDamage_OnEnter : GeneralPatch
         }
         return true;
     }
-    public static void Postfix(GetNailDamage __instance)
-    {
-    }
+
     public static void KnightOnEnter(GetNailDamage __instance)
     {
         if (!__instance.storeValue.IsNone)
@@ -28,7 +26,7 @@ public class Patch_GetNailDamage_OnEnter : GeneralPatch
                 __instance.storeValue.Value = Knight.PlayerData.instance.nailDamage;
             }
         }
-        
+
         __instance.Finish();
     }
 }

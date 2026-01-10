@@ -96,6 +96,7 @@ internal class PreProcess : IModule
         var knight = KnightInSilksong.Instance.knight;
         SetErrorCollider2D();
         SetErrorFsm();
+        knight.GetComponent<tk2dSpriteAnimator>().Library.GetClipByName("Prostrate Rise").frames[1].triggerEvent = true;
         knight.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeRotation;
         if (!HelperFun.LoadPlayerData())
         {
@@ -104,6 +105,8 @@ internal class PreProcess : IModule
         }
         knight.AddComponent<KeepHornet>();
         knight.AddComponent<DreamHelper>();
+
+
         KnightInSilksong.loaded_gos["Grimmchild"].tag = "Grimmchild";
         KnightInSilksong.loaded_gos["Weaverling"].tag = "Weaverling";
         KnightInSilksong.loaded_gos["Knight Hatchling"].tag = "Knight Hatchling";

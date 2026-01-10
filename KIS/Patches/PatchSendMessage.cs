@@ -10,7 +10,7 @@ public class Patch_SendMessage_DoSendMessage : GeneralPatch
         "RelinquishControl",
         "StartAnimationControl",
         "StartAnimationControlToIdle",
-        "StartAnimationControlToIdleForcePlay" 
+        "StartAnimationControlToIdleForcePlay"
         // {"AffectedByGravity",HeroController.instance.AffectedByGravity() },
         // {"EnableWallJump",HeroController.instance.EnableWallJump },
         // {"DisableWallJump",HeroController.instance.DisableWallJump },
@@ -47,8 +47,5 @@ public class Patch_SendMessage_DoSendMessage : GeneralPatch
         }
 
         return true;
-    }
-    public static void Postfix(SendMessage __instance)
-    {
     }
 }

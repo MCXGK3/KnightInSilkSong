@@ -3,10 +3,6 @@ using KIS;
 [HarmonyPatch(typeof(GameManager), "PositionHeroAtSceneEntrance", MethodType.Normal)]
 public class Patch_GameManager_PositionHeroAtSceneEntrance : GeneralPatch
 {
-    public static bool Prefix(GameManager __instance)
-    {
-        return true;
-    }
     public static void Postfix(GameManager __instance)
     {
         if (KnightInSilksong.IsKnight)
@@ -19,10 +15,6 @@ public class Patch_GameManager_PositionHeroAtSceneEntrance : GeneralPatch
 [HarmonyPatch(typeof(GameManager), "SetIsInventoryOpen", typeof(bool))]
 public class Patch_GameManager_SetIsInventoryOpen : GeneralPatch
 {
-    public static bool Prefix(GameManager __instance, bool value)
-    {
-        return true;
-    }
     public static void Postfix(GameManager __instance, bool value)
     {
         if (KnightInSilksong.IsKnight)
@@ -52,8 +44,5 @@ public class Patch_GameManager_ReturnToMainMenu : GeneralPatch
             "return to Main Menu".LogInfo();
         }
         return true;
-    }
-    public static void Postfix(GameManager __instance)
-    {
     }
 }

@@ -50,6 +50,9 @@ public partial class KnightInSilksong : BaseUnityPlugin
         }
     }
 
+    // maybe not the best way to do this
+    public static bool shouldToggleKnight = false;
+
     private void Awake()
     {
         logger = Logger;
@@ -126,6 +129,7 @@ public partial class KnightInSilksong : BaseUnityPlugin
             }
             HeroController.instance.gameObject.FindGameObjectInChildren("HeroBox").SetActive(false);
             HudCanvas.instance.gameObject.SetActive(false);
+            SyncManager.Instance.H2KSyncData();
             if (KnightController == null)
             {
 
@@ -178,6 +182,7 @@ public partial class KnightInSilksong : BaseUnityPlugin
 
     internal void InstKnight()
     {
+        SyncManager.Instance.Initialize();
         knight.GetComponent<Knight.HeroController>().hardLandingEffectPrefab = HeroController.instance.hardLandingEffectPrefab;
         knight.GetComponent<Knight.HeroController>().softLandingEffectPrefab = HeroController.instance.softLandingEffectPrefab;
         GameObject.Instantiate(knight);
@@ -215,15 +220,24 @@ public partial class KnightInSilksong : BaseUnityPlugin
     }
     private void Update()
     {
-        if (Input.GetKeyDown(toggleButton.Value))
+
+        if (Input.GetKeyDown(toggleButton.Value) || shouldToggleKnight)
         {
             ToggleKnight();
+            ProgressionManager.setup();
+
+            shouldToggleKnight = false;
         }
+        if (HeroController.instance != null)
+        {
+            ProgressionManager.setProgression();
+        }
+
 
     }
     private void OnApplicationQuit()
     {
-        HelperFun.SavePlayerData();
+        HelperFun.SaveConfig();
     }
 
 }

@@ -45,10 +45,8 @@ public class Patch_DamageHero_TryClashTinkCollider : GeneralPatch
         }
         return true;
     }
-    public static void Postfix(DamageHero __instance, Collider2D collision)
-    {
-    }
 }
+
 [HarmonyPatch(typeof(DamageHero), "OnDamaged", MethodType.Normal)]
 public class Patch_DamageHero_OnDamaged : GeneralPatch
 {
@@ -60,7 +58,5 @@ public class Patch_DamageHero_OnDamaged : GeneralPatch
         }
         return true;
     }
-    public static void Postfix(DamageHero __instance)
-    {
-    }
 }
+

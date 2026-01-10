@@ -15,9 +15,7 @@ public class Patch_DamageHeroDirectlyV2_OnEnter : GeneralPatch
         }
         return true;
     }
-    public static void Postfix(DamageHeroDirectlyV2 __instance)
-    {
-    }
+
     public static void ModifiedOnEnter(DamageHeroDirectlyV2 __instance)
     {
         GameObject ownerDefaultTarget = __instance.Fsm.GetOwnerDefaultTarget(__instance.damager);
@@ -87,3 +85,4 @@ public class Patch_DamageHeroDirectlyV2_OnEnter : GeneralPatch
         __instance.Finish();
     }
 }
+

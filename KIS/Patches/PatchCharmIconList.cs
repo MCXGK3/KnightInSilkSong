@@ -55,7 +55,5 @@ public class Patch_CharmIconList_GetSprite : GeneralPatch
         }
         return true;
     }
-    public static void Postfix(CharmIconList __instance, int id)
-    {
-    }
 }
+

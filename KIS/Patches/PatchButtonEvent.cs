@@ -9,10 +9,7 @@ public class Patch_InventoryItemSelectableDirectional_Awake : GeneralPatch
 {
     public static GameObject charmButton;
     static DoAction button_action;
-    public static bool Prefix(InventoryItemSelectableDirectional __instance)
-    {
-        return true;
-    }
+
     public static void Postfix(InventoryItemSelectableDirectional __instance)
     {
         if (__instance.gameObject.name == "Change Crest Button" && __instance is InventoryItemSelectableButtonEvent button)
@@ -44,6 +41,7 @@ public class Patch_InventoryItemSelectableDirectional_Awake : GeneralPatch
 
         }
     }
+
     public static void ToggleCharm(DoAction doAction = null)
     {
         DoAction arg;
@@ -105,6 +103,6 @@ public class Patch_InventoryItemSelectableDirectional_Awake : GeneralPatch
         FSMUtility.SendEventToGameObject(KnightInSilksong.Instance.charm_instance, "UP", true);
         FSMUtility.SendEventToGameObject(KnightInSilksong.Instance.charm_instance, "ACTIVATE", true);
         manager.GetComponent<InventoryPaneInput>().enabled = false;
-
     }
 }
+

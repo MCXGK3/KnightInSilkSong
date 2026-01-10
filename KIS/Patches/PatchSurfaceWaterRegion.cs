@@ -13,7 +13,4 @@ public class Patch_SurfaceWaterRegion_OnTriggerEnter2D : GeneralPatch
         }
         return true;
     }
-    public static void Postfix(SurfaceWaterRegion __instance)
-    {
-    }
 }

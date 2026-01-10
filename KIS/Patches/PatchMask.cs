@@ -14,9 +14,7 @@ public class Patch_Mask_Update
         OrigUpdate(__instance);
         return false;
     }
-    public static void Postfix(ToJ.Mask __instance)
-    {
-    }
+
     private static void ModifiedUpdate(ToJ.Mask __instance)
     {
         if (__instance._maskedSpriteWorldCoordsShader == null)

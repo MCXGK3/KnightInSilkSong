@@ -25,7 +25,4 @@ public class Patch_ObjectPool_CreatePool : GeneralPatch
         }
         return true;
     }
-    public static void Postfix()
-    {
-    }
 }

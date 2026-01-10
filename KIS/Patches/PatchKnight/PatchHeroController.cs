@@ -1,6 +1,7 @@
 using Knight;
 using KIS;
 using GlobalEnums;
+
 [HarmonyPatch(typeof(Knight.HeroController), "LocateSpawnPoint", MethodType.Normal)]
 public class Patch_HeroController_LocateSpawnPoint : GeneralPatch
 {
@@ -13,17 +14,10 @@ public class Patch_HeroController_LocateSpawnPoint : GeneralPatch
         }
         return true;
     }
-    public static void Postfix(Knight.HeroController __instance)
-    {
-    }
 }
 [HarmonyPatch(typeof(Knight.HeroController), "CharmUpdate", MethodType.Normal)]
 public class Patch_HeroController_CharmUpdate : GeneralPatch
 {
-    public static bool Prefix(Knight.HeroController __instance)
-    {
-        return true;
-    }
     public static void Postfix(Knight.HeroController __instance)
     {
         if (KnightInSilksong.IsKnight)
@@ -45,18 +39,11 @@ public class Patch_HeroController_Attack : GeneralPatch
         }
         return true;
     }
-    public static void Postfix(Knight.HeroController __instance, AttackDirection attackDir)
-    {
-    }
 }
 
 [HarmonyPatch(typeof(Knight.HeroController), "FinishedEnteringScene", MethodType.Normal)]
 public class Patch_Knight_HeroController_FinishedEnteringScene : GeneralPatch
 {
-    public static bool Prefix()
-    {
-        return true;
-    }
     public static void Postfix()
     {
         "Knight FinishedEnteringScene Patch".LogInfo();
@@ -89,9 +76,6 @@ public class Patch_Knight_HeroController_TakeDamage : GeneralPatch
         }
         return true;
     }
-    public static void Postfix(Knight.HeroController __instance, GameObject go, CollisionSide damageSide, int damageAmount, int hazardType)
-    {
-    }
 }
 [HarmonyPatch(typeof(Knight.HeroController), "Die", MethodType.Enumerator)]
 public class Patch_Knight_HeroController_Die : GeneralPatch
@@ -103,9 +87,6 @@ public class Patch_Knight_HeroController_Die : GeneralPatch
         GameManager.instance.StartCoroutine(HeroController.instance.Die(false, false));
         "Try Dead".LogInfo();
         return true;
-    }
-    public static void Postfix(Knight.HeroController __instance)
-    {
     }
 }
 [HarmonyPatch(typeof(Knight.HeroController), "CanTakeDamage", MethodType.Normal)]
@@ -120,9 +101,6 @@ public class Patch_Knight_HeroController_CanTakeDamage : GeneralPatch
         }
         return true;
     }
-    public static void Postfix(Knight.HeroController __instance)
-    {
-    }
 }
 [HarmonyPatch(typeof(Knight.HeroController), "HazardRespawn", MethodType.Normal)]
 public class Patch_Knight_HeroController_HazardRespawn : GeneralPatch
@@ -131,8 +109,5 @@ public class Patch_Knight_HeroController_HazardRespawn : GeneralPatch
     {
         __instance.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
         return true;
-    }
-    public static void Postfix(Knight.HeroController __instance)
-    {
     }
 }
