@@ -210,6 +210,10 @@ internal partial class SyncManager
 
         protected override object GetHDValue()
         {
+            if (!hd.Tools.GetValidNames().Contains(tool_name))
+            {
+                return false;
+            }
             var tool_data = hd.Tools.GetData(tool_name);
 
             return tool_data.IsUnlocked && !tool_data.IsHidden;
@@ -220,7 +224,7 @@ internal partial class SyncManager
     static Dictionary<string, Action<object>> dirty_action_dict = new()
     {
         {nameof(kd.nailDamage),(val)=>PlayMakerFSM.BroadcastEvent("UPDATE NAIL DAMAGE")},
-        {nameof(kd.charmSlots),(val)=>{kd.charmSlots=Math.Min(kd.charmSlots,11);}},
+        {nameof(kd.charmSlots),(val)=>{kd.charmSlots=Math.Max(Math.Min(kd.charmSlots,11),3);}},
         {nameof(kd.maxHealthBase),(val)=>{kd.maxHealthBase=Math.Min(kd.maxHealthBase,9);}}
     };
     private void AddNecessarySyncAction(SyncEntry entry)
