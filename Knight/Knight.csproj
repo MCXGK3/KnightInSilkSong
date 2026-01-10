@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.1</TargetFramework>
      <LangVersion>latest</LangVersion>
     <Nullable>disable</Nullable>
-    <SilksongFolder>F:\SteamLibrary\steamapps\common\Hollow Knight Silksong</SilksongFolder>
+    <SilksongFolder>F:\r2modman_mod\HollowKnightSilksong\profiles\develop</SilksongFolder>
     <UnityFolder> D:\unity\UnityProjects\BETTERALLHK\Assets\Plugins</UnityFolder>
     <PublishFolder>E:\Github_Projects\Mod\SS</PublishFolder>
     <ModName>KnightInSilkSong</ModName>
