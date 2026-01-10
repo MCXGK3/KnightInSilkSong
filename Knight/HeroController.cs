@@ -3136,15 +3136,16 @@ public class HeroController : MonoBehaviour
 			Debug.Log("HC Respawn Type: " + playerData.respawnType);
 		}
 		GameCameras.instance.cameraFadeFSM.SendEvent("RESPAWN");
-		if (playerData.respawnType == 1)
+		PlayMakerFSM benchFSM = FSMUtility.LocateFSM(spawnPoint.gameObject, "Bench Control");
+		if (playerData.respawnType == 1 && benchFSM != null)
 		{
 			AffectedByGravity(gravityApplies: false);
-			PlayMakerFSM benchFSM = FSMUtility.LocateFSM(spawnPoint.gameObject, "Bench Control");
-			if (benchFSM == null)
-			{
-				Debug.LogError("HeroCtrl: Could not find Bench Control FSM on this spawn point, respawn type is set to Bench");
-				yield break;
-			}
+
+			// if (benchFSM == null)
+			// {
+			// 	Debug.LogError("HeroCtrl: Could not find Bench Control FSM on this spawn point, respawn type is set to Bench");
+			// 	yield break;
+			// }
 			benchFSM.FsmVariables.GetFsmBool("RespawnResting").Value = true;
 			yield return new WaitForEndOfFrame();
 			if (this.heroInPosition != null)
@@ -3179,7 +3180,7 @@ public class HeroController : MonoBehaviour
 			{
 				this.heroInPosition(forceDirect: false);
 			}
-			if (gm.GetSceneNameString() != "GG_Atrium")
+			if (gm.GetSceneNameString() != "GG_Atrium" && (!component2 || !component2.customWakeUp))
 			{
 				float clipDuration = animCtrl.GetClipDuration("Wake Up Ground");
 				animCtrl.PlayClip("Wake Up Ground");
