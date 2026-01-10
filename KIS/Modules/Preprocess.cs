@@ -97,6 +97,7 @@ internal class PreProcess : IModule
         SetErrorCollider2D();
         SetErrorFsm();
         knight.GetComponent<tk2dSpriteAnimator>().Library.GetClipByName("Prostrate Rise").frames[1].triggerEvent = true;
+        knight.GetComponent<tk2dSpriteAnimator>().Library.GetClipByName("Prostrate Rise").frames[18].triggerEvent = true;
         knight.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeRotation;
         if (!HelperFun.LoadPlayerData())
         {
