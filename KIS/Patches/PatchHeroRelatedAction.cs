@@ -1,7 +1,5 @@
-using HarmonyLib;
 using HutongGames.PlayMaker.Actions;
 using KIS;
-using UnityEngine;
 
 [HarmonyPatch(typeof(SetPosition), "DoSetPosition")]
 internal class Patch_SetPosition_DoSetPosition : GeneralPatch

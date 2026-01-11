@@ -1,8 +1,6 @@
 using HutongGames.PlayMaker;
-using HutongGames.PlayMaker.Actions;
 using KIS;
 using KIS.Utils;
-using UnityEngine.UI;
 
 [HarmonyPatch(typeof(InventoryItemSelectableDirectional), "Awake")]
 public class Patch_InventoryItemSelectableDirectional_Awake : GeneralPatch

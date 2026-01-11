@@ -1,5 +1,4 @@
 using KIS;
-using TeamCherry.SharedUtils;
 
 [HarmonyPatch(typeof(GameSettings), "LoadAudioSettings", MethodType.Normal)]
 public class Patch_GameSettings_LoadAudioSettings : GeneralPatch

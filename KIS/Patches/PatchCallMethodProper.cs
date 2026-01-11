@@ -1,13 +1,6 @@
-using System;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using HarmonyLib;
 using HutongGames.PlayMaker;
 using HutongGames.PlayMaker.Actions;
-using Mono.Posix;
 using KIS;
-using UnityEngine;
 
 [HarmonyPatch(typeof(CallMethodProper), "PreCache")]
 class PatchCallMethodProper : GeneralPatch

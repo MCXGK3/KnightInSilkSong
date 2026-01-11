@@ -1,7 +1,3 @@
-using KIS;
-using KIS.Utils;
-using Knight;
-using HutongGames.PlayMaker;
 using UnityEngine.SceneManagement;
 
 [HarmonyPatch(typeof(Knight.NailSlash), "OnTriggerEnter2D")]

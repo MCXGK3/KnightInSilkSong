@@ -1,13 +1,3 @@
-using System;
-using System.Linq;
-using System.Reflection;
-using HarmonyLib;
-using HutongGames.PlayMaker;
-using HutongGames.PlayMaker.Actions;
-using Mono.Posix;
-using KIS;
-using UnityEngine;
-
 [HarmonyPatch(typeof(GameObject), "GetComponentByName")]
 class PatchGetComponent : GeneralPatch
 {

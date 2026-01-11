@@ -1,4 +1,3 @@
-using Knight;
 using KIS;
 using GlobalEnums;
 
@@ -111,3 +110,30 @@ public class Patch_Knight_HeroController_HazardRespawn : GeneralPatch
         return true;
     }
 }
+
+[HarmonyPatch]
+public class Give_One_WallJump : GeneralPatch
+{
+    public static bool used_walljump = false;
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(Knight.HeroController), "DoWallJump", MethodType.Normal)]
+    public static void Knight_HeroController_DoWallJump_PostFix(Knight.HeroController __instance)
+    {
+        if (KnightInSilksong.IsKnight)
+        {
+            used_walljump = true;
+        }
+    }
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(Knight.HeroController), "BackOnGround", MethodType.Normal)]
+    public static void Postfix(Knight.HeroController __instance)
+    {
+        if (KnightInSilksong.IsKnight)
+        {
+            used_walljump = false;
+        }
+    }
+
+
+}
+

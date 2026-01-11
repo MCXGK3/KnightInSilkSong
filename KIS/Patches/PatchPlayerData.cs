@@ -1,9 +1,4 @@
-using GenericVariableExtension;
-using HarmonyLib;
-using HutongGames.PlayMaker.Actions;
-using TeamCherry.SharedUtils;
 using KIS;
-using UnityEngine;
 
 [HarmonyPatch(typeof(PlayerData), "SetBool")]
 class Patch_PlayerData_SetBool : GeneralPatch

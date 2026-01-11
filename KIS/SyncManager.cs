@@ -1,6 +1,5 @@
 using System.IO;
 using BepInEx;
-using GenericVariableExtension;
 using Newtonsoft.Json;
 namespace KIS;
 
@@ -22,6 +21,7 @@ internal partial class SyncManager
 
     public SyncManager()
     {
+
     }
 
     private void ResetConfig()
@@ -56,6 +56,7 @@ internal partial class SyncManager
             //movement
             SameNameSync(nameof(hd.hasDash)),
             SameValueSync(nameof(hd.hasDash), nameof(kd.canDash)),
+            // SameValueSync(nameof(hd.),nameof(kd.hasShadowDash)),
             SameNameSync(nameof(hd.hasWalljump)),
             SameNameSync(nameof(hd.hasDoubleJump)),
             SameValueSync(nameof(hd.hasBrolly), nameof(kd.hasSuperDash)),
@@ -168,7 +169,7 @@ internal partial class SyncManager
     public void Initialize()
     {
         if (initialized) return;
-        initialized = true;
+
         // Initialization logic here
         if (File.Exists(HelperFun.GetSyncConfigPath()))
         {
@@ -187,6 +188,7 @@ internal partial class SyncManager
         {
             ResetConfig();
         }
+        initialized = true;
 
     }
 
@@ -219,6 +221,7 @@ internal partial class SyncManager
     }
     public void SaveConfig(string path)
     {
+        if (!initialized) return;
         List<SyncBaseInfo> new_info_list = new();
         foreach (var entry in sync_entries)
         {

@@ -3668,7 +3668,7 @@ public class HeroController : MonoBehaviour
 		move_input = inputHandler.inputActions.MoveVector.Vector.x;
 		vertical_input = inputHandler.inputActions.MoveVector.Vector.y;
 		FilterInput();
-		if (playerData.hasWalljump && CanWallSlide() && !cState.attacking)
+		if (playerData.GetBool(nameof(playerData.hasWalljump)) && CanWallSlide() && !cState.attacking)
 		{
 			if (touchingWallL && inputHandler.inputActions.Left.IsPressed && !cState.wallSliding)
 			{
@@ -4670,7 +4670,7 @@ public class HeroController : MonoBehaviour
 		AffectedByGravity(gravityApplies: true);
 		animCtrl.FinishedDash();
 		proxyFSM.SendEvent("HeroCtrl-DashEnd");
-		if (cState.touchingWall && !cState.onGround && (playerData.hasWalljump & (touchingWallL || touchingWallR)))
+		if (cState.touchingWall && !cState.onGround && (playerData.GetBool(nameof(playerData.hasWalljump)) & (touchingWallL || touchingWallR)))
 		{
 			wallslideDustPrefab.enableEmission = true;
 			wallSlideVibrationPlayer.Play();
@@ -5229,7 +5229,7 @@ public class HeroController : MonoBehaviour
 		{
 			return true;
 		}
-		if (!cState.touchingNonSlider && !inAcid && !cState.dashing && playerData.hasWalljump && !cState.onGround && !cState.recoiling && !gm.isPaused && !controlReqlinquished && !cState.transitioning && (cState.falling || cState.wallSliding) && !cState.doubleJumping && CanInput())
+		if (!cState.touchingNonSlider && !inAcid && !cState.dashing && playerData.GetBool(nameof(playerData.hasWalljump)) && !cState.onGround && !cState.recoiling && !gm.isPaused && !controlReqlinquished && !cState.transitioning && (cState.falling || cState.wallSliding) && !cState.doubleJumping && CanInput())
 		{
 			return true;
 		}
@@ -5247,7 +5247,7 @@ public class HeroController : MonoBehaviour
 
 	private bool CanWallJump()
 	{
-		if (playerData.hasWalljump)
+		if (playerData.GetBool(nameof(playerData.hasWalljump)))
 		{
 			if (cState.touchingNonSlider)
 			{

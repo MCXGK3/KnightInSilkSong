@@ -1,6 +1,3 @@
-using UnityEngine;
-using UnityEngine.UIElements;
-
 internal class KeepHornet : MonoBehaviour
 {
     internal GameObject Hornet => HeroController.instance.gameObject;

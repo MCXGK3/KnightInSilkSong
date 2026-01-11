@@ -1,25 +1,40 @@
 using KIS;
 using KIS.Utils;
-using HarmonyLib;
-using UnityEngine;
 using UnityEngine.SceneManagement;
-using BepInEx;
 
 [HarmonyPatch(typeof(PlayMakerFSM), "Start")]
 public class Patch_PlayMakerFSM_Start : GeneralPatch
 {
     public static bool Prefix(PlayMakerFSM __instance)
     {
-        string fsmName = __instance.FsmName.ToLower();
-        string goName = __instance.gameObject.name.ToLower();
-        string sceneName = SceneManager.GetActiveScene().name.ToLower();
+        if (KnightInSilksong.IsKnight)
+        {
+            string fsmName = __instance.FsmName.ToLower();
+            string goName = __instance.gameObject.name.ToLower();
+            string sceneName = SceneManager.GetActiveScene().name.ToLower();
 
-        if (sceneName == "bone_05" && goName == "boss scene" && fsmName == "battle end")
-            bell_beast_skip_silkheart(__instance);
-        if (sceneName == "belltown_shrine" && goName == "spinner boss" && fsmName == "control")
-            widow_skip_focus(__instance);
+            if (sceneName == "bone_05" && goName == "boss scene" && fsmName == "battle end")
+                bell_beast_skip_silkheart(__instance);
+            if (sceneName == "belltown_shrine" && goName == "spinner boss" && fsmName == "control")
+                widow_skip_focus(__instance);
+            if (goName.StartsWith("silk spool ui") && fsmName == "silk spool ui")
+            {
+                FixGetSilkSpool(__instance);
+            }
+        }
 
         return true;
+    }
+    private static void FixGetSilkSpool(PlayMakerFSM fsm)
+    {
+        if (fsm.fsm.GetFsmGameObject("Hero") == null)
+        {
+            ("Get Error SilkSpool at " + SceneManager.GetActiveScene().name).LogWarning();
+        }
+        else
+        {
+            fsm.fsm.GetFsmGameObject("Hero").value = HelperFun.GetCurrentHero();
+        }
     }
 
     private static void bell_beast_skip_silkheart(PlayMakerFSM fsm)

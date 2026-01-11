@@ -1,9 +1,6 @@
-using System.Collections;
 using System.IO;
-using System.Linq;
-using GlobalEnums;
+using HutongGames.PlayMaker;
 using KIS;
-using UnityEngine;
 public enum Tool
 {
     Silk_Spear,
@@ -123,6 +120,7 @@ public static class HelperFun
 {
     public static string GetConfigDirectory()
     {
+
         return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
     }
     public static string GetPlayerDataPath()
@@ -192,6 +190,10 @@ public static class HelperFun
             return texture;
         }
         return null;
+    }
+    public static GameObject GetCurrentHero()
+    {
+        return FsmVariables.GlobalVariables.FindFsmGameObject("Hero").Value;
     }
     public static Component GetComponent(GameObject gameObject, string type)
     {

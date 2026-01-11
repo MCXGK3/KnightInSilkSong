@@ -1,6 +1,4 @@
 using System.Collections;
-using Mono.Posix;
-using ToJ;
 using UnityEngine.UI;
 using static ToJ.Mask;
 

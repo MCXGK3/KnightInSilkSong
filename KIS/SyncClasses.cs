@@ -1,7 +1,4 @@
-
-using System.Net.NetworkInformation;
 using BepInEx;
-using Mono.Cecil.Pdb;
 namespace KIS;
 
 internal partial class SyncManager
@@ -225,7 +222,8 @@ internal partial class SyncManager
     {
         {nameof(kd.nailDamage),(val)=>PlayMakerFSM.BroadcastEvent("UPDATE NAIL DAMAGE")},
         {nameof(kd.charmSlots),(val)=>{kd.charmSlots=Math.Max(Math.Min(kd.charmSlots,11),3);}},
-        {nameof(kd.maxHealthBase),(val)=>{kd.maxHealthBase=Math.Min(kd.maxHealthBase,9);}}
+        {nameof(kd.maxHealthBase),(val)=>{kd.maxHealthBase=Math.Min(kd.maxHealthBase,9);}},
+        {nameof(kd.nailSmithUpgrades),(val)=>{SyncManager.Instance.H2KSyncData(nameof(hd.nailDamage));}}
     };
     private void AddNecessarySyncAction(SyncEntry entry)
     {

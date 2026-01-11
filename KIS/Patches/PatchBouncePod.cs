@@ -1,7 +1,4 @@
 using KIS;
-using KIS.Utils;
-using HarmonyLib;
-using UnityEngine;
 
 [HarmonyPatch(typeof(BouncePod), "DoBounceOff")]
 public class Patch_BouncePod_DoBounceOff : GeneralPatch

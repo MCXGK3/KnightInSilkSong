@@ -1,8 +1,4 @@
 using KIS;
-using KIS.Utils;
-using HarmonyLib;
-using UnityEngine;
-using HutongGames.PlayMaker;
 using HutongGames.PlayMaker.Actions;
 
 [HarmonyPatch(typeof(CheckHeroPerformanceRegionBase), "DoAction")]

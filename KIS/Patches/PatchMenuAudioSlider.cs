@@ -1,5 +1,4 @@
 using KIS;
-using UnityEngine.Audio;
 
 [HarmonyPatch(typeof(MenuAudioSlider), "SetSoundLevel", MethodType.Normal)]
 public class Patch_MenuAudioSlider_SetSoundLevel : GeneralPatch

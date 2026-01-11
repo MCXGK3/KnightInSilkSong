@@ -1,7 +1,4 @@
 using KIS;
-using KIS.Utils;
-using HarmonyLib;
-using UnityEngine;
 
 [HarmonyPatch(typeof(BounceBalloon), "Bounce")]
 public class Patch_BounceBallon_Bounce : GeneralPatch

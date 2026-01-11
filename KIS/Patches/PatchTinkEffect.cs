@@ -1,7 +1,6 @@
 using GlobalEnums;
 using KIS;
 using GlobalSettings;
-using MonoMod.Utils;
 
 [HarmonyPatch(typeof(TinkEffect), "Hit", MethodType.Normal)]
 public class Patch_TinkEffect_Hit : GeneralPatch
