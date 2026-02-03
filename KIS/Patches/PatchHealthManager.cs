@@ -27,11 +27,16 @@ public class Patch_HealthManager_Invincible : GeneralPatch
     }
 }
 
-// [HarmonyPatch(typeof(HealthManager), "TakeDamage", new Type[] { typeof(HitInstance) })]
-public class Patch_HealthManager_TakeDamage
+[HarmonyPatch(typeof(HealthManager), "TakeDamage", new Type[] { typeof(HitInstance) })]
+public class Patch_HealthManager_TakeDamage : GeneralPatch
 {
     public static bool Prefix(HealthManager __instance, ref HitInstance hitInstance)
     {
+        if (((int)hitInstance.SpecialType & KnightInSilksong.KnightDamage) != 0)
+        {
+            __instance.WillAwardJournalKill = true;
+            "WillAwardJournalKill".LogDebug();
+        }
         return true;
     }
     public static void Postfix(HealthManager __instance, ref HitInstance hitInstance)

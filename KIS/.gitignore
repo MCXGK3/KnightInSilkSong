@@ -488,3 +488,4 @@ obj/
 bin/
 ../Knight/obj/
 ../Knight/bin/
+Test.cs

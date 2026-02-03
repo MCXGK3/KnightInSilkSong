@@ -181,6 +181,20 @@ class PatchDoMethodCall : GeneralPatch
 
                     return;
                 }
+                else if (__instance.methodName.value == "EnterUpdraft")
+                {
+                    if (PlayerData.instance.hasBrolly)
+                    {
+                        Knight.PlayerData.instance.SetBool(nameof(Knight.PlayerData.infiniteAirJump), true);
+                    }
+                }
+                else if (__instance.methodName.value == "ExitUpdraft")
+                {
+                    if (PlayerData.instance.hasBrolly)
+                    {
+                        Knight.PlayerData.instance.SetBool(nameof(Knight.PlayerData.infiniteAirJump), false);
+                    }
+                }
             }
             if (__instance.behaviour.value == "GameManager")
             {

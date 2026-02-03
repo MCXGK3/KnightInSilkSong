@@ -16,7 +16,7 @@
     <LocalReferences Include="$(ManagedDir)*.dll" Exclude="$(ManagedDir)Mono*.dll;$(ManagedDir)netstandard.dll;$(ManagedDir)System*.dll;$(ManagedDir)mscorlib.dll" />
     <Reference Include="@(LocalReferences)" Private="false" Publicize="true" />
     <!-- <PackageReference Include="Silksong.GameLibs" Version="1.1.0-silksong1.0.28650" /> -->
-    <PackageReference Include="UnityEngine.Modules" Version="6000.0.50" IncludeAssets="compile" />
+    <!-- <PackageReference Include="UnityEngine.Modules" Version="6000.0.50" IncludeAssets="compile" /> -->
   </ItemGroup>
   <Target Name="CopyDLL" AfterTargets="PostBuildEvent" Condition="'$(SilksongFolder)' != ''">
       <ItemGroup>

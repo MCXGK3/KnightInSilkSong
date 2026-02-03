@@ -136,4 +136,18 @@ public class Give_One_WallJump : GeneralPatch
 
 
 }
+[HarmonyPatch(typeof(Knight.HeroController), "CanInfiniteAirJump", MethodType.Normal)]
+public class Patch_Knight_HeroController_CanInfiniteAirJump : GeneralPatch
+{
+    public static void Postfix(Knight.HeroController __instance, ref bool __result)
+    {
 
+        if (__result)
+        {
+            var animator = Knight.HeroController.instance.GetComponent<tk2dSpriteAnimator>();
+            animator.Stop();
+            animator.state.LogInfo();
+        }
+
+    }
+}

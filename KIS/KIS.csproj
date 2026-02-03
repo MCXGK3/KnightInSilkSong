@@ -21,7 +21,7 @@
   <PropertyGroup>
     <!--These properties will control the generated plugin info. Version is also used by various parts of the build system.-->
     <AssemblyTitle>KnightInSilkSong</AssemblyTitle>
-    <Version>0.5.3</Version>
+    <Version>0.5.9</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -38,7 +38,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../Knight/Knight.csproj" />
+    <ProjectReference Include="../Knight/Knight.csproj" Publicize="true"/>
   </ItemGroup>
   <ItemGroup>
           <Binaries Include="$(TargetPath)" />
