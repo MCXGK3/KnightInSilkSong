@@ -35,9 +35,23 @@ internal class PreProcess : IModule
         SSizeKnight();
         SSizeHud();
         SSizeCharm();
+        SSizetk2dCollectionData();
         SetAuidoVolume();
 
 
+    }
+
+    private void SSizetk2dCollectionData()
+    {
+        foreach (var go_pair in KnightInSilksong.loaded_gos)
+        {
+            var go = go_pair.Value;
+            foreach (var collection in go.GetComponentsInChildren<tk2dSpriteCollectionData>(true))
+            {
+                collection.spriteCollectionName = collection.spriteCollectionName + "(Hollownest)";
+                collection.name = collection.spriteCollectionName;
+            }
+        }
     }
 
     private void SSizeCharm()
