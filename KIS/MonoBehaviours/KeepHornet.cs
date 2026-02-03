@@ -33,7 +33,20 @@ internal class KeepHornet : MonoBehaviour
     private void Update()
     {
         Hornet.transform.position = base.transform.position;
+        LookingStateSync();
+
     }
+
+    private void LookingStateSync()
+    {
+        var khc = Knight.HeroController.instance.cState;
+        var hhc = HeroController.instance.cState;
+        hhc.lookingUp = khc.lookingUp;
+        hhc.lookingUpAnim = khc.lookingUpAnim;
+        hhc.lookingDown = khc.lookingDown;
+        hhc.lookingDownAnim = khc.lookingDownAnim;
+    }
+
     private void FixedUpdate()
     {
         if (Mathf.Abs(hornet_rb.linearVelocityY) > 1)
