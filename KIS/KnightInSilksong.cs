@@ -8,7 +8,7 @@ using BepInEx.Configuration;
 
 namespace KIS;
 
-// TODO - adjust the plugin guid as needed
+
 [BepInAutoPlugin(id: "io.github.shownyoung.knightinsilksong")]
 public partial class KnightInSilksong : BaseUnityPlugin
 {
@@ -32,7 +32,7 @@ public partial class KnightInSilksong : BaseUnityPlugin
 
     internal static bool IsKnight => Instance.iskight;
     bool iskight = false;
-    public static Int32 KnightDamage => 1 << 30;
+    public static int KnightDamage => 1 << 30;
     public const int HazardType_NORESPOND = 4096;
     public Harmony self_hormony;
     public Action<bool> OnToggleKnight = null;
@@ -111,7 +111,7 @@ public partial class KnightInSilksong : BaseUnityPlugin
                     fsm.enabled = true;
                 }
                 HeroController.instance.gameObject.FindGameObjectInChildren("HeroBox").SetActive(true);
-                HudCanvas.instance.gameObject.SetActive(true);
+                EnableOriHud();
             }
             DialogueBox._instance.hudFSM = HudCanvas.instance.gameObject.LocateMyFSM("Slide Out");
         }
@@ -124,7 +124,7 @@ public partial class KnightInSilksong : BaseUnityPlugin
                 fsm.enabled = false;
             }
             HeroController.instance.gameObject.FindGameObjectInChildren("HeroBox").SetActive(false);
-            HudCanvas.instance.gameObject.SetActive(false);
+
             SyncManager.Instance.H2KSyncData();
             if (KnightController == null)
             {
@@ -139,7 +139,7 @@ public partial class KnightInSilksong : BaseUnityPlugin
                 if (return_to_main_menu)
                 {
                     Traverse.Create(KnightController).Method("SetupGameRefs").GetValue();
-                    "Try SetupGameRefs".LogInfo();
+                    "Try SetupGameRefs".LogDebug();
                     return_to_main_menu = false;
                 }
             }
@@ -151,6 +151,7 @@ public partial class KnightInSilksong : BaseUnityPlugin
             {
                 hud_instance.SetActive(true);
             }
+            DisableOriHud();
             DialogueBox._instance.hudFSM = hud_instance.LocateMyFSM("Slide Out");
         }
         OnToggleKnight?.Invoke(iskight);
@@ -211,8 +212,41 @@ public partial class KnightInSilksong : BaseUnityPlugin
             KnightController.StartCoroutine(KnightController.StartRecoil(GlobalEnums.CollisionSide.top, false, 0));
         });
         proxy.AddTransition("Idle", "PARRIED", "Parried");
-
+        // KnightController.ClearMP();
+        Knight.PlayerData.instance.SetBool(nameof(Knight.PlayerData.infiniteAirJump), false);
         // hitbox.LocateMyFSM("Send Event").AddAction("Send Event", new SendDreamImpact());
+
+    }
+    internal void DisableOriHud()
+    {
+        Vector3 counters_position = new(-0.024f, -1.095f, 0);
+        var counters = HudCanvas.instance.gameObject.LocateMyFSM("Slide Out").FsmVariables.FindFsmGameObject("Counters Parent").Value;
+
+        HudCanvas.instance.gameObject.LocateMyFSM("Slide Out").RemoveTransition("Out", "IN");
+        HudCanvas.instance.gameObject.LocateMyFSM("Slide Out").SendEvent("OUT INSTANT");
+        HudCanvas.instance.gameObject.transform.SetScale2D(Vector2.one);
+        HudCanvas.instance.gameObject.LocateMyFSM("Globalise").enabled = false;
+
+
+
+        if (counters != null)
+        {
+            counters.transform.SetParent(hud_instance.transform);
+            counters.transform.position = counters_position;
+            counters.GetComponent<PositionRelativeTo>()?.previousPos = counters.transform.position;
+        }
+
+
+    }
+    internal void EnableOriHud()
+    {
+        HudCanvas.instance.gameObject.LocateMyFSM("Globalise").enabled = true;
+        HudCanvas.instance.gameObject.LocateMyFSM("Slide Out").AddTransition("Out", "IN", "In Wait");
+        HudCanvas.instance.gameObject.LocateMyFSM("Slide Out").SendEvent("IN");
+
+        //keep counters
+        const float original_offset_y = -9.3f;
+        const float disable_offset_y = -59.3f;
     }
     private void Update()
     {
@@ -234,6 +268,7 @@ public partial class KnightInSilksong : BaseUnityPlugin
     private void OnApplicationQuit()
     {
         HelperFun.SaveConfig();
+
     }
 
 }
