@@ -146,7 +146,7 @@ public class Patch_HeroController_LeaveScene : GeneralPatch
 
 
 
-[HarmonyPatch(typeof(HeroController), "EnterScene", MethodType.Normal)]
+[HarmonyPatch(typeof(HeroController), nameof(HeroController.EnterScene), MethodType.Normal)]
 public class Patch_HeroController_EnterScene : GeneralPatch
 {
     public static bool Prefix(HeroController __instance, TransitionPoint enterGate, float delayBeforeEnter)
@@ -344,69 +344,51 @@ public class Patch_HeroController_UnPause : GeneralPatch
         }
     }
 }
-[HarmonyPatch(typeof(HeroController), "RecoilRight", MethodType.Normal)]
-public class Patch_HeroController_RecoilRight : GeneralPatch
+[HarmonyPatch(typeof(HeroController), "Recoil", [typeof(bool), typeof(bool)])]
+public class Patch_HeroController_Recoil : GeneralPatch
 {
-    public static bool Prefix(HeroController __instance)
+    public static bool Prefix(HeroController __instance, bool isRight, bool isLong)
     {
+        ("Recoil Right:" + isRight + " Long:" + isLong).LogInfo();
         if (KnightInSilksong.IsKnight)
         {
-            Knight.HeroController.instance.RecoilRight();
+            if (isRight && isLong)
+            {
+                Knight.HeroController.instance.RecoilRightLong();
+            }
+            else if (isRight && !isLong)
+            {
+                Knight.HeroController.instance.RecoilRight();
+            }
+            if (!isRight && isLong)
+            {
+                Knight.HeroController.instance.RecoilLeftLong();
+            }
+            else if (!isRight && !isLong)
+            {
+                Knight.HeroController.instance.RecoilLeft();
+            }
             return false;
         }
         return true;
     }
-    public static void Postfix(HeroController __instance)
-    {
-    }
-}
-[HarmonyPatch(typeof(HeroController))]
-[HarmonyPatch("RecoilRightLong")]
-public class Patch_HeroController_RecoilRightLong : GeneralPatch
-{
-    static bool Prefix()
-    {
-        if (KnightInSilksong.IsKnight)
-        {
-            Knight.HeroController.instance.RecoilRightLong();
-            return false;
-        }
-        return true;
-    }
-    public static void Postfix() {}
-}
-[HarmonyPatch(typeof(HeroController), "RecoilLeft", MethodType.Normal)]
-public class Patch_HeroController_RecoilLeft : GeneralPatch
-{
-    public static bool Prefix(HeroController __instance)
-    {
-        if (KnightInSilksong.IsKnight)
-        {
-            Knight.HeroController.instance.RecoilLeft();
-            return false;
-        }
-        return true;
-    }
-    public static void Postfix(HeroController __instance)
-    {
-    }
+
 }
 [HarmonyPatch(typeof(HeroController), "RecoilLeftLong", MethodType.Normal)]
 public class Patch_HeroController_RecoilLeftLong : GeneralPatch
 {
     public static bool Prefix(HeroController __instance)
     {
-        if (KnightInSilksong.IsKnight)
-        {
-            Knight.HeroController.instance.RecoilLeftLong();
-            return false;
-        }
+        ("RecoilLeftLong " + __instance.CanRecoil()).LogInfo();
+
         return true;
     }
     public static void Postfix(HeroController __instance)
     {
     }
 }
+
+
 [HarmonyPatch(typeof(HeroController), "RecoilDown", MethodType.Normal)]
 public class Patch_HeroController_RecoilDown : GeneralPatch
 {
