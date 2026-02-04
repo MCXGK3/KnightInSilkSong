@@ -582,5 +582,19 @@ public class Patch_HeroController_NailParryRecover : GeneralPatch
 
     }
 }
-
+[HarmonyPatch(typeof(HeroController), nameof(HeroController.SetHeroParent), MethodType.Normal)]
+public class Patch_HeroController_SetHeroParent : GeneralPatch
+{
+    public static bool Prefix(HeroController __instance, Transform newParent)
+    {
+        return true;
+    }
+    public static void Postfix(HeroController __instance, Transform newParent)
+    {
+        if (KnightInSilksong.IsKnight)
+        {
+            Knight.HeroController.instance.SetHeroParent(newParent);
+        }
+    }
+}
 
