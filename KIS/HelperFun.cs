@@ -1,4 +1,5 @@
 using System.IO;
+using GlobalEnums;
 using HutongGames.PlayMaker;
 using KIS;
 public enum Tool
@@ -254,5 +255,41 @@ public static class HelperFun
         return "gotCharm_" + (int)charm;
     }
 
+    public static void CheckForDamageHero(this Knight.HeroBox heroBox, GameObject gameObject)
+    {
+        DamageHero component = gameObject.GetComponent<DamageHero>();
+        if (component != null && !heroBox.heroCtrl.cState.shadowDashing)
+        {
+            heroBox.damageDealt = component.damageDealt;
+            heroBox.hazardType = (int)component.hazardType;
+            heroBox.damagingObject = gameObject;
+            if (component.OverrideCollisionSide)
+            {
+                heroBox.collisionSide = component.CollisionSide;
+            }
+            else
+            {
+                float num2 = gameObject.transform.position.x;
+                float num3 = heroBox.transform.position.x;
+                if (component.InvertCollisionSide)
+                {
+                    float num4 = num3;
+                    float num5 = num2;
+                    num2 = num4;
+                    num3 = num5;
+                }
+
+                heroBox.collisionSide = ((!(num2 > num3)) ? CollisionSide.left : CollisionSide.right);
+            }
+            if (!Knight.HeroBox.IsHitTypeBuffered(heroBox.hazardType))
+            {
+                heroBox.ApplyBufferedHit();
+            }
+            else
+            {
+                heroBox.isHitBuffered = true;
+            }
+        }
+    }
 }
 
