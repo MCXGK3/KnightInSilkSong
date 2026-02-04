@@ -729,6 +729,8 @@ public class HeroController : MonoBehaviour
 
 	public TransitionPoint sceneEntryGate { get; private set; }
 
+	public event Action OnHazardRespawn;
+
 	public bool IsDreamReturning
 	{
 		get
@@ -3227,6 +3229,7 @@ public class HeroController : MonoBehaviour
 			this.heroInPosition(forceDirect: false);
 		}
 		StartCoroutine(Invulnerable(INVUL_TIME * 2f));
+		OnHazardRespawn?.Invoke();
 		GameCameras.instance.cameraFadeFSM.SendEvent("RESPAWN");
 		float clipDuration = animCtrl.GetClipDuration("Hazard Respawn");
 		animCtrl.PlayClip("Hazard Respawn");
