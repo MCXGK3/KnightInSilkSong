@@ -174,13 +174,12 @@ class PatchDoMethodCall : GeneralPatch
 
                     return;
                 }
-                else if (__instance.methodName.value == "AddSilk")
-                {
-                    Knight.HeroController.instance.AddMPCharge(__instance.parameters[0].intValue * 9);
-                    __instance.Finish();
-
-                    return;
-                }
+                // else if (__instance.methodName.value == "AddSilk")
+                // {
+                // Knight.HeroController.instance.AddMPCharge(__instance.parameters[0].intValue * 9);
+                //     __instance.Finish();
+                //     return;
+                // }
                 else if (__instance.methodName.value == "EnterUpdraft")
                 {
                     if (PlayerData.instance.hasBrolly)
@@ -194,6 +193,10 @@ class PatchDoMethodCall : GeneralPatch
                     {
                         Knight.PlayerData.instance.SetBool(nameof(Knight.PlayerData.infiniteAirJump), false);
                     }
+                }
+                else if (__instance.methodName.value == "StartAnimationControlToIdle")
+                {
+                    HeroController.instance.StartAnimationControlToIdle();
                 }
             }
             if (__instance.behaviour.value == "GameManager")

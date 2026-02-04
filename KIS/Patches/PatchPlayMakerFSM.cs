@@ -27,7 +27,7 @@ public class Patch_PlayMakerFSM_Start : GeneralPatch
     }
     private static void FixGetSilkSpool(PlayMakerFSM fsm)
     {
-        if (fsm.fsm.GetFsmGameObject("Hero") == null)
+        if (fsm.fsm.GetFsmGameObject("Hero").Value == null)
         {
             ("Get Error SilkSpool at " + SceneManager.GetActiveScene().name).LogWarning();
         }
