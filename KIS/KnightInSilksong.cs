@@ -214,6 +214,8 @@ public partial class KnightInSilksong : BaseUnityPlugin
         proxy.AddTransition("Idle", "PARRIED", "Parried");
         // KnightController.ClearMP();
         Knight.PlayerData.instance.SetBool(nameof(Knight.PlayerData.infiniteAirJump), false);
+        Knight.PlayerData.instance.SetInt(nameof(Knight.PlayerData.MPCharge), 0);
+        Knight.PlayerData.instance.SetInt(nameof(Knight.PlayerData.MPReserve), 0);
         // hitbox.LocateMyFSM("Send Event").AddAction("Send Event", new SendDreamImpact());
 
     }
