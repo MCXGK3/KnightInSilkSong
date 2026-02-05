@@ -1,3 +1,4 @@
+using HutongGames.PlayMaker.Actions;
 using KIS.Utils;
 using UnityEngine.SceneManagement;
 
@@ -14,6 +15,17 @@ public class ProgressionManager
     private static bool managedFsmChange = false;
 
     private static SyncManager syncManager = new();
+
+    private static Dictionary<string, List<Vector2>> platform_positions = new()
+    {
+        {"under_17", [
+            new(45f, 15f)
+        ]},
+        {"bone_east_20",[
+            new(113f,19f)
+        ]
+        }
+    };
 
     public static void setup()
     {
@@ -35,9 +47,10 @@ public class ProgressionManager
 
     private static void placePlatform(float x, float y)
     {
+
         Vector2 pos = new Vector2(x, y);
         GameObject plat = UnityEngine.Object.Instantiate(smallPlatform);
-        plat.GetComponent<Transform>().position = pos;
+        plat.transform.position = pos;
         plat.SetActive(true);
     }
 
@@ -54,69 +67,53 @@ public class ProgressionManager
 
     private static void onActiveSceneChanged(Scene from, Scene to)
     {
-        String scene = to.name.ToLower();
+        string scene = to.name.ToLower();
         managedFsmChange = false;
+        //special fix
+        switch (scene)
+        {
+            case "tut_01":
+                patchIntroCutscenes();
+                disableWeaknessCutscene();
+                break;
+            case "tut_03":
+                disableWeaknessCutscene();
+                break;
+            case "bonetown":
+                PlayerData.instance.churchKeeperIntro = true;
+                disableWeaknessCutscene();
+                break;
+            case "library_10":
+                movePsalmCylinderDown();
+                break;
+            case "hang_01":
+                moveHang01RingDown();
+                break;
+            case "shellwood_03":
+                placeBounceBloom(10f, 21.5f, "Shellwood Bounce Bloom");
+                break;
+            case "shellwood_13":
+                if (!PlayerData.instance.hasWalljump)
+                {
+                    AddNonSlider("Chunk 0 2");
+                }
+                break;
+        }
+        //place platforms
+        if (platform_positions.TryGetValue(scene, out var positions))
+        {
+            foreach (var pos in positions)
+            {
+                placePlatform(pos.x, pos.y);
+            }
+        }
 
-        // fixes
-        if (scene == "tut_01")
-        {
-            patchIntroCutscenes();
-            disableWeaknessCutscene();
-        }
-        if (scene == "tut_03")
-            disableWeaknessCutscene();
-        if (scene == "bonetown")
-        {
-            PlayerData.instance.churchKeeperIntro = true;
-            disableWeaknessCutscene();
-        }
-        if (scene == "library_10")
-            movePsalmCylinderDown();
+    }
 
-        // platforms
-        if (scene == "tut_02")
-            placePlatform(83.5f, 15f);
-        if (scene == "tut_03")
-            placePlatform(103f, 7f);
-        if (scene == "bone_01")
-        {
-            placePlatform(32f, 12f);
-            placePlatform(72.5f, 47.5f);
-            placePlatform(62.5f, 57f);
-            placePlatform(54f, 64f);
-            placePlatform(103f, 71.5f);
-            placePlatform(103f, 82f);
-        }
-        if (scene == "bone_04")
-            placePlatform(75f, 10f);
-        if (scene == "bone_08")
-        {
-            placePlatform(19.5f, 25f);
-            placePlatform(13.5f, 39f);
-            placePlatform(11f, 44f);
-            placePlatform(14.7f, 53.5f);
-        }
-        if (scene == "mosstown_01")
-            placePlatform(30.5f, 16f);
-        if (scene == "bone_east_01")
-            placePlatform(11f, 29f);
-        if (scene == "crawl_03")
-            placePlatform(171f, 62f);
-        if (scene == "crawl_01")
-            placePlatform(55f, 51f);
-        if (scene == "aspid_01")
-            placePlatform(57f, 19f);
-
-        if (scene == "shellwood_03")
-            placeBounceBloom(10f, 21.5f, "Shellwood Bounce Bloom");
-        if (scene == "shellwood_10")
-            placePlatform(65f, 14f);
-        if (scene == "shellwood_13")
-            placePlatform(77f, 8f);
-        if (scene == "under_17")
-            placePlatform(7f, 7f);
-        if (scene == "hang_01")
-            moveHang01RingDown();
+    private static void AddNonSlider(string goname)
+    {
+        GameObject go = GameObject.Find(goname);
+        go.GetAddComponent<NonSlider>();
     }
 
     public static void setProgression()
