@@ -45,18 +45,19 @@ public class Patch_Knight_HeroController_FinishedEnteringScene : GeneralPatch
 {
     public static void Postfix()
     {
-        "Knight FinishedEnteringScene Patch".LogInfo();
-        Time.time.LogInfo();
+        EventRegister.SendEvent("ENTERING SCENE");
     }
 }
 
 [HarmonyPatch(typeof(Knight.HeroController), "TakeDamage", MethodType.Normal)]
 public class Patch_Knight_HeroController_TakeDamage : GeneralPatch
 {
+    public static HazardType last_hazard_type;
     public static bool Prefix(Knight.HeroController __instance, GameObject go, CollisionSide damageSide, int damageAmount, ref int hazardType)
     {
         if (KnightInSilksong.IsKnight)
         {
+            last_hazard_type = (HazardType)hazardType;
             if (hazardType == (int)HazardType.LAVA)
             {
                 hazardType = (int)HazardType.SPIKES;
@@ -149,5 +150,31 @@ public class Patch_Knight_HeroController_CanInfiniteAirJump : GeneralPatch
             animator.state.LogInfo();
         }
 
+    }
+}
+[HarmonyPatch]
+public class Patch_Knight_HeroController_DieFromHazard : GeneralPatch
+{
+    [HarmonyPrefix]
+    [HarmonyPatch(typeof(Knight.HeroController), nameof(Knight.HeroController.DieFromHazard), MethodType.Normal)]
+    public static bool Prefix(Knight.HeroController __instance, ref HazardType hazardType, float angle)
+    {
+        if (Patch_Knight_HeroController_TakeDamage.last_hazard_type == HazardType.LAVA)
+        {
+            hazardType = HazardType.LAVA;
+        }
+        return true;
+    }
+    [HarmonyPrefix]
+    [HarmonyPatch(typeof(Knight.HeroController), nameof(Knight.HeroController.DieFromHazard), MethodType.Normal)]
+    public static void Postfix(Knight.HeroController __instance, HazardType hazardType, float angle)
+    {
+        if (hazardType == HazardType.LAVA)
+        {
+            GameObject obj4 = HeroController.instance.lavaDeathPrefab.Spawn();
+            obj4.transform.position = Knight.HeroController.instance.transform.position;
+            obj4.transform.localScale = Knight.HeroController.instance.transform.localScale;
+            DeliveryQuestItem.BreakAll();
+        }
     }
 }
