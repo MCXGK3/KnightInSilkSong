@@ -216,6 +216,12 @@ public partial class KnightInSilksong : BaseUnityPlugin
         Knight.PlayerData.instance.SetBool(nameof(Knight.PlayerData.infiniteAirJump), false);
         Knight.PlayerData.instance.SetInt(nameof(Knight.PlayerData.MPCharge), 0);
         Knight.PlayerData.instance.SetInt(nameof(Knight.PlayerData.MPReserve), 0);
+        //why didn't tc put the needle back in its original position?
+        HeroController.instance.gameObject.LocateMyFSM("Harpoon Dash").AddCustomAction("Init", (fsm) =>
+        {
+            fsm.GetVariable<FsmGameObject>("Needle").Value ??= HeroController.instance.gameObject.FindGameObjectInChildren("Harpoon Needle");
+            fsm.GetVariable<FsmGameObject>("Thread").Value ??= HeroController.instance.gameObject.FindGameObjectInChildren("Harpoon Needle").FindGameObjectInChildren("Thread");
+        });
         // hitbox.LocateMyFSM("Send Event").AddAction("Send Event", new SendDreamImpact());
 
     }
