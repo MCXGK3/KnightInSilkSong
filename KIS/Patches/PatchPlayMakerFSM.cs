@@ -13,10 +13,14 @@ public class Patch_PlayMakerFSM_Start : GeneralPatch
             string goName = __instance.gameObject.name.ToLower();
             string sceneName = SceneManager.GetActiveScene().name.ToLower();
 
-            if (sceneName == "bone_05" && goName == "boss scene" && fsmName == "battle end")
-                bell_beast_skip_silkheart(__instance);
+            // if (sceneName == "bone_05" && goName == "boss scene" && fsmName == "battle end")
+            //     bell_beast_skip_silkheart(__instance);
             if (sceneName == "belltown_shrine" && goName == "spinner boss" && fsmName == "control")
                 widow_skip_focus(__instance);
+            if (/*sceneName == "bone_05" &&*/ goName == "silk heart" && fsmName == "control")
+            {
+                FixGetSilkHeart(__instance);
+            }
             if (goName.StartsWith("silk spool ui") && fsmName == "silk spool ui")
             {
                 FixGetSilkSpool(__instance);
@@ -25,6 +29,15 @@ public class Patch_PlayMakerFSM_Start : GeneralPatch
 
         return true;
     }
+
+    private static void FixGetSilkHeart(PlayMakerFSM fsm)
+    {
+        fsm.AddCustomAction("Regen Last Silk", (fsm) =>
+        {
+            fsm.SendEvent("REGENERATED SILK CHUNK");
+        });
+    }
+
     private static void FixGetSilkSpool(PlayMakerFSM fsm)
     {
         if (fsm.fsm.GetFsmGameObject("Hero").Value == null)

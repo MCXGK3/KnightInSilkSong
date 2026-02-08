@@ -129,6 +129,7 @@ class PatchDoMethodCall : GeneralPatch
                 {
                     bool temp_inv = Knight.PlayerData.instance.isInvincible;
                     Knight.PlayerData.instance.isInvincible = false;
+                    __instance.parameters[0].UpdateValue();
                     Knight.HeroController.instance.TakeDamage(null, GlobalEnums.CollisionSide.other, __instance.parameters[0].intValue, (int)KnightInSilksong.HazardType_NORESPOND);
                     Knight.PlayerData.instance.isInvincible = temp_inv;
                     __instance.Finish();
@@ -138,6 +139,7 @@ class PatchDoMethodCall : GeneralPatch
                 {
                     bool temp_inv = Knight.PlayerData.instance.isInvincible;
                     Knight.PlayerData.instance.isInvincible = false;
+                    __instance.parameters[0].UpdateValue();
                     Knight.HeroController.instance.TakeDamage(null, GlobalEnums.CollisionSide.other, __instance.parameters[0].intValue, (int)KnightInSilksong.HazardType_NORESPOND);
                     Knight.PlayerData.instance.isInvincible = temp_inv;
                     __instance.Finish();
@@ -174,12 +176,14 @@ class PatchDoMethodCall : GeneralPatch
 
                     return;
                 }
-                // else if (__instance.methodName.value == "AddSilk")
-                // {
-                // Knight.HeroController.instance.AddMPCharge(__instance.parameters[0].intValue * 9);
-                //     __instance.Finish();
-                //     return;
-                // }
+                else if (__instance.methodName.value == "AddSilk")
+                {
+                    __instance.parameters[0].UpdateValue();
+                    __instance.parameters[1].UpdateValue();
+                    HeroController.instance.AddSilk(__instance.parameters[0].intValue, __instance.parameters[1].boolValue);
+                    __instance.Finish();
+                    return;
+                }
                 else if (__instance.methodName.value == "EnterUpdraft")
                 {
                     if (PlayerData.instance.hasBrolly)
@@ -197,6 +201,11 @@ class PatchDoMethodCall : GeneralPatch
                 else if (__instance.methodName.value == "StartAnimationControlToIdle")
                 {
                     HeroController.instance.StartAnimationControlToIdle();
+                }
+                else if (__instance.methodName.value == nameof(HeroController.AddToMaxSilkRegen))
+                {
+                    __instance.parameters[0].UpdateValue();
+                    HeroController.instance.AddToMaxSilkRegen(__instance.parameters[0].intValue);
                 }
             }
             if (__instance.behaviour.value == "GameManager")
