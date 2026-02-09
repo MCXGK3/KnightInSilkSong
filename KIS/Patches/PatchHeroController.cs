@@ -597,4 +597,13 @@ public class Patch_HeroController_SetHeroParent : GeneralPatch
         }
     }
 }
+[HarmonyPatch(typeof(HeroController), nameof(HeroController.CocoonBroken), [typeof(bool), typeof(bool)])]
+public class Patch_HeroController_CocoonBroken : GeneralPatch
+{
+
+    public static void Postfix(HeroController __instance, bool doAirPause, bool forceCanBind)
+    {
+        Knight.PlayerData.instance?.EndSoulLimiter();
+    }
+}
 

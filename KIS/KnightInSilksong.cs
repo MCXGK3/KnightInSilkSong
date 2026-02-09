@@ -194,8 +194,11 @@ public partial class KnightInSilksong : BaseUnityPlugin
         KnightController.gameObject.Find("Attacks").Find("Sharp Shadow").tag = "Sharp Shadow";
 
         var death = KnightController.heroDeathPrefab.LocateMyFSM("Hero Death Anim");
-        death.GetAction<HutongGames.PlayMaker.Actions.SetPlayerDataBool>("Limit Soul", 2).value = false;
-        death.GetAction<SetBoolValue>("Limit Soul", 3).boolValue = false;
+        // death.GetAction<HutongGames.PlayMaker.Actions.SetPlayerDataBool>("Limit Soul", 2).value = false;
+        // death.GetAction<SetBoolValue>("Limit Soul", 3).boolValue = false;
+        death.GetAction<SendMessage>("Set Shade", 1).functionCall.FunctionName = nameof(GameMap.PositionCompassAndCorpse);
+        death.InsertCustomAction("Check MP", () => PreProcess.SetDeathInfo(), 0);
+
         GameObject centre = new GameObject("Centre");
         centre.transform.SetParent(KnightController.transform, false);
         centre.transform.localPosition = new Vector3(0f, 0f, 0f);

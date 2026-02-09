@@ -6,6 +6,8 @@ using HutongGames.PlayMaker;
 using KIS.Utils;
 using TMProOld;
 using UnityEngine.Audio;
+using GlobalEnums;
+using GlobalSettings;
 
 internal class PreProcess : IModule
 {
@@ -296,5 +298,65 @@ internal class PreProcess : IModule
             }
         }
 
+    }
+    public static void SetDeathInfo()
+    {
+        HeroCorpseMarkerProxy instance = HeroCorpseMarkerProxy.Instance;
+        HeroController hc = HeroController.instance;
+        if (instance)
+        {
+            hc.playerData.HeroCorpseScene = instance.TargetSceneName;
+            hc.playerData.HeroCorpseMarkerGuid = instance.TargetGuid;
+            hc.playerData.HeroDeathScenePos = instance.TargetScenePos;
+        }
+        else
+        {
+            Vector3 position = hc.transform.position;
+            hc.playerData.HeroCorpseScene = hc.gm.GetSceneNameString();
+            HeroCorpseMarker closest = HeroCorpseMarker.GetClosest(position);
+            if (closest)
+            {
+                hc.playerData.HeroCorpseMarkerGuid = closest.Guid.ToByteArray();
+                hc.playerData.HeroDeathScenePos = closest.Position;
+            }
+            else
+            {
+                hc.playerData.HeroCorpseMarkerGuid = null;
+                hc.playerData.HeroDeathScenePos = position;
+            }
+        }
+        tk2dTileMap tilemap = hc.gm.tilemap;
+        hc.playerData.HeroDeathSceneSize = new Vector2((float)tilemap.width, (float)tilemap.height);
+        hc.gm.gameMap.PositionCompassAndCorpse();
+        hc.playerData.IsSilkSpoolBroken = true;
+        hc.playerData.HeroCorpseType = HeroDeathCocoonTypes.Normal;
+        int num = Knight.PlayerData.instance.geoPool;//hc.playerData.geo;
+        bool isEquipped = Gameplay.DeadPurseTool.IsEquipped;
+        if (isEquipped)
+        {
+            int num2 = Mathf.RoundToInt((float)num * Gameplay.DeadPurseHoldPercent);
+            num -= num2;
+            hc.playerData.geo = num2;
+        }
+        else
+        {
+            hc.playerData.geo = 0;
+        }
+        hc.playerData.HeroCorpseMoneyPool = Mathf.RoundToInt((float)num);
+        if (hc.playerData.IsAnyCursed)
+        {
+            hc.playerData.HeroCorpseType |= HeroDeathCocoonTypes.Cursed;
+        }
+        if (isEquipped && hc.playerData.HeroCorpseMoneyPool >= 10)
+        {
+            hc.playerData.HeroCorpseType |= HeroDeathCocoonTypes.Rosaries;
+        }
+
+        hc.playerData.HeroCorpseType |= HelperFun.knight_death_cocoon;
+        Knight.PlayerData kd = Knight.PlayerData.instance;
+        kd.shadeScene = hc.playerData.HeroCorpseScene;
+        kd.shadePositionX = hc.playerData.HeroDeathScenePos.x;
+        kd.shadePositionY = hc.playerData.HeroDeathScenePos.y;
+        kd.geoPool = hc.playerData.HeroCorpseMoneyPool;
     }
 }

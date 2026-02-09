@@ -18,19 +18,6 @@ public class Patch_PlayerData_TakeHealth : GeneralPatch
     }
 }
 
-[HarmonyPatch(typeof(Knight.PlayerData), "StartSoulLimiter", MethodType.Normal)]
-public class Patch_Knight_PlayerData_StartSoulLimiter : GeneralPatch
-{
-    public static bool Prefix(Knight.PlayerData __instance)
-    {
-        if (KnightInSilksong.IsKnight)
-        {
-            "try start soul limiter".LogInfo();
-            return false;
-        }
-        return true;
-    }
-}
 [HarmonyPatch(typeof(Knight.PlayerData), "GetBool", MethodType.Normal)]
 public class Patch_Knight_PlayerData_GetBool : GeneralPatch
 {

@@ -123,6 +123,11 @@ class PatchDoMethodCall : GeneralPatch
         }
         if (KnightInSilksong.IsKnight)
         {
+            foreach (var par in __instance.parameters)
+            {
+                par.UpdateValue();
+            }
+            // used for handling method that not exists in Knight.HeroController
             if (__instance.behaviour.value == "HeroController")
             {
                 if (__instance.methodName.value == "TakeQuickDamage")
@@ -206,6 +211,22 @@ class PatchDoMethodCall : GeneralPatch
                 {
                     __instance.parameters[0].UpdateValue();
                     HeroController.instance.AddToMaxSilkRegen(__instance.parameters[0].intValue);
+                }
+                else if (__instance.methodName.value == nameof(HeroController.CocoonBroken))
+                {
+                    HeroController.instance.CocoonBroken();
+                }
+                else if (__instance.methodName.value == nameof(HeroController.AddGeo))
+                {
+                    HeroController.instance.AddGeo(__instance.parameters[0].intValue);
+                }
+                else if (__instance.methodName.value == nameof(HeroController.AddGeoQuietly))
+                {
+                    HeroController.instance.AddGeoQuietly(__instance.parameters[0].intValue);
+                }
+                else if (__instance.methodName.value == nameof(HeroController.AddGeoToCounter))
+                {
+                    HeroController.instance.AddGeoToCounter(__instance.parameters[0].intValue);
                 }
             }
             if (__instance.behaviour.value == "GameManager")

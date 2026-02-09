@@ -4,12 +4,19 @@ using HutongGames.PlayMaker.Actions;
 using KIS;
 using KIS.Utils;
 
+public static class KnightGetHornetPD
+{
+    static HashSet<string> knight_get_hornet_pd_list = [
+        "geo"
+    ];
+    public static bool IsFromHornet(string name) => knight_get_hornet_pd_list.Contains(name);
+}
 [HarmonyPatch(typeof(GetPlayerDataBool), "OnEnter", MethodType.Normal)]
 public class Patch_GetPlayerDataBool_OnEnter : GeneralPatch
 {
     public static bool Prefix(GetPlayerDataBool __instance)
     {
-        if (KnightInSilksong.IsKnight && __instance.fsm.GetVariable<FsmBool>("FromKnight") != null)
+        if (KnightInSilksong.IsKnight && __instance.fsm.GetVariable<FsmBool>("FromKnight") != null && !KnightGetHornetPD.IsFromHornet(__instance.boolName.Value))
         {
             if (__instance.boolName.value == "EncounteredLostLace")
             {
@@ -30,7 +37,7 @@ public class Patch_GetPlayerDataFloat_OnEnter : GeneralPatch
 {
     public static bool Prefix(GetPlayerDataFloat __instance)
     {
-        if (KnightInSilksong.IsKnight && __instance.fsm.GetVariable<FsmBool>("FromKnight") != null)
+        if (KnightInSilksong.IsKnight && __instance.fsm.GetVariable<FsmBool>("FromKnight") != null && !KnightGetHornetPD.IsFromHornet(__instance.floatName.Value))
         {
             __instance.storeValue.Value = Knight.PlayerData.instance.GetFloat(__instance.floatName.Value);
             __instance.Finish();
@@ -48,7 +55,7 @@ public class Patch_GetPlayerDataInt_OnEnter : GeneralPatch
 {
     public static bool Prefix(GetPlayerDataInt __instance)
     {
-        if (KnightInSilksong.IsKnight && __instance.fsm.GetVariable<FsmBool>("FromKnight") != null)
+        if (KnightInSilksong.IsKnight && __instance.fsm.GetVariable<FsmBool>("FromKnight") != null && !KnightGetHornetPD.IsFromHornet(__instance.intName.Value))
         {
             __instance.storeValue.Value = Knight.PlayerData.instance.GetInt(__instance.intName.Value);
             __instance.Finish();
@@ -65,7 +72,7 @@ public class Patch_GetPlayerDataString_OnEnter : GeneralPatch
 {
     public static bool Prefix(GetPlayerDataString __instance)
     {
-        if (KnightInSilksong.IsKnight && __instance.fsm.GetVariable<FsmBool>("FromKnight") != null)
+        if (KnightInSilksong.IsKnight && __instance.fsm.GetVariable<FsmBool>("FromKnight") != null && KnightGetHornetPD.IsFromHornet(__instance.stringName.Value))
         {
             __instance.storeValue.Value = Knight.PlayerData.instance.GetString(__instance.stringName.Value);
             __instance.Finish();
@@ -82,7 +89,7 @@ public class Patch_GetPlayerDataVector3_OnEnter : GeneralPatch
 {
     public static bool Prefix(GetPlayerDataVector3 __instance)
     {
-        if (KnightInSilksong.IsKnight && __instance.fsm.GetVariable<FsmBool>("FromKnight") != null)
+        if (KnightInSilksong.IsKnight && __instance.fsm.GetVariable<FsmBool>("FromKnight") != null && !KnightGetHornetPD.IsFromHornet(__instance.vector3Name.Value))
         {
             __instance.storeValue.Value = Knight.PlayerData.instance.GetVector3(__instance.vector3Name.Value);
             __instance.Finish();

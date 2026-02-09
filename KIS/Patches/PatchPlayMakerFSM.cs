@@ -1,3 +1,4 @@
+using HutongGames.PlayMaker.Actions;
 using KIS;
 using KIS.Utils;
 using UnityEngine.SceneManagement;
@@ -25,9 +26,21 @@ public class Patch_PlayMakerFSM_Start : GeneralPatch
             {
                 FixGetSilkSpool(__instance);
             }
+
+        }
+        if (__instance.gameObject.name.StartsWith("Hollow Shade Death") && __instance.FsmName == "Shade Control")
+        {
+            PreventGetGeoFromShade(__instance);
         }
 
         return true;
+    }
+
+    private static void PreventGetGeoFromShade(PlayMakerFSM fsm)
+    {
+        fsm.GetAction<CallMethodProper>("Death Start", 3).enabled = false;
+        fsm.GetAction<CallMethodProper>("Give Geo", 3).enabled = false;
+        fsm.InsertCustomAction("Destroy", () => HeroController.instance.CocoonBroken(), 0);
     }
 
     private static void FixGetSilkHeart(PlayMakerFSM fsm)

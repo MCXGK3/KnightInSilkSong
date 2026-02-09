@@ -119,6 +119,7 @@ public enum Charm
 }
 public static class HelperFun
 {
+    internal const HeroDeathCocoonTypes knight_death_cocoon = (HeroDeathCocoonTypes)(1 << 30);
     public static string GetConfigDirectory()
     {
 
