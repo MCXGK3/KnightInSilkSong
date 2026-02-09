@@ -198,6 +198,13 @@ public partial class KnightInSilksong : BaseUnityPlugin
         // death.GetAction<SetBoolValue>("Limit Soul", 3).boolValue = false;
         death.GetAction<SendMessage>("Set Shade", 1).functionCall.FunctionName = nameof(GameMap.PositionCompassAndCorpse);
         death.InsertCustomAction("Check MP", () => PreProcess.SetDeathInfo(), 0);
+        death.AddCustomAction("Map Zone", (fsm) =>
+        {
+            if (GameManager.instance.IsMemoryScene())
+            {
+                fsm.SendEvent("DREAM");
+            }
+        });
 
         GameObject centre = new GameObject("Centre");
         centre.transform.SetParent(KnightController.transform, false);
