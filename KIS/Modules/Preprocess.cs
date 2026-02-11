@@ -8,6 +8,7 @@ using TMProOld;
 using UnityEngine.Audio;
 using GlobalEnums;
 using GlobalSettings;
+using PDA = PrepatcherPlugin.PlayerDataAccess;
 
 internal class PreProcess : IModule
 {
@@ -105,11 +106,6 @@ internal class PreProcess : IModule
         knight.GetComponent<tk2dSpriteAnimator>().Library.GetClipByName("Prostrate Rise").frames[1].triggerEvent = true;
         knight.GetComponent<tk2dSpriteAnimator>().Library.GetClipByName("Prostrate Rise").frames[18].triggerEvent = true;
         knight.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeRotation;
-        if (!HelperFun.LoadPlayerData())
-        {
-            Knight.PlayerData.instance.AddGGPlayerDataOverrides();
-            Knight.PlayerData.instance.royalCharmState = 4;
-        }
         knight.AddComponent<KeepHornet>();
         knight.AddComponent<DreamHelper>();
 
@@ -305,58 +301,58 @@ internal class PreProcess : IModule
         HeroController hc = HeroController.instance;
         if (instance)
         {
-            hc.playerData.HeroCorpseScene = instance.TargetSceneName;
-            hc.playerData.HeroCorpseMarkerGuid = instance.TargetGuid;
-            hc.playerData.HeroDeathScenePos = instance.TargetScenePos;
+            PDA.HeroCorpseScene = instance.TargetSceneName;
+            PDA.HeroCorpseMarkerGuid = instance.TargetGuid;
+            PDA.HeroDeathScenePos = instance.TargetScenePos;
         }
         else
         {
             Vector3 position = hc.transform.position;
-            hc.playerData.HeroCorpseScene = hc.gm.GetSceneNameString();
+            PDA.HeroCorpseScene = hc.gm.GetSceneNameString();
             HeroCorpseMarker closest = HeroCorpseMarker.GetClosest(position);
             if (closest)
             {
-                hc.playerData.HeroCorpseMarkerGuid = closest.Guid.ToByteArray();
-                hc.playerData.HeroDeathScenePos = closest.Position;
+                PDA.HeroCorpseMarkerGuid = closest.Guid.ToByteArray();
+                PDA.HeroDeathScenePos = closest.Position;
             }
             else
             {
-                hc.playerData.HeroCorpseMarkerGuid = null;
-                hc.playerData.HeroDeathScenePos = position;
+                PDA.HeroCorpseMarkerGuid = null;
+                PDA.HeroDeathScenePos = position;
             }
         }
         tk2dTileMap tilemap = hc.gm.tilemap;
-        hc.playerData.HeroDeathSceneSize = new Vector2((float)tilemap.width, (float)tilemap.height);
+        PDA.HeroDeathSceneSize = new Vector2((float)tilemap.width, (float)tilemap.height);
         hc.gm.gameMap.PositionCompassAndCorpse();
-        hc.playerData.IsSilkSpoolBroken = true;
-        hc.playerData.HeroCorpseType = HeroDeathCocoonTypes.Normal;
+        PDA.IsSilkSpoolBroken = true;
+        PDA.HeroCorpseType = HeroDeathCocoonTypes.Normal;
         int num = Knight.PlayerData.instance.geoPool;//hc.playerData.geo;
         bool isEquipped = Gameplay.DeadPurseTool.IsEquipped;
         if (isEquipped)
         {
             int num2 = Mathf.RoundToInt((float)num * Gameplay.DeadPurseHoldPercent);
             num -= num2;
-            hc.playerData.geo = num2;
+            PDA.geo = num2;
         }
         else
         {
-            hc.playerData.geo = 0;
+            PDA.geo = 0;
         }
-        hc.playerData.HeroCorpseMoneyPool = Mathf.RoundToInt((float)num);
+        PDA.HeroCorpseMoneyPool = Mathf.RoundToInt((float)num);
         if (hc.playerData.IsAnyCursed)
         {
-            hc.playerData.HeroCorpseType |= HeroDeathCocoonTypes.Cursed;
+            PDA.HeroCorpseType |= HeroDeathCocoonTypes.Cursed;
         }
-        if (isEquipped && hc.playerData.HeroCorpseMoneyPool >= 10)
+        if (isEquipped && PDA.HeroCorpseMoneyPool >= 10)
         {
-            hc.playerData.HeroCorpseType |= HeroDeathCocoonTypes.Rosaries;
+            PDA.HeroCorpseType |= HeroDeathCocoonTypes.Rosaries;
         }
 
-        hc.playerData.HeroCorpseType |= HelperFun.knight_death_cocoon;
+        PDA.HeroCorpseType |= KISHelper.knight_death_cocoon;
         Knight.PlayerData kd = Knight.PlayerData.instance;
-        kd.shadeScene = hc.playerData.HeroCorpseScene;
-        kd.shadePositionX = hc.playerData.HeroDeathScenePos.x;
-        kd.shadePositionY = hc.playerData.HeroDeathScenePos.y;
-        kd.geoPool = hc.playerData.HeroCorpseMoneyPool;
+        kd.shadeScene = PDA.HeroCorpseScene;
+        kd.shadePositionX = PDA.HeroDeathScenePos.x;
+        kd.shadePositionY = PDA.HeroDeathScenePos.y;
+        kd.geoPool = PDA.HeroCorpseMoneyPool;
     }
 }

@@ -1,4 +1,82 @@
+using HutongGames.PlayMaker.Actions;
 using KIS;
+using PrepatcherPlugin;
+using PDVE = PrepatcherPlugin.PlayerDataVariableEvents;
+using PDA = PrepatcherPlugin.PlayerDataAccess;
+using Unity.Audio;
+internal static class BlackList
+{
+    public static readonly HashSet<string> HDFields = [.. typeof(PlayerData).GetFields().Select(x => x.Name)];
+    public static readonly HashSet<string> KDFields = [.. typeof(Knight.PlayerData).GetFields().Select(x => x.Name)];
+    public static readonly HashSet<string> BlackListedFields = [.. HDFields.Except(KDFields)];
+    public static readonly HashSet<string> should_handle_fields = [.. KDFields.Except(HDFields)];
+    public static bool IsBlackListed(string var_name)
+    {
+        return BlackListedFields.Contains(var_name);
+    }
+    public static bool ShouldHandle(string var_name)
+    {
+        return should_handle_fields.Contains(var_name);
+    }
+}
+internal static class HandlePlayerData
+{
+    private static Knight.PlayerData kd => Knight.PlayerData.instance;
+    public static void Init()
+    {
+        PDVE.OnGetBool += HandleGetBool;
+        PDVE.OnGetInt += HandleGetInt;
+        PDVE.OnGetFloat += HandleGetFloat;
+        PDVE.OnGetString += HandleGetString;
+        PDVE.OnGetVector3 += HandleGetVector3;
+    }
+
+    private static Vector3 HandleGetVector3(PlayerData pd, string fieldName, Vector3 current)
+    {
+        if (BlackList.ShouldHandle(fieldName))
+        {
+            return kd.GetVector3(fieldName);
+        }
+        return current;
+    }
+
+    private static string HandleGetString(PlayerData pd, string fieldName, string current)
+    {
+        if (BlackList.ShouldHandle(fieldName))
+        {
+            return kd.GetString(fieldName);
+        }
+        return current;
+    }
+
+    private static float HandleGetFloat(PlayerData pd, string fieldName, float current)
+    {
+        if (BlackList.ShouldHandle(fieldName))
+        {
+            return kd.GetFloat(fieldName);
+        }
+        return current;
+    }
+
+    private static int HandleGetInt(PlayerData pd, string fieldName, int current)
+    {
+        if (BlackList.ShouldHandle(fieldName))
+        {
+            return kd.GetInt(fieldName);
+        }
+        return current;
+    }
+
+    private static bool HandleGetBool(PlayerData pd, string fieldName, bool current)
+    {
+        if (BlackList.ShouldHandle(fieldName))
+        {
+            return kd.GetBool(fieldName);
+        }
+        return current;
+    }
+
+}
 
 [HarmonyPatch(typeof(PlayerData), "SetBool")]
 class Patch_PlayerData_SetBool : GeneralPatch
@@ -10,7 +88,11 @@ class Patch_PlayerData_SetBool : GeneralPatch
             try
             {
 
-                Knight.PlayerData.instance.SetBool(boolName, value);
+                if (!SyncManager.Instance.IsWatching(boolName) && !BlackList.IsBlackListed(boolName))
+                {
+                    Knight.PlayerData.instance.SetBool(boolName, value);
+                }
+
                 if (boolName == "atBench")
                 {
                     if (value)
@@ -43,30 +125,7 @@ class Patch_PlayerData_SetInt : GeneralPatch
         }
     }
 }
-[HarmonyPatch(typeof(PlayerData), "IncrementInt")]
-class Patch_PlayerData_IncrementInt : GeneralPatch
-{
-    static void Postfix(string intName)
-    {
-        if (KnightInSilksong.IsKnight)
-        {
-            Knight.PlayerData.instance.IncrementInt(intName);
-            SyncManager.Instance.H2KSyncData(intName);
-        }
-    }
-}
-[HarmonyPatch(typeof(PlayerData), "IntAdd")]
-class Patch_PlayerData_IntAdd : GeneralPatch
-{
-    static void Postfix(string intName, int amount)
-    {
-        if (KnightInSilksong.IsKnight)
-        {
-            Knight.PlayerData.instance.IntAdd(intName, amount);
-            SyncManager.Instance.H2KSyncData(intName);
-        }
-    }
-}
+
 [HarmonyPatch(typeof(PlayerData), "SetFloat")]
 class Patch_PlayerData_SetFloat : GeneralPatch
 {
@@ -74,23 +133,15 @@ class Patch_PlayerData_SetFloat : GeneralPatch
     {
         if (KnightInSilksong.IsKnight)
         {
-            Knight.PlayerData.instance.SetFloat(floatName, value);
+            if (!SyncManager.Instance.IsWatching(floatName) && !BlackList.IsBlackListed(floatName))
+            {
+                Knight.PlayerData.instance.SetFloat(floatName, value);
+            }
             SyncManager.Instance.H2KSyncData(floatName);
         }
     }
 }
-[HarmonyPatch(typeof(PlayerData), "DecrementInt")]
-class Patch_PlayerData_DecrementInt : GeneralPatch
-{
-    static void Postfix(string intName)
-    {
-        if (KnightInSilksong.IsKnight)
-        {
-            Knight.PlayerData.instance.DecrementInt(intName);
-            SyncManager.Instance.H2KSyncData(intName);
-        }
-    }
-}
+
 [HarmonyPatch(typeof(PlayerData), "SetString")]
 class Patch_PlayerData_SetString : GeneralPatch
 {
@@ -153,8 +204,6 @@ public class Patch_PlayerData_SetBenchRespawn3 : GeneralPatch
         }
     }
 }
-
-
 
 [HarmonyPatch(typeof(PlayerData), "SetHazardRespawn", new Type[] { typeof(HazardRespawnMarker) })]
 public class Patch_PlayerData_SetHazardRespawn : GeneralPatch

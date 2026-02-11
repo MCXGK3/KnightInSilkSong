@@ -59,7 +59,7 @@ public class Patch_PlayMakerFSM_Start : GeneralPatch
         }
         else
         {
-            fsm.fsm.GetFsmGameObject("Hero").value = HelperFun.GetCurrentHero();
+            fsm.fsm.GetFsmGameObject("Hero").value = KISHelper.GetCurrentHero();
         }
     }
 

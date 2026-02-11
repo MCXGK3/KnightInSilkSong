@@ -1,5 +1,6 @@
 using System.IO;
 using BepInEx;
+using HutongGames.PlayMaker.Actions;
 using Newtonsoft.Json;
 namespace KIS;
 
@@ -18,48 +19,48 @@ internal partial class SyncManager
     private bool enable = true;
     private bool initialized = false;
 
-
     public SyncManager()
     {
-
+        KISHelper.OnReturnToMenu -= Return2Menu;
+        KISHelper.OnReturnToMenu += Return2Menu;
     }
 
     private void ResetConfig()
     {
-        sync_entries.Clear();
-        hdpath_to_sync_entry.Clear();
-        DefaultConfig();
+        ApplyInfo(DefaultConfig());
     }
-    private SyncBaseInfo SameNameSync(string path)
+    private static SyncBaseInfo SameNameSync(string path)
     {
         // they should have the same name and value
         return new SyncBaseInfo(path, null, path, null, true);
     }
-    private SyncBaseInfo SameValueSync(string hdPath, string kdPath)
+    private static SyncBaseInfo SameValueSync(string hdPath, string kdPath)
     {
         // they should have the same value
         return new SyncBaseInfo(hdPath, null, kdPath, null, true);
     }
-    private SyncBaseInfo DefaultValue(string kdPath, object kdValue)
+    private static SyncBaseInfo DefaultValue(string kdPath, object kdValue)
     {
         return new(null, null, kdPath, kdValue, false);
     }
-    private SyncBaseInfo Tool2Charm(Tool tool, Charm charm, bool always_equal = true)
+    private static SyncBaseInfo Tool2Charm(Tool tool, Charm charm, bool always_equal = true)
     {
+
         return new(FromTool.prefix + tool.GetToolName(), true, charm.GetCharmName(), true, always_equal);
     }
 
 
-    private void DefaultConfig()
+    public static List<SyncBaseInfo> DefaultConfig()
     {
-        base_infos = [
+        return [
             //movement
             SameNameSync(nameof(hd.hasDash)),
             SameValueSync(nameof(hd.hasDash), nameof(kd.canDash)),
+            DefaultValue(nameof(kd.hasShadowDash),false),
             // SameValueSync(nameof(hd.),nameof(kd.hasShadowDash)),
             SameNameSync(nameof(hd.hasWalljump)),
             SameNameSync(nameof(hd.hasDoubleJump)),
-            SameValueSync(nameof(hd.hasBrolly), nameof(kd.hasSuperDash)),
+            SameValueSync(nameof(hd.hasHarpoonDash), nameof(kd.hasSuperDash)),
             // spells
 
             DefaultValue(nameof(kd.fireballLevel), 0),
@@ -86,71 +87,74 @@ internal partial class SyncManager
             SameValueSync(nameof(hd.hasChargeSlash), nameof(kd.hasCyclone)),
             SameValueSync(nameof(hd.hasChargeSlash), nameof(kd.hasDashSlash)),
             SameValueSync(nameof(hd.hasChargeSlash), nameof(kd.hasUpwardSlash)),
+            DefaultValue(nameof(kd.hasMap),true),
+
 
             //charm
-            new(FromUnlockedSlots.CheckKey,null,nameof(kd.charmSlots),null,true),
-            Tool2Charm(Tool.Compass,Charm.WaywardCompass),
-            Tool2Charm(Tool.Sting_Shard,Charm.Weaversong),
-            Tool2Charm(Tool.Pimpilo,Charm.DefendersCrest),
-            Tool2Charm(Tool.Lightning_Rod,Charm.MarkOfPride),
-            Tool2Charm(Tool.Flintstone,Charm.UnbreakableStrength),
-            Tool2Charm(Tool.Flea_Brew,Charm.QuickSlash),
-            Tool2Charm(Tool.Lifeblood_Syringe,Charm.JonisBlessing),
-            DefaultValue(Charm.Grubsong.GetCharmName(),false),
-            Tool2Charm(Tool.Mosscreep_Tool_1,Charm.Grubsong,false),
-            Tool2Charm(Tool.Mosscreep_Tool_2,Charm.Grubsong,false),
-            Tool2Charm(Tool.Bell_Bind,Charm.BaldurShell),
-            Tool2Charm(Tool.Poison_Pouch,Charm.Flukenest),
-            Tool2Charm(Tool.Lava_Charm,Charm.StalwartShell),
-            Tool2Charm(Tool.Fractured_Mask,Charm.LifebloodHeart),
-            Tool2Charm(Tool.Multibind,Charm.DeepFocus),
-            Tool2Charm(Tool.White_Ring,Charm.SoulEater),
-            Tool2Charm(Tool.Brolly_Spike,Charm.SharpShadow),
-            Tool2Charm(Tool.Quickbind,Charm.QuickFocus),
-            Tool2Charm(Tool.Spool_Extender,Charm.SpellTwister),
-            Tool2Charm(Tool.Reserve_Bind,Charm.Hiveblood),
-            DefaultValue(Charm.SporeShroom.GetCharmName(),false),
-            Tool2Charm(Tool.Dazzle_Bind,Charm.SporeShroom),
-            Tool2Charm(Tool.Dazzle_Bind_Upgraded,Charm.SporeShroom),
-            Tool2Charm(Tool.Revenge_Crystal,Charm.ThornsOfAgony),
-            Tool2Charm(Tool.Zap_Imbuement,Charm.ShamanStone),
-            Tool2Charm(Tool.Quick_Sling,Charm.SoulCatcher),
-            Tool2Charm(Tool.Maggot_Charm,Charm.LifebloodCore),
-            Tool2Charm(Tool.Longneedle,Charm.Longnail),
-            Tool2Charm(Tool.Wisp_Lantern,Charm.GlowingWomb),
-            Tool2Charm(Tool.Flea_Charm,Charm.GrubberflysElegy),
-            Tool2Charm(Tool.Pinstress_Tool,Charm.NailmastersGlory),
-            Tool2Charm(Tool.Bone_Necklace,Charm.HeavyBlow),
-            Tool2Charm(Tool.Rosary_Magnet,Charm.GatheringSwarm),
-            Tool2Charm(Tool.Weighted_Anklet,Charm.SteadyBody),
-            Tool2Charm(Tool.Barbed_Wire,Charm.FuryOfTheFallen),
-            DefaultValue(Charm.UnbreakableHeart.GetCharmName(),false),
-            Tool2Charm(Tool.Dead_Mans_Purse,Charm.UnbreakableHeart,false),
-            Tool2Charm(Tool.Shell_Satchel,Charm.UnbreakableHeart,false),
-            DefaultValue(Charm.Grimmchild.GetCharmName(),false),
-            DefaultValue(nameof(kd.grimmChildLevel),4),
-            Tool2Charm(Tool.Cogwork_Flier,Charm.Grimmchild,false),
+            new(FromUnlockedSlots.CheckKey, null, nameof(kd.charmSlots), null, true),
+            Tool2Charm(Tool.Compass, Charm.WaywardCompass),
+            Tool2Charm(Tool.Sting_Shard, Charm.Weaversong),
+            Tool2Charm(Tool.Pimpilo, Charm.DefendersCrest),
+            Tool2Charm(Tool.Lightning_Rod, Charm.MarkOfPride),
+            Tool2Charm(Tool.Flintstone, Charm.UnbreakableStrength),
+            Tool2Charm(Tool.Flea_Brew, Charm.QuickSlash),
+            Tool2Charm(Tool.Lifeblood_Syringe, Charm.JonisBlessing),
+            DefaultValue(Charm.Grubsong.GetCharmName(), false),
+            Tool2Charm(Tool.Mosscreep_Tool_1, Charm.Grubsong, false),
+            Tool2Charm(Tool.Mosscreep_Tool_2, Charm.Grubsong, false),
+            Tool2Charm(Tool.Bell_Bind, Charm.BaldurShell),
+            Tool2Charm(Tool.Poison_Pouch, Charm.Flukenest),
+            Tool2Charm(Tool.Lava_Charm, Charm.StalwartShell),
+            Tool2Charm(Tool.Fractured_Mask, Charm.LifebloodHeart),
+            Tool2Charm(Tool.Multibind, Charm.DeepFocus),
+            Tool2Charm(Tool.White_Ring, Charm.SoulEater),
+            Tool2Charm(Tool.Brolly_Spike, Charm.SharpShadow),
+            Tool2Charm(Tool.Quickbind, Charm.QuickFocus),
+            Tool2Charm(Tool.Spool_Extender, Charm.SpellTwister),
+            Tool2Charm(Tool.Reserve_Bind, Charm.Hiveblood),
+            DefaultValue(Charm.SporeShroom.GetCharmName(), false),
+            Tool2Charm(Tool.Dazzle_Bind, Charm.SporeShroom),
+            Tool2Charm(Tool.Dazzle_Bind_Upgraded, Charm.SporeShroom),
+            Tool2Charm(Tool.Revenge_Crystal, Charm.ThornsOfAgony),
+            Tool2Charm(Tool.Zap_Imbuement, Charm.ShamanStone),
+            Tool2Charm(Tool.Quick_Sling, Charm.SoulCatcher),
+            Tool2Charm(Tool.Maggot_Charm, Charm.LifebloodCore),
+            Tool2Charm(Tool.Longneedle, Charm.Longnail),
+            Tool2Charm(Tool.Wisp_Lantern, Charm.GlowingWomb),
+            Tool2Charm(Tool.Flea_Charm, Charm.GrubberflysElegy),
+            Tool2Charm(Tool.Pinstress_Tool, Charm.NailmastersGlory),
+            Tool2Charm(Tool.Bone_Necklace, Charm.HeavyBlow),
+            Tool2Charm(Tool.Rosary_Magnet, Charm.GatheringSwarm),
+            Tool2Charm(Tool.Weighted_Anklet, Charm.SteadyBody),
+            Tool2Charm(Tool.Barbed_Wire, Charm.FuryOfTheFallen),
+            DefaultValue(Charm.UnbreakableHeart.GetCharmName(), false),
+            Tool2Charm(Tool.Dead_Mans_Purse, Charm.UnbreakableHeart, false),
+            Tool2Charm(Tool.Shell_Satchel, Charm.UnbreakableHeart, false),
+            DefaultValue(Charm.Grimmchild.GetCharmName(), false),
+            DefaultValue(nameof(kd.grimmChildLevel), 4),
+            Tool2Charm(Tool.Cogwork_Flier, Charm.Grimmchild, false),
             // new(FromTool.prefix+Tool.Cogwork_Flier.GetToolName(),true,nameof(kd.grimmChildLevel),4),
-            Tool2Charm(Tool.Magnetite_Dice,Charm.Grimmchild,false),
-            new(FromTool.prefix+Tool.Magnetite_Dice.GetToolName(),true,nameof(kd.grimmChildLevel),5,false),
-            Tool2Charm(Tool.Scuttlebrace,Charm.Dashmaster),
-            Tool2Charm(Tool.Sprintmaster,Charm.Sprintmaster),
-            Tool2Charm(Tool.Musician_Charm,Charm.DreamWielder),
-            Tool2Charm(Tool.Thief_Charm,Charm.UnbreakableGreed),
-            Tool2Charm(Tool.Wallcling,Charm.ShapeOfUnn),
-            Tool2Charm(Tool.Cogwork_Saw,Charm.Dreamshield)
-
-
+            Tool2Charm(Tool.Magnetite_Dice, Charm.Grimmchild, false),
+            new(FromTool.prefix + Tool.Magnetite_Dice.GetToolName(), true, nameof(kd.grimmChildLevel), 5, false),
+            Tool2Charm(Tool.Scuttlebrace, Charm.Dashmaster),
+            Tool2Charm(Tool.Sprintmaster, Charm.Sprintmaster),
+            Tool2Charm(Tool.Musician_Charm, Charm.DreamWielder),
+            Tool2Charm(Tool.Thief_Charm, Charm.UnbreakableGreed),
+            Tool2Charm(Tool.Wallcling, Charm.ShapeOfUnn),
+            Tool2Charm(Tool.Cogwork_Saw, Charm.Dreamshield)
         ];
-        ApplyInfo();
 
     }
 
-
-    private void ApplyInfo()
+    private void ApplyInfo(List<SyncBaseInfo> infos)
     {
+        if (infos == null)
+        {
+            infos = DefaultConfig();
+        }
         sync_entries.Clear();
         hdpath_to_sync_entry.Clear();
+        base_infos = infos;
         foreach (var info in base_infos)
         {
             var new_entry = FromBaseInfo(info);
@@ -166,30 +170,15 @@ internal partial class SyncManager
         }
 
     }
-    public void Initialize()
+    public void Initialize(List<SyncBaseInfo> infos, bool enable)
     {
-        if (initialized) return;
-
-        // Initialization logic here
-        if (File.Exists(HelperFun.GetSyncConfigPath()))
-        {
-            try
-            {
-                LoadCustomizeSyncConfig(HelperFun.GetSyncConfigPath());
-            }
-            catch (Exception e)
-            {
-                "Load CustomSyncConfig Failed, Use Default Config".LogWarning();
-                e.LogWarning();
-                ResetConfig();
-            }
-        }
-        else
-        {
-            ResetConfig();
-        }
+        this.enable = enable;
+        ApplyInfo(infos);
         initialized = true;
-
+    }
+    public void Return2Menu()
+    {
+        initialized = false;
     }
 
     public void H2KSyncData()
@@ -214,11 +203,6 @@ internal partial class SyncManager
             }
         }
     }
-    public void LoadCustomizeSyncConfig(string path)
-    {
-        base_infos = JsonConvert.DeserializeObject<List<SyncBaseInfo>>(File.ReadAllText(path));
-        ApplyInfo();
-    }
     public void SaveConfig(string path)
     {
         if (!initialized) return;
@@ -228,5 +212,9 @@ internal partial class SyncManager
             new_info_list.Add(entry.ToBaseInfo());
         }
         File.WriteAllText(path, JsonConvert.SerializeObject(new_info_list, Formatting.Indented));
+    }
+    public bool IsWatching(string var_name)
+    {
+        return enable && hdpath_to_sync_entry.ContainsKey(var_name);
     }
 }

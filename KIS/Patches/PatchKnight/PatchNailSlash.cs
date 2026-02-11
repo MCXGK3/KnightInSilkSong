@@ -5,7 +5,7 @@ public class Patch_NailSlash_OnTriggerEnter2D : GeneralPatch
 {
     public static bool Prefix(Knight.NailSlash __instance, Collider2D otherCollider)
     {
-        if (!PlayerData.instance.hasHarpoonDash)
+        if (!PrepatcherPlugin.PlayerDataAccess.hasHarpoonDash)
             return true;
 
         if (otherCollider.gameObject.tag == "Harpoon Ring")

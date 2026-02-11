@@ -25,7 +25,7 @@ public class Patch_DamageHeroDirectlyV2_OnEnter : GeneralPatch
         }
 
         Knight.HeroController instance = Knight.HeroController.instance;
-        PlayerData.instance.isInvincible = false;
+        PrepatcherPlugin.PlayerDataAccess.isInvincible = false;
         HazardType hazardType = (HazardType)(object)__instance.hazardType.Value;
         if (__instance.overrideDirection.IsNone)
         {

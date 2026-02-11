@@ -225,7 +225,7 @@ internal partial class SyncManager
         {nameof(kd.maxHealthBase),(val)=>{kd.maxHealthBase=Math.Min(kd.maxHealthBase,9);}},
         {nameof(kd.nailSmithUpgrades),(val)=>{SyncManager.Instance.H2KSyncData(nameof(hd.nailDamage));}}
     };
-    private void AddNecessarySyncAction(SyncEntry entry)
+    private static void AddNecessarySyncAction(SyncEntry entry)
     {
         entry.dirty_action += (val) =>
         {
@@ -238,7 +238,7 @@ internal partial class SyncManager
         }
 
     }
-    public SyncEntry FromBaseInfo(SyncBaseInfo info)
+    public static SyncEntry FromBaseInfo(SyncBaseInfo info)
     {
         SyncEntry res;
         if (info.hdPath.IsNullOrWhiteSpace())

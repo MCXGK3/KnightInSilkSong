@@ -8,7 +8,7 @@ using BepInEx.Configuration;
 
 namespace KIS;
 
-
+[BepInDependency(PrepatcherPlugin.PrepatcherPlugin.Id)]
 [BepInAutoPlugin(id: "io.github.shownyoung.knightinsilksong")]
 public partial class KnightInSilksong : BaseUnityPlugin
 {
@@ -29,6 +29,7 @@ public partial class KnightInSilksong : BaseUnityPlugin
     public static ConfigEntry<bool> allowLog;
     public static ConfigEntry<KeyCode> toggleButton;
     public static ConfigEntry<bool> apply_damage_scaling;
+    public static ConfigEntry<bool> default_sync;
 
     internal static bool IsKnight => Instance.iskight;
     bool iskight = false;
@@ -49,6 +50,22 @@ public partial class KnightInSilksong : BaseUnityPlugin
     // maybe not the best way to do this
     public static bool shouldToggleKnight = false;
 
+    public SlotData current_data
+    {
+        get;
+        set
+        {
+            if (field != value)
+            {
+                if (field != null)
+                {
+                    field.SaveSyncConfig();
+                }
+                field = value;
+            }
+        }
+    } = null;
+
     private void Awake()
     {
         logger = Logger;
@@ -58,6 +75,10 @@ public partial class KnightInSilksong : BaseUnityPlugin
                                             "ApplyDamageScaling",
                                              true,
                                              "Enable this to make knight's damage influenced by damage scaling");
+        default_sync = Config.Bind("Play",
+                                "DefaultSync",
+                                false,
+                                "Start game under knight sync mode");
 
         Instance = this;
         // Put your initialization logic here
@@ -84,6 +105,8 @@ public partial class KnightInSilksong : BaseUnityPlugin
                 self_hormony.PatchAll(type);
             }
         }
+        HandlePlayerData.Init();
+        // KISHelper.OnReturnToMenu += () => current_data = null;
 
 
         // SetKnight(knight);
@@ -179,7 +202,6 @@ public partial class KnightInSilksong : BaseUnityPlugin
 
     internal void InstKnight()
     {
-        SyncManager.Instance.Initialize();
         knight.GetComponent<Knight.HeroController>().hardLandingEffectPrefab = HeroController.instance.hardLandingEffectPrefab;
         knight.GetComponent<Knight.HeroController>().softLandingEffectPrefab = HeroController.instance.softLandingEffectPrefab;
         GameObject.Instantiate(knight);
@@ -285,8 +307,8 @@ public partial class KnightInSilksong : BaseUnityPlugin
     }
     private void OnApplicationQuit()
     {
-        HelperFun.SaveConfig();
-
+        KISHelper.OnQuitApp?.Invoke();
+        current_data = null;
     }
 
 }

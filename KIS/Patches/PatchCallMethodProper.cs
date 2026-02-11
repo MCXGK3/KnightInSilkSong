@@ -191,14 +191,14 @@ class PatchDoMethodCall : GeneralPatch
                 }
                 else if (__instance.methodName.value == "EnterUpdraft")
                 {
-                    if (PlayerData.instance.hasBrolly)
+                    if (PrepatcherPlugin.PlayerDataAccess.hasBrolly)
                     {
                         Knight.PlayerData.instance.SetBool(nameof(Knight.PlayerData.infiniteAirJump), true);
                     }
                 }
                 else if (__instance.methodName.value == "ExitUpdraft")
                 {
-                    if (PlayerData.instance.hasBrolly)
+                    if (PrepatcherPlugin.PlayerDataAccess.hasBrolly)
                     {
                         Knight.PlayerData.instance.SetBool(nameof(Knight.PlayerData.infiniteAirJump), false);
                     }

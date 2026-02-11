@@ -31,6 +31,7 @@
     <!--If you're unable resolve this dependency, check that you're using the nuget v3 package feed instead of v2.-->
     <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.3" PrivateAssets="all" />
     <!-- <PackageReference Include="UnityEngine.Modules" Version="6000.0.50" IncludeAssets="compile" /> -->
+    <PackageReference Include="Silksong.PrepatcherPlugin" Version="1.3.0" PrivateAssets="all"/>
 
     <LocalReferences Include="$(ManagedDir)*.dll" Exclude="$(ManagedDir)Mono*.dll;$(ManagedDir)netstandard.dll;$(ManagedDir)System*.dll;$(ManagedDir)mscorlib.dll" />
     <Reference Include="@(LocalReferences)" Private="false" Publicize="true" />

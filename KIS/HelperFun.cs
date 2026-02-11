@@ -1,4 +1,5 @@
 using System.IO;
+using BepInEx;
 using GlobalEnums;
 using HutongGames.PlayMaker;
 using KIS;
@@ -117,51 +118,16 @@ public enum Charm
     Grimmchild = 40,
     VoidHeart = 36
 }
-public static class HelperFun
+public static class KISHelper
 {
+    //useful actions
+    public static Action OnReturnToMenu = null;
+    public static Action OnQuitApp = null;
+    //useful Enums
     internal const HeroDeathCocoonTypes knight_death_cocoon = (HeroDeathCocoonTypes)(1 << 30);
-    public static string GetConfigDirectory()
+    public static string GetSaveDataDirectory(int slot)
     {
-
-        return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-    }
-    public static string GetPlayerDataPath()
-    {
-        return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "PlayerData.json");
-    }
-    public static string GetSyncConfigPath()
-    {
-        string sync_config_name = "SyncConfig.json";
-        return Path.Combine(GetConfigDirectory(), sync_config_name);
-    }
-    public static void SaveConfig()
-    {
-        Knight.PlayerData pd = Knight.PlayerData.instance;
-        if (pd == null) return;
-        string json = JsonUtility.ToJson(pd, true);
-        File.WriteAllText(GetPlayerDataPath(), json);
-        SyncManager.Instance?.SaveConfig(GetSyncConfigPath());
-    }
-    public static bool LoadPlayerData()
-    {
-        string path = GetPlayerDataPath();
-        if (File.Exists(path))
-        {
-            string json = File.ReadAllText(path);
-            try
-            {
-                Knight.PlayerData pd = Knight.PlayerData.instance;
-                JsonUtility.FromJsonOverwrite(json, pd);
-                "Load OK".LogInfo();
-            }
-            catch (Exception e)
-            {
-                e.LogError();
-                return false;
-            }
-            return true;
-        }
-        return false;
+        return Path.Combine(Paths.ConfigPath, "shownyoung-KIS", "Slot" + slot);
     }
     public static Texture2D LoadTexture(Stream stream)
     {
