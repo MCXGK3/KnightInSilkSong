@@ -30,7 +30,8 @@ public partial class KnightInSilksong : BaseUnityPlugin
     public static ConfigEntry<KeyCode> toggleButton;
     public static ConfigEntry<bool> apply_damage_scaling;
     public static ConfigEntry<bool> default_sync;
-
+    public static ConfigEntry<float> knight_scaleX;
+    public static ConfigEntry<float> knight_scaleY;
     internal static bool IsKnight => Instance.iskight;
     bool iskight = false;
     public static int KnightDamage => 1 << 30;
@@ -79,6 +80,14 @@ public partial class KnightInSilksong : BaseUnityPlugin
                                 "DefaultSync",
                                 false,
                                 "Start game under knight sync mode");
+        knight_scaleX = Config.Bind("Play",
+                                "KnightScaleX",
+                                1f,
+                                "The X scale of the knight. Switch to apply");
+        knight_scaleY = Config.Bind("Play",
+                                "KnightScaleY",
+                                1f,
+                                "The Y scale of the knight. Switch to apply");
 
         Instance = this;
         // Put your initialization logic here
@@ -177,6 +186,7 @@ public partial class KnightInSilksong : BaseUnityPlugin
             DisableOriHud();
             DialogueBox._instance.hudFSM = hud_instance.LocateMyFSM("Slide Out");
         }
+        KnightController.gameObject.transform.SetScale2D(new((KnightController.transform.localScale.x > 0 ? 1 : -1) * knight_scaleX.Value, knight_scaleY.Value));
         OnToggleKnight?.Invoke(iskight);
 
 
@@ -188,6 +198,8 @@ public partial class KnightInSilksong : BaseUnityPlugin
             GameCameras.instance.soulVesselFSM = hud_instance.FindGameObjectInChildren("Soul Orb").FindGameObjectInChildren("Vessels").LocateMyFSM("Update Vessels");
             GameManager.instance.soulOrb_fsm = GameCameras.instance.soulOrbFSM;
             GameManager.instance.soulVessel_fsm = GameCameras.instance.soulVesselFSM;
+            var orb_full = hud_instance.FindGameObjectInChildren("Orb Full");
+            orb_full.FindGameObjectInChildren("Pulse Sprite").GetComponent<SpriteRenderer>().sprite = orb_full.GetComponent<SpriteRenderer>().sprite;
             if (with_charm) InstCharm();
 
         }

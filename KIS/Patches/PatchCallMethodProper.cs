@@ -211,22 +211,32 @@ class PatchDoMethodCall : GeneralPatch
                 {
                     __instance.parameters[0].UpdateValue();
                     HeroController.instance.AddToMaxSilkRegen(__instance.parameters[0].intValue);
+                    __instance.Finish();
+                    return;
                 }
                 else if (__instance.methodName.value == nameof(HeroController.CocoonBroken))
                 {
                     HeroController.instance.CocoonBroken();
+                    __instance.Finish();
+                    return;
                 }
                 else if (__instance.methodName.value == nameof(HeroController.AddGeo))
                 {
                     HeroController.instance.AddGeo(__instance.parameters[0].intValue);
+                    __instance.Finish();
+                    return;
                 }
                 else if (__instance.methodName.value == nameof(HeroController.AddGeoQuietly))
                 {
                     HeroController.instance.AddGeoQuietly(__instance.parameters[0].intValue);
+                    __instance.Finish();
+                    return;
                 }
                 else if (__instance.methodName.value == nameof(HeroController.AddGeoToCounter))
                 {
                     HeroController.instance.AddGeoToCounter(__instance.parameters[0].intValue);
+                    __instance.Finish();
+                    return;
                 }
             }
             if (__instance.behaviour.value == "GameManager")

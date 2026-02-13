@@ -60,7 +60,8 @@ internal partial class SyncManager
             // SameValueSync(nameof(hd.),nameof(kd.hasShadowDash)),
             SameNameSync(nameof(hd.hasWalljump)),
             SameNameSync(nameof(hd.hasDoubleJump)),
-            SameValueSync(nameof(hd.hasHarpoonDash), nameof(kd.hasSuperDash)),
+            SameValueSync(nameof(hd.hasDash), nameof(kd.hasSuperDash)),
+            SameValueSync(nameof(hd.hasHarpoonDash),nameof(kd.hasShadowDash)),
             // spells
 
             DefaultValue(nameof(kd.fireballLevel), 0),

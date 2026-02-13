@@ -21,7 +21,7 @@
   <PropertyGroup>
     <!--These properties will control the generated plugin info. Version is also used by various parts of the build system.-->
     <AssemblyTitle>KnightInSilkSong</AssemblyTitle>
-    <Version>0.5.9</Version>
+    <Version>0.6.0</Version>
   </PropertyGroup>
 
   <ItemGroup>

@@ -5,6 +5,8 @@ internal class KeepHornet : MonoBehaviour
     private Vector2 boxSize;
     private Vector2 boxOffset;
     private Rigidbody2D hornet_rb;
+    private Vector2 scale;
+    internal static bool test = false;
 
     private void Awake()
     {
@@ -20,8 +22,10 @@ internal class KeepHornet : MonoBehaviour
         var box = Hornet.GetComponent<BoxCollider2D>();
         offset = box.offset;
         boxSize = box.size;
+        scale = new(Math.Abs(Hornet.transform.GetScaleX()), Math.Abs(Hornet.transform.GetScaleY()));
         box.size = base.GetComponent<BoxCollider2D>().size;
         box.offset = base.GetComponent<BoxCollider2D>().offset;
+        Hornet.transform.SetScale2D(base.transform.localScale);
         Hornet.GetComponent<HeroWaterController>().enabled = false;
         List<string> slashes = ["Slash", "AltSlash", "DownSlash", "UpSlash", "WallSlash"];
         foreach (var slash in slashes)
@@ -34,7 +38,6 @@ internal class KeepHornet : MonoBehaviour
     {
         Hornet.transform.position = base.transform.position;
         LookingStateSync();
-
     }
 
     private void LookingStateSync()
@@ -64,5 +67,6 @@ internal class KeepHornet : MonoBehaviour
         box.offset = offset;
         box.size = boxSize;
         Hornet.GetComponent<HeroWaterController>().enabled = true;
+        Hornet.transform.SetScale2D(new((Hornet.transform.GetScaleX() > 0 ? 1 : -1) * scale.x, scale.y));
     }
 }

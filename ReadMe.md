@@ -20,22 +20,27 @@ It allows you to switch between the Knight and Hornet in the game.
 
 1. Launch Hollow Knight Silksong with BepInEx.打开安装了BepInEx与本mod的游戏本体。
 2. During gameplay, press the key you set (defalut is F5) to toggle between the Knight and Hornet.在游戏中，按下你所设下的切换键（默认为F5）来进行小骑士与大黄蜂间的切换。
-3. To adjust the status of the knight (such as nail damage, etc.), you can modify the 'PlayerData.json' file in the same directory of the mod (which appears after playing once), and other settings (such as damage modifier, etc.) can be modified by editing 'Hollow Knight SilksongBepInExconfigio.github.shownyoung.knightinsilksong.cfg'.要对小骑士的状态（如骨钉伤害等）进行调整，可以修改mod同目录下的 `PlayerData.json`文件（游玩一次后出现），其他设置（如伤害修正等）可以修改 `Hollow Knight Silksong\BepInEx\config\io.github.shownyoung.knightinsilksong.cfg`来完成。
+3. To adjust the status of the knight (such as nail damage, etc.), you can modify the `BepInEx\config\SlotX\PlayerData.json` (which appears after saving once), and other settings (such as damage modifier, etc.) can be modified by editing 'Hollow Knight SilksongBepInExconfigio.github.shownyoung.knightinsilksong.cfg'.要对小骑士的状态（如骨钉伤害等）进行调整，可以修改 `BepInEx\config\SlotX\PlayerData.json`文件（保存一次后出现），其他设置（如伤害修正等）可以修改 `Hollow Knight Silksong\BepInEx\config\io.github.shownyoung.knightinsilksong.cfg`来完成。
+4. The option for ability synchronization is also set in `BepInEx\config\SlotX\SlotSetting.cfg`. 同步能力的选项也在 `BepInEx\config\SlotX\SlotSetting.cfg`中设置。
+5. This mod is now compatible with skin mods, and the names of the images in customknight correspond as follows (taking Patchwork as an example). However, please note that you must obtain the consent of the skin creator before using the skin in SS. 此mod现在可以与皮肤mod兼容，其在CK中的皮肤图片对应路径如下所示（以Patchwork为例）。但需要注意，在丝之歌中使用皮肤前请获得皮肤作者的同意。
+
+| name in CK     | path for Patchwork                                                   |
+| -------------- | -------------------------------------------------------------------- |
+| Knight.png     | Patchwork\Spritesheets\Knight(Hollownest)\atlas0.png                 |
+| Hud.png        | Patchwork\Spritesheets\HUD Cln(Hollownest)\atlas0.png                |
+| Geo.png        | Patchwork\Spritesheets\Geo(Hollownest)\atlas0.png                    |
+| Hatchling.png  | Patchwork\Spritesheets\\Knight Hatchling Cln(Hollownest)\atlas0.png  |
+| Wraiths.png    | Patchwork\Spritesheets\\Spell Effects 2(Hollownest)\atlas0.png       |
+| Grimm.png      | Patchwork\Spritesheets\\Grimmchild Cln(Hollownest)\atlas0.png        |
+| VoidSpells.png | Patchwork\Spritesheets\\Spell Effects Neutral(Hollownest)\atlas0.png |
+| Unn.png        | Patchwork\Spritesheets\\Knight Slug Cln(Hollownest)\atlas0.png       |
+| VS.png         | Patchwork\Spritesheets\\Spell Effects(Hollownest)\atlas0.png         |
+| Baldur.png     | Patchwork\Spritesheets\\Charm Blocker Cln(Hollownest)\atlas0.png     |
+| Shield.png     | Patchwork\Spritesheets\\Orbit Shield Cln(Hollownest)\atlas0.png      |
+| Weaver.png     | Patchwork\Spritesheets\\Weaverling Cln(Hollownest)\atlas0.png        |
+| Liquid.png     | Patchwork\Spritesheets\\HUD_Soulorb_fills(Hollownest)\atlas0.png     |
+| OrbFull.png    | Patchwork\Sprites\T2D\soul_orb_glow0000.png                          |
 
 ## Special Thanks
 
 Credit to @olvior for the effort to enable the knight to beat the game completely. 感谢@olvior为使小骑士能够正常完成游戏所做的努力。
-
-## List of Known issues
-
-| Issue Description                                                                                                                                                             | Related Report(s) | Fixed? |
-| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------- | ------ |
-| When entering a room or sequence that has a special interaction with Hornet as the Knight may cause the game to softlock                                                      | #1, #8            | Yes    |
-| Sometimes when going through vertical transtions as the Knight you may end up not going through the transition succesfully                                                    | #19               |        |
-| When using the Dreamgate it may cause the players camera to bug out and not be focused on the player                                                                          | #24               |        |
-| When playing as the Knight if you are swimming you may not be able to jump as intended                                                                                        | #18               |        |
-| When swimming as the knight the player tends to sink further down instead of just floating in the water as intended                                                           | #18               |        |
-| Under certain circumstances, the Hiveblood Charm might grant an incorrect number of Hiveblood health segments. Please use with discretion.                                    | #29               |        |
-| Under certain circumstances, The Knight's HUD might not appear. Opening and closing the Inventory should restore it.                                                          |                   | Yes    |
-| Under certain circumstances, Weaverlings or Grimmchild might instantly kill enemies, potentially causing softlocks. Please use them with discretion.                          | #25               |        |
-| Under certain circumstances, The Knight might not play the corresponding animation or Hornet's animation might appear instead. This is a normal phenomenon; please ignore it. |                   | Yes    |

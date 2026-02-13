@@ -178,3 +178,48 @@ public class Patch_Knight_HeroController_DieFromHazard : GeneralPatch
         }
     }
 }
+[HarmonyPatch(typeof(Knight.HeroController), nameof(Knight.HeroController.FaceLeft), MethodType.Normal)]
+public class Patch_Knight_HeroController_FaceLeft : GeneralPatch
+{
+    public static bool Prefix(Knight.HeroController __instance)
+    {
+        return true;
+    }
+    public static void Postfix(Knight.HeroController __instance)
+    {
+        Vector3 scale = __instance.transform.localScale;
+        scale.x *= KnightInSilksong.knight_scaleX.Value;
+        scale.y = KnightInSilksong.knight_scaleY.Value;
+        __instance.transform.SetScale2D(scale);
+    }
+}
+[HarmonyPatch(typeof(Knight.HeroController), nameof(Knight.HeroController.FaceRight), MethodType.Normal)]
+public class Patch_Knight_HeroController_FaceRight : GeneralPatch
+{
+    public static bool Prefix(Knight.HeroController __instance)
+    {
+        return true;
+    }
+    public static void Postfix(Knight.HeroController __instance)
+    {
+        Vector3 scale = __instance.transform.localScale;
+        scale.x *= KnightInSilksong.knight_scaleX.Value;
+        scale.y = KnightInSilksong.knight_scaleY.Value;
+        __instance.transform.SetScale2D(scale);
+    }
+}
+[HarmonyPatch(typeof(Knight.HeroController), nameof(Knight.HeroController.Update10), MethodType.Normal)]
+public class Patch_Knight_HeroController_Update10 : GeneralPatch
+{
+    public static bool Prefix(Knight.HeroController __instance)
+    {
+        return true;
+    }
+    public static void Postfix(Knight.HeroController __instance)
+    {
+        Vector3 scale = __instance.transform.localScale;
+        scale.x *= KnightInSilksong.knight_scaleX.Value;
+        scale.y = KnightInSilksong.knight_scaleY.Value;
+        __instance.transform.SetScale2D(scale);
+    }
+}

@@ -1,6 +1,7 @@
 using HutongGames.PlayMaker.Actions;
 using KIS.Utils;
 using UnityEngine.SceneManagement;
+using PDA = PrepatcherPlugin.PlayerDataAccess;
 
 namespace KIS;
 
@@ -23,8 +24,16 @@ public class ProgressionManager
         ]},
         {"bone_east_20",[
             new(113f,19f)
-        ]
-        }
+        ]},
+        {"under_18",[
+            new(117f,14f),
+            new(40f,33.5f),
+            new(79f,34f)
+        ]},
+        {
+            "hang_13",[
+                new(53f,17.5f)
+            ]}
     };
 
     public static void setup()
@@ -33,6 +42,7 @@ public class ProgressionManager
             return;
 
         setupPlatform();
+        SceneManager.activeSceneChanged -= onActiveSceneChanged;
         SceneManager.activeSceneChanged += onActiveSceneChanged;
     }
 
@@ -80,7 +90,7 @@ public class ProgressionManager
                 disableWeaknessCutscene();
                 break;
             case "bonetown":
-                PlayerData.instance.churchKeeperIntro = true;
+                PDA.churchKeeperIntro = true;
                 disableWeaknessCutscene();
                 break;
             case "library_10":
@@ -93,10 +103,13 @@ public class ProgressionManager
                 placeBounceBloom(10f, 21.5f, "Shellwood Bounce Bloom");
                 break;
             case "shellwood_13":
-                if (!PlayerData.instance.hasWalljump)
+                if (!PDA.hasWalljump)
                 {
                     AddNonSlider("Chunk 0 2");
                 }
+                break;
+            case "song_tower_01":
+                MoveDoorPosition();
                 break;
         }
         //place platforms
@@ -110,6 +123,14 @@ public class ProgressionManager
 
     }
 
+    private static void MoveDoorPosition()
+    {
+        var boss_scene = GameObject.Find("Boss Scene");
+        var shmr = boss_scene.FindGameObjectInChildren("Silk Heart Memory Return");
+        var door = shmr.FindGameObjectInChildren("door_cinematicEnd");
+        door.transform.SetPositionY(100f);
+    }
+
     private static void AddNonSlider(string goname)
     {
         GameObject go = GameObject.Find(goname);
@@ -118,77 +139,6 @@ public class ProgressionManager
 
     public static void setProgression()
     {
-        PlayerData hData = PlayerData.instance;
-        Knight.PlayerData kData = Knight.PlayerData.instance;
-        // syncManager.H2KSyncData();
-        // movement
-        /*kData.hasDash = hData.hasDash;
-        kData.canDash = hData.hasDash;
-        kData.canShadowDash = false;
-        kData.hasShadowDash = false;
-        kData.hasWalljump = hData.hasWalljump;
-        kData.hasDoubleJump = hData.hasDoubleJump;
-        kData.hasSuperDash = hData.hasBrolly;
-
-        // spells
-        if (hData.hasSilkCharge)
-            kData.fireballLevel = 2;
-        else if (hData.hasNeedleThrow)
-            kData.fireballLevel = 1;
-        else
-            kData.fireballLevel = 0;
-
-        if (hData.hasSilkBossNeedle)
-            kData.quakeLevel = 2;
-        else if (hData.hasParry)
-            kData.quakeLevel = 1;
-        else
-            kData.quakeLevel = 0;
-
-        if (hData.hasSilkBomb)
-            kData.screamLevel = 2;
-        else if (hData.hasThreadSphere)
-            kData.screamLevel = 1;
-        else
-            kData.screamLevel = 0;
-
-
-        // upgrades
-        kData.nailDamage = hData.nailDamage;
-        kData.maxHealth = hData.maxHealth;
-        kData.MPReserve = hData.silkSpoolParts / 2;
-
-        // misc
-        kData.hasDreamNail = hData.hasNeedolin;
-        kData.hasDreamGate = hData.UnlockedFastTravelTeleport;
-        kData.permadeathMode = (int)hData.permadeathMode;
-        kData.bossRushMode = hData.bossRushMode;
-        kData.salubraBlessing = hData.HasBoundCrestUpgrader;
-
-        kData.hasCyclone = hData.hasChargeSlash;
-        kData.hasDashSlash = hData.hasChargeSlash;
-        kData.hasUpwardSlash = hData.hasChargeSlash;
-        kData.hasNailArt = hData.hasChargeSlash;*/
-
-        // interesting code for syncing Hornet's and the Knight's health/soul
-
-        // if (kData.health != oldKnightHealth)
-        // {
-        //     hData.health = kData.health;
-        // }
-
-        // if (kData.MPCharge != oldKnightMPCharge)
-        // {
-        //     hData.silk = kData.MPCharge / 11;
-        //     knightSoulRemainder = kData.MPCharge % 11;
-        // }
-
-        // kData.health = hData.health;
-        // kData.MPCharge = hData.silk * 11 + knightSoulRemainder;
-
-        // oldKnightHealth = kData.health;
-        // oldKnightMPCharge = kData.MPCharge;
-
 
         // fixes
         if (SceneManager.GetActiveScene().name.ToLower() == "song_tower_01")
@@ -244,11 +194,11 @@ public class ProgressionManager
 
     private static void patchIntroCutscenes()
     {
-        if (PlayerData.instance.bindCutscenePlayed == true)
+        if (PDA.bindCutscenePlayed == true)
         {
             return;
         }
-        PlayerData.instance.bindCutscenePlayed = true;
+        PDA.bindCutscenePlayed = true;
 
         // put knight high up
         HeroController.instance.transform.position = new Vector2(50f, 30f);

@@ -18,20 +18,20 @@ public class SlotData
         this.slot = slot;
         slot_file = new(slot_setting_path, true);
         sync = slot_file.Bind<bool>(general, "Sync", false, "make knight sync with hornet in this save");
-        once_walljump = slot_file.Bind<bool>(gameplay, "OnceWallJump", true, "Use the one-time-use walljump instead of wall scrambling");
-        inf_jump_in_wind = slot_file.Bind<bool>(gameplay, "InfJumpInWind", true, "Jump infinitely in air columns instead of mantle");
-        pogoable_ring = slot_file.Bind<bool>(gameplay, "PogoableRing", true, "Make ring pogoable to replace the harpoon");
-        upward_superdash = slot_file.Bind<bool>(gameplay, "UpwardSuperDash", true, "Use upward superdash instead of upward harpoon");
+        // once_walljump = slot_file.Bind<bool>(gameplay, "OnceWallJump", true, "Use the one-time-use walljump instead of wall scrambling");
+        // inf_jump_in_wind = slot_file.Bind<bool>(gameplay, "InfJumpInWind", true, "Jump infinitely in air columns instead of mantle");
+        // pogoable_ring = slot_file.Bind<bool>(gameplay, "PogoableRing", true, "Make ring pogoable to replace the harpoon");
+        // upward_superdash = slot_file.Bind<bool>(gameplay, "UpwardSuperDash", true, "Use upward superdash instead of upward harpoon");
     }
     int? slot = null;
     ConfigFile slot_file;
-    ConfigEntry<bool> sync;
-    ConfigEntry<bool> once_walljump;
-    ConfigEntry<bool> inf_jump_in_wind;
-    ConfigEntry<bool> pogoable_ring;
-    ConfigEntry<bool> upward_superdash;
+    public ConfigEntry<bool> sync;
+    // public ConfigEntry<bool> once_walljump;
+    // public ConfigEntry<bool> inf_jump_in_wind;
+    // public ConfigEntry<bool> pogoable_ring;
+    // public ConfigEntry<bool> upward_superdash;
     List<SyncBaseInfo> baseInfos;
-    Knight.PlayerData playerData;
+    public Knight.PlayerData playerData;
     private void Setting2Default()
     {
         foreach (var set in slot_file)
@@ -122,7 +122,7 @@ public class SlotData
         {
             try
             {
-                baseInfos = JsonConvert.DeserializeObject<List<SyncBaseInfo>>(sync_config_path);
+                baseInfos = JsonConvert.DeserializeObject<List<SyncBaseInfo>>(File.ReadAllText(sync_config_path));
                 return;
             }
             catch (Exception e)
