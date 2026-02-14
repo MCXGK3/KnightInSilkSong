@@ -51,3 +51,7 @@ Credit to @olvior for the effort to enable the knight to beat the game completel
 - Achieve compatibility and adaptation with Debug. 实现与Debug的兼容适配
 - Supplement the required text based on I18N. 基于I18N补充所需文本
 - The processing required to achieve ending 2 and 3. 实现结局二三所需的处理
+
+## Attention
+
+- This mod is not allowed to be ported to pirated versions such as the mobile version of SS.此mod不允许被移植到如手机版丝之歌等盗版上。
