@@ -56,6 +56,7 @@
       <ItemGroup>
           <Package Include="../README.md" />
           <Package Include="../CHANGELOG.md" />
+          <Package Include="../manifest.json" />
       </ItemGroup>
 
       <Copy SourceFiles="@(Binaries)" DestinationFolder="$(PublishFolder)/$(ModName)/ThunderStore" />
