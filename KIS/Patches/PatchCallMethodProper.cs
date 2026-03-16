@@ -194,6 +194,8 @@ class PatchDoMethodCall : GeneralPatch
                     if (PrepatcherPlugin.PlayerDataAccess.hasBrolly)
                     {
                         Knight.PlayerData.instance.SetBool(nameof(Knight.PlayerData.infiniteAirJump), true);
+                        Knight.HeroController.instance.airDashed = false;
+                        Knight.HeroController.instance.doubleJumped = false;
                     }
                 }
                 else if (__instance.methodName.value == "ExitUpdraft")
