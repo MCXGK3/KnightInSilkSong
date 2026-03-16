@@ -5,6 +5,7 @@ using KIS.Utils;
 using HutongGames.PlayMaker.Actions;
 using UnityEngine.Audio;
 using BepInEx.Configuration;
+using TeamCherry.Localization;
 
 namespace KIS;
 
@@ -121,6 +122,16 @@ public partial class KnightInSilksong : BaseUnityPlugin
         // SetKnight(knight);
 
 
+    }
+    internal void Start()
+    {
+        foreach (var type in Assembly.GetExecutingAssembly().GetTypes())
+        {
+            if (type.IsSubclassOf(typeof(StartPatch)) && !type.IsAbstract)
+            {
+                self_hormony.PatchAll(type);
+            }
+        }
     }
     internal void ToggleKnight()
     {

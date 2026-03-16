@@ -16,6 +16,7 @@
       <!--Allow access of private members at runtime.-->
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <ModName>KnightInSilkSong</ModName>
+    <NeutralLanguage>ZH</NeutralLanguage>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -42,14 +43,17 @@
     <ProjectReference Include="../Knight/Knight.csproj" Publicize="true"/>
   </ItemGroup>
   <ItemGroup>
-          <Binaries Include="$(TargetPath)" />
-          <Binaries Include="$(TargetDir)/$(TargetName).pdb" />
+      <Binaries Include="$(TargetPath)" LocalDir="/" PackDir="plugins" />
+      <Binaries Include="$(TargetDir)/$(TargetName).pdb" LocalDir="/" PackDir="plugins" />
+      <I18N Include="languages/*.json" LocalDir="/languages/" PackDir="plugins/languages" />
+
       </ItemGroup>
 
   <Target Name="CopyMod" AfterTargets="PostBuildEvent" Condition="'$(SilksongFolder)' != ''">
 
 
       <Copy SourceFiles="@(Binaries)" DestinationFolder="$(SilksongFolder)/BepInEx/plugins/$(ModName)" />
+      <Copy SourceFiles="@(I18N)" DestinationFolder="$(SilksongFolder)/BepInEx/plugins/$(ModName)/languages" />
       <Copy SourceFiles="../README.md" DestinationFolder="$(SilksongFolder)/BepInEx/plugins/$(ModName)" />
   </Target>
   <Target Name="BuildPushishPack" AfterTargets="CopyMod" Condition="'$(PublishFolder)' != ''">

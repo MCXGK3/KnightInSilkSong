@@ -9,6 +9,7 @@ using UnityEngine.Audio;
 using GlobalEnums;
 using GlobalSettings;
 using PDA = PrepatcherPlugin.PlayerDataAccess;
+using System.Diagnostics;
 
 internal class PreProcess : IModule
 {
@@ -160,6 +161,18 @@ internal class PreProcess : IModule
     {
         var hk = KnightInSilksong.Instance.hk;
         HashSet<Material> materials = new();
+        HashSet<TMP_FontAsset> met_fonts = new();
+        void ProcessFont(TMP_FontAsset font)
+        {
+            if (font == null) return;
+            if (met_fonts.Contains(font)) return;
+            materials.Add(font.material);
+            met_fonts.Add(font);
+            foreach (var fb_font in font.fallbackFontAssets)
+            {
+                ProcessFont(fb_font);
+            }
+        }
 
 
         foreach (var go_pair in KnightInSilksong.loaded_gos)
@@ -182,16 +195,15 @@ internal class PreProcess : IModule
             }
             foreach (var changefont in go.GetComponentsInChildren<ChangeFontByLanguage>(true))
             {
-                if (changefont.fontJA != null)
-                    materials.Add(changefont.fontJA.material);
-                if (changefont.fontKO != null)
-                    materials.Add(changefont.fontKO.material);
-                if (changefont.fontRU != null)
-                    materials.Add(changefont.fontRU.material);
-                if (changefont.fontZH != null)
-                    materials.Add(changefont.fontZH.material);
-                if (changefont.defaultFont != null)
-                    materials.Add(changefont.defaultFont.material);
+                ProcessFont(changefont.fontJA);
+                ProcessFont(changefont.fontKO);
+                ProcessFont(changefont.fontRU);
+                ProcessFont(changefont.fontZH);
+                ProcessFont(changefont.defaultFont);
+            }
+            foreach (var textMeshPro in go.GetComponentsInChildren<TMProOld.TextMeshPro>(true))
+            {
+                ProcessFont(textMeshPro.font);
             }
             foreach (var text in go.GetComponentsInChildren<TextMeshPro>(true))
             {
