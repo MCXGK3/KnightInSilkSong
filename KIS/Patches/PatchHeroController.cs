@@ -440,8 +440,8 @@ public class Patch_HeroController_FinishedEnteringScene : GeneralPatch
         Time.time.LogInfo();
     }
 }
-[HarmonyPatch(typeof(HeroController), "Awake", MethodType.Normal)]
-public class Patch_HeroController_Awake : GeneralPatch
+[HarmonyPatch(typeof(HeroController), "Start", MethodType.Normal)]
+public class Patch_HeroController_Start : GeneralPatch
 {
     public static bool Prefix(HeroController __instance)
     {

@@ -225,6 +225,7 @@ public partial class KnightInSilksong : BaseUnityPlugin
 
     internal void InstKnight()
     {
+        ModuleManager.GetInstance<PreProcess>().StopGetShader();
         knight.GetComponent<Knight.HeroController>().hardLandingEffectPrefab = HeroController.instance.hardLandingEffectPrefab;
         knight.GetComponent<Knight.HeroController>().softLandingEffectPrefab = HeroController.instance.softLandingEffectPrefab;
         GameObject.Instantiate(knight);

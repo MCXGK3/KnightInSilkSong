@@ -129,14 +129,6 @@ internal class PreProcess : IModule
     private void CheckShaders(Scene arg0, Scene arg1)
     {
         SetShaders();
-        if (shaders.ContainsKey("Sprites/Default-ColorFlash") && !shader_initialized)
-        {
-            shader_initialized = true;
-            KnightInSilksong.logger.LogInfo("Shader Find OK");
-            UnityEngine.SceneManagement.SceneManager.activeSceneChanged -= CheckShaders;
-            SetErrorShaders();
-
-        }
     }
     private void SetShaders()
     {
@@ -152,7 +144,17 @@ internal class PreProcess : IModule
             }
         }
     }
+    public void StopGetShader()
+    {
+        if (!shader_initialized)
+        {
+            shader_initialized = true;
+            KnightInSilksong.logger.LogInfo("Shader Find OK");
+            UnityEngine.SceneManagement.SceneManager.activeSceneChanged -= CheckShaders;
+            SetErrorShaders();
+        }
 
+    }
     public Shader GetShader(string name)
     {
         return shaders.ContainsKey(name) ? shaders[name] : null;
