@@ -1,4 +1,5 @@
 using KIS;
+using Newtonsoft.Json.UnityConverters.Helpers;
 
 internal static class ModuleManager
 {
@@ -18,7 +19,7 @@ internal static class ModuleManager
         if (!initialized)
         {
             var initializableTypes = Assembly.GetExecutingAssembly()
-                .GetTypes()
+                .GetTypesSafely()
                 .Where(t => typeof(IModule).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract);
             foreach (var type in initializableTypes)
             {

@@ -6,6 +6,7 @@ using HutongGames.PlayMaker.Actions;
 using UnityEngine.Audio;
 using BepInEx.Configuration;
 using TeamCherry.Localization;
+using Newtonsoft.Json.UnityConverters.Helpers;
 
 namespace KIS;
 
@@ -108,7 +109,7 @@ public partial class KnightInSilksong : BaseUnityPlugin
         DontDestroyOnLoad(knight);
         ModuleManager.Init();
         self_hormony = new Harmony(Id);
-        foreach (var type in Assembly.GetExecutingAssembly().GetTypes())
+        foreach (var type in Assembly.GetExecutingAssembly().GetTypesSafely())
         {
             if (type.IsSubclassOf(typeof(GeneralPatch)) && !type.IsAbstract)
             {
@@ -125,7 +126,8 @@ public partial class KnightInSilksong : BaseUnityPlugin
     }
     internal void Start()
     {
-        foreach (var type in Assembly.GetExecutingAssembly().GetTypes())
+        Compatibility.CompatibilityManager.CheckAndInit();
+        foreach (var type in Assembly.GetExecutingAssembly().GetTypesSafely())
         {
             if (type.IsSubclassOf(typeof(StartPatch)) && !type.IsAbstract)
             {
@@ -326,6 +328,7 @@ public partial class KnightInSilksong : BaseUnityPlugin
         {
             ProgressionManager.setProgression();
         }
+        Compatibility.CompatibilityManager.UpdateAll();
 
 
     }

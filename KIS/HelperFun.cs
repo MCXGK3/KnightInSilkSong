@@ -533,7 +533,6 @@ public static class KISHelper
     {
         return "gotCharm_" + (int)charm;
     }
-
     public static void CheckForDamageHero(this Knight.HeroBox heroBox, GameObject gameObject)
     {
         DamageHero component = gameObject.GetComponent<DamageHero>();
@@ -568,6 +567,17 @@ public static class KISHelper
             {
                 heroBox.isHitBuffered = true;
             }
+        }
+    }
+    public static Type[] GetTypesSafely(this Assembly asm)
+    {
+        try
+        {
+            return asm.GetTypes();
+        }
+        catch (ReflectionTypeLoadException ex)
+        {
+            return ex.Types.Where(x => x is not null).ToArray();
         }
     }
 }
