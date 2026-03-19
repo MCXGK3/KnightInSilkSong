@@ -7,6 +7,7 @@ using UnityEngine.Audio;
 using BepInEx.Configuration;
 using TeamCherry.Localization;
 using Newtonsoft.Json.UnityConverters.Helpers;
+using KIS.Compatibility;
 
 namespace KIS;
 
@@ -271,7 +272,7 @@ public partial class KnightInSilksong : BaseUnityPlugin
         });
         proxy.AddTransition("Idle", "PARRIED", "Parried");
         // KnightController.ClearMP();
-        Knight.PlayerData.instance.SetBool(nameof(Knight.PlayerData.infiniteAirJump), false);
+        Knight.PlayerData.instance.SetBool(nameof(Knight.PlayerData.infiniteAirJump), WithDebugMod.infinite_jump);
         Knight.PlayerData.instance.SetInt(nameof(Knight.PlayerData.MPCharge), 0);
         Knight.PlayerData.instance.SetInt(nameof(Knight.PlayerData.MPReserve), 0);
         //why didn't tc put the needle back in its original position?
