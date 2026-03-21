@@ -20,7 +20,7 @@ internal static class ModuleManager
         {
             var initializableTypes = Assembly.GetExecutingAssembly()
                 .GetTypesSafely()
-                .Where(t => typeof(IModule).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract);
+                .Where(t => typeof(IModule).IsAssignableFromSafely(t) && !t.IsInterface && !t.IsAbstract);
             foreach (var type in initializableTypes)
             {
 

@@ -593,6 +593,17 @@ public static class KISHelper
             return ex.Types.Where(x => x is not null).ToArray();
         }
     }
+    public static bool IsAssignableFromSafely(this Type self, Type other)
+    {
+        try
+        {
+            return self.IsAssignableFrom(other);
+        }
+        catch
+        {
+            return false;
+        }
+    }
     public static LocalisedString Localize(this LangKey key)
     {
         return new($"Mods.{KnightInSilksong.Id}", MoreLanguge.GetInGameKey(key));

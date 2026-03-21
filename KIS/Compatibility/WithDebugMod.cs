@@ -703,7 +703,7 @@ namespace KIS.Compatibility
             IEnumerator SpawnGrimmChild()
             {
                 for (int i = 0; i < 2; i++) yield return null;
-                hc.transform.Find("Charm Effects").gameObject.LocateMyFSM("Spawn Grimmchild").SendEvent("CHARM EQUIP CHECK");
+                hc?.transform.Find("Charm Effects").gameObject.LocateMyFSM("Spawn Grimmchild").SendEvent("CHARM EQUIP CHECK");
             }
         }
         public static void IncreaseRoyalGameState()
