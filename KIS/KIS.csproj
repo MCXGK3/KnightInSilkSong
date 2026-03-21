@@ -16,7 +16,7 @@
       <!--Allow access of private members at runtime.-->
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <ModName>KnightInSilkSong</ModName>
-    <NeutralLanguage>ZH</NeutralLanguage>
+    <NeutralLanguage>EN</NeutralLanguage>
   </PropertyGroup>
 
   <PropertyGroup>

@@ -3,6 +3,7 @@ using BepInEx;
 using GlobalEnums;
 using HutongGames.PlayMaker;
 using KIS;
+using TeamCherry.Localization;
 public enum Tool
 {
     /// <summary>
@@ -430,6 +431,18 @@ public enum Charm
     /// </summary>
     VoidHeart = 36
 }
+public enum Spell
+{
+    Scream,
+    Fireball,
+    Quake
+}
+public enum NailArt
+{
+    GREAT_SLASH,
+    DASH_SLASH,
+    CYCLONE
+}
 public static class KISHelper
 {
     //useful actions
@@ -579,6 +592,10 @@ public static class KISHelper
         {
             return ex.Types.Where(x => x is not null).ToArray();
         }
+    }
+    public static LocalisedString Localize(this LangKey key)
+    {
+        return new($"Mods.{KnightInSilksong.Id}", MoreLanguge.GetInGameKey(key));
     }
 }
 

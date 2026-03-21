@@ -1,6 +1,10 @@
+using System.Collections;
 using DebugMod;
 using DebugMod.UI;
 using DebugMod.UI.Canvas;
+using TeamCherry.Localization;
+using UnityEngine.UI;
+using KIS.Utils;
 namespace KIS.Compatibility
 {
     [RequiresMod(DebugMod.DebugMod.Id)]
@@ -385,6 +389,362 @@ namespace KIS.Compatibility
                 default:
                     break;
             }
+        }
+        #endregion
+        #region  KnightPanel
+        private static void UpdateCharmsEffects()
+        {
+            PlayMakerFSM.BroadcastEvent("CHARM INDICATOR CHECK");
+            PlayMakerFSM.BroadcastEvent("CHARM EQUIP CHECK");
+        }
+        private static void UpdateNailArtStates()
+        {
+            pd.SetBool(nameof(pd.hasNailArt),
+                        pd.GetBool(nameof(pd.hasDashSlash)) || pd.GetBool(nameof(pd.hasUpwardSlash)) || pd.GetBool(nameof(pd.hasCyclone)));
+            pd.SetBool(nameof(pd.hasAllNailArts),
+                        pd.GetBool(nameof(pd.hasDashSlash)) && pd.GetBool(nameof(pd.hasUpwardSlash)) && pd.GetBool(nameof(pd.hasCyclone)));
+        }
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(MainPanel), MethodType.Constructor)]
+        public static void MainPanel_Postfix(MainPanel __instance)
+        {
+            __instance.AddTab("Knight");
+            __instance.AppendSectionHeader("Skill");
+            __instance.AppendRow(1);
+            __instance.AppendBasicControl(LangKey.DEBUG_ALL_SKILL.Localize(), GiveAllSkills);
+            __instance.AppendRow(1, 1, 1);
+            __instance.AppendIncrementControl(LangKey.DEBUG_SCREAM_NAME.Localize(),
+                                                () => pd.GetInt(nameof(pd.screamLevel)),
+                                                () => IncreaseSpellLevel(Spell.Scream));
+            __instance.AppendIncrementControl(LangKey.DEBUG_FIREBALL_NAME.Localize(),
+                                                () => pd.GetInt(nameof(pd.fireballLevel)),
+                                                () => IncreaseSpellLevel(Spell.Fireball));
+            __instance.AppendIncrementControl(LangKey.DEBUG_QUAKE_NAME.Localize(),
+                                                () => pd.GetInt(nameof(pd.quakeLevel)),
+                                                () => IncreaseSpellLevel(Spell.Quake));
+            __instance.AppendRow(1, 1, 1);
+            __instance.AppendIncrementControl(LangKey.DEBUG_DASH_NAME.Localize(), GetDashLevel, ToggleDash);
+            __instance.AppendToggleControl(LangKey.DEBUG_WALL_JUMP_NAME.Localize(),
+                                            () => pd.GetBool(nameof(pd.hasWalljump)),
+                                            ToggleWallJump);
+            __instance.AppendToggleControl(LangKey.DEBUG_DOUBLE_JUMP_NAME.Localize(),
+                                            () => pd.GetBool(nameof(pd.hasDoubleJump)),
+                                            ToggleDoubleJump);
+            __instance.AppendRow(1, 1);
+            __instance.AppendIncrementControl(LangKey.DEBUG_DREAM_NAIL_NAME.Localize(), GetDreamNailLevel, ToggleDreamNail);
+            __instance.AppendToggleControl(LangKey.DEBUG_DREAM_GATE_NAME.Localize(),
+                                            () => pd.GetBool(nameof(pd.hasDreamGate)),
+                                            ToggleDreamGate);
+            __instance.AppendRow(1, 1);
+            __instance.AppendToggleControl(LangKey.DEBUG_SUPER_DASH_NAME.Localize(),
+                                            () => pd.GetBool(nameof(pd.hasSuperDash)),
+                                            ToggleSuperDash);
+            __instance.AppendToggleControl(LangKey.DEBUG_ACID_SWIM_NAME.Localize(),
+                                            () => pd.GetBool(nameof(pd.hasAcidArmour)),
+                                            ToggleAcidSwim);
+            __instance.AppendRow(1, 1, 1);
+            __instance.AppendToggleControl(LangKey.DEBUG_GREAT_SLASH_NAME.Localize(),
+                                            () => pd.GetBool(nameof(pd.hasDashSlash)),
+                                            () => ToggleNailArt(NailArt.GREAT_SLASH));
+            __instance.AppendToggleControl(LangKey.DEBUG_DASH_SLASH_NAME.Localize(),
+                                            () => pd.GetBool(nameof(pd.hasUpwardSlash)),
+                                            () => ToggleNailArt(NailArt.DASH_SLASH));
+            __instance.AppendToggleControl(LangKey.DEBUG_CYCLONE_NAME.Localize(),
+                                            () => pd.GetBool(nameof(pd.hasCyclone)),
+                                            () => ToggleNailArt(NailArt.CYCLONE));
+            __instance.AppendSectionHeader("Charm");
+            __instance.AppendRow(1);
+            __instance.AppendBasicControl(LangKey.DEBUG_ALL_CHARMS.Localize(),
+                                            GiveAllCharms);
+            __instance.AppendRow(1, 1);
+            __instance.AppendIncrementControl(LangKey.KING_SOUL.Localize(),
+                                                () => pd.GetInt(nameof(pd.royalCharmState)),
+                                                IncreaseRoyalGameState);
+            __instance.AppendIncrementControl(LangKey.GRIMM_CHILD.Localize(),
+                                                () => pd.GetInt(nameof(pd.grimmChildLevel)),
+                                                IncreaseGrimmChildLevel);
+            __instance.AppendRow(1, 1);
+            __instance.AppendBasicControl(LangKey.DEBUG_INCREASE_CHARMSLOTS.Localize(),
+                                                IncreaseCharmSlots);
+            __instance.AppendBasicControl(LangKey.DEBUG_DECREASE_CHARMSLOTS.Localize(),
+                                                DecreaseCharmSlots);
+            __instance.AppendRow(1);
+            __instance.AppendBasicControl(LangKey.DEBUG_REMOVE_ALL_CHARMS.Localize(),
+                                            RemoveAllCharms);
+            __instance.AppendRow(1);
+            __instance.AppendRow(1);
+            var text = __instance.AppendSectionHeader(LangKey.DEBUG_PROMPT.Localize());
+            text.FontSize = MainPanel.KeybindHeaderFontSize;
+
+        }
+        public static void ToggleNailArt(NailArt nailArt)
+        {
+            //yes, that's how tc did.
+            string name = nailArt switch
+            {
+                NailArt.GREAT_SLASH => nameof(pd.hasDashSlash),
+                NailArt.DASH_SLASH => nameof(pd.hasUpwardSlash),
+                NailArt.CYCLONE => nameof(pd.hasCyclone),
+                _ => null
+            };
+            pd.SetBool(name, !pd.GetBool(name));
+            UpdateNailArtStates();
+            return;
+        }
+        public static void ToggleAcidSwim()
+        {
+            if (!pd.GetBool(nameof(pd.hasAcidArmour)))
+            {
+                pd.SetBool(nameof(pd.hasAcidArmour), true);
+                PlayMakerFSM.BroadcastEvent("GET ACID ARMOUR");
+            }
+            else
+            {
+                pd.SetBool(nameof(pd.hasAcidArmour), false);
+            }
+        }
+        public static void ToggleSuperDash()
+        {
+            if (!pd.GetBool(nameof(pd.hasSuperDash)))
+            {
+                pd.SetBool(nameof(pd.hasSuperDash), true);
+                pd.SetBool(nameof(pd.canSuperDash), true);
+            }
+            else
+            {
+                pd.SetBool(nameof(pd.hasSuperDash), false);
+                pd.SetBool(nameof(pd.canSuperDash), false);
+            }
+        }
+        public static void ToggleDreamGate()
+        {
+            if (!pd.GetBool(nameof(pd.hasDreamNail)) && !pd.GetBool(nameof(pd.hasDreamGate)))
+            {
+                pd.SetBool(nameof(pd.hasDreamNail), true);
+                pd.SetBool(nameof(pd.hasDreamGate), true);
+                hc?.gameObject.LocateMyFSM("Dream Nail").FsmVariables.FindFsmBool("Dream Warp Allowed").Value = true;
+            }
+            else if (pd.GetBool(nameof(pd.hasDreamNail)) && !pd.GetBool(nameof(pd.hasDreamGate)))
+            {
+                pd.SetBool(nameof(pd.hasDreamGate), true);
+                hc?.gameObject.LocateMyFSM("Dream Nail").FsmVariables.FindFsmBool("Dream Warp Allowed").Value = true;
+            }
+            else
+            {
+                pd.SetBool(nameof(pd.hasDreamGate), false);
+                hc?.gameObject.LocateMyFSM("Dream Nail").FsmVariables.FindFsmBool("Dream Warp Allowed").Value = false;
+            }
+        }
+        public static int GetDreamNailLevel()
+        {
+            if (pd.GetBool(nameof(pd.hasDreamNail)) && pd.GetBool(nameof(pd.dreamNailUpgraded))) return 2;
+            if (pd.GetBool(nameof(pd.hasDreamNail))) return 1;
+            return 0;
+        }
+        public static void ToggleDreamNail()
+        {
+            if (!pd.GetBool(nameof(pd.hasDreamNail)) && !pd.GetBool(nameof(pd.dreamNailUpgraded)))
+            {
+                pd.SetBool(nameof(pd.hasDreamNail), true);
+            }
+            else if (pd.GetBool(nameof(pd.hasDreamNail)) && !pd.GetBool(nameof(pd.dreamNailUpgraded)))
+            {
+                pd.SetBool(nameof(pd.dreamNailUpgraded), true);
+            }
+            else
+            {
+                pd.SetBool(nameof(pd.hasDreamNail), false);
+                pd.SetBool(nameof(pd.dreamNailUpgraded), false);
+            }
+        }
+        public static void ToggleDoubleJump()
+        {
+            if (!pd.GetBool(nameof(pd.hasDoubleJump)))
+            {
+                pd.SetBool(nameof(pd.hasDoubleJump), true);
+            }
+            else
+            {
+                pd.SetBool(nameof(pd.hasDoubleJump), false);
+            }
+        }
+        public static void ToggleWallJump()
+        {
+            if (!pd.GetBool(nameof(pd.hasWalljump)))
+            {
+                pd.SetBool(nameof(pd.hasWalljump), true);
+                pd.SetBool(nameof(pd.canWallJump), true);
+            }
+            else
+            {
+                pd.SetBool(nameof(pd.hasWalljump), false);
+                pd.SetBool(nameof(pd.canWallJump), false);
+            }
+        }
+        public static int GetDashLevel()
+        {
+            if (pd.GetBool(nameof(pd.hasDash)) && pd.GetBool(nameof(pd.hasShadowDash))) return 2;
+            if (pd.GetBool(nameof(pd.hasDash))) return 1;
+            return 0;
+        }
+        public static void ToggleDash()
+        {
+            if (!pd.GetBool(nameof(pd.hasDash)) && !pd.GetBool(nameof(pd.hasShadowDash)))
+            {
+                pd.SetBool(nameof(pd.hasDash), true);
+                pd.SetBool(nameof(pd.canDash), true);
+            }
+            else if (pd.GetBool(nameof(pd.hasDash)) && !pd.GetBool(nameof(pd.hasShadowDash)))
+            {
+                pd.SetBool(nameof(pd.hasShadowDash), true);
+                pd.SetBool(nameof(pd.canShadowDash), true);
+                EventRegister.SendEvent("GOT SHADOW DASH");
+            }
+            else
+            {
+                pd.SetBool(nameof(pd.hasDash), false);
+                pd.SetBool(nameof(pd.canDash), false);
+                pd.SetBool(nameof(pd.hasShadowDash), false);
+                pd.SetBool(nameof(pd.canShadowDash), false);
+            }
+        }
+        public static void GiveAllSkills()
+        {
+            pd.SetInt(nameof(pd.screamLevel), 2);
+            pd.SetInt(nameof(pd.fireballLevel), 2);
+            pd.SetInt(nameof(pd.quakeLevel), 2);
+            pd.SetBool(nameof(pd.hasDash), true);
+            pd.SetBool(nameof(pd.canDash), true);
+            pd.SetBool(nameof(pd.hasShadowDash), true);
+            pd.SetBool(nameof(pd.canShadowDash), true);
+            pd.SetBool(nameof(pd.hasWalljump), true);
+            pd.SetBool(nameof(pd.canWallJump), true);
+            pd.SetBool(nameof(pd.hasDoubleJump), true);
+            pd.SetBool(nameof(pd.hasSuperDash), true);
+            pd.SetBool(nameof(pd.canSuperDash), true);
+            pd.SetBool(nameof(pd.hasAcidArmour), true);
+            pd.SetBool(nameof(pd.hasDreamNail), true);
+            pd.SetBool(nameof(pd.dreamNailUpgraded), true);
+            pd.SetBool(nameof(pd.hasDreamGate), true);
+            pd.SetBool(nameof(pd.hasNailArt), true);
+            pd.SetBool(nameof(pd.hasCyclone), true);
+            pd.SetBool(nameof(pd.hasDashSlash), true);
+            pd.SetBool(nameof(pd.hasUpwardSlash), true);
+            pd.SetBool(nameof(pd.hasAllNailArts), true);
+        }
+        public static void IncreaseCharmSlots()
+        {
+            pd.IncrementInt(nameof(pd.charmSlots));
+        }
+        public static void DecreaseCharmSlots()
+        {
+            pd.DecrementInt(nameof(pd.charmSlots));
+        }
+        public static void GiveAllCharms()
+        {
+            for (int i = 1; i <= 40; i++)
+            {
+                pd.SetBool("gotCharm_" + i, true);
+            }
+            pd.SetInt(nameof(pd.charmSlots), 10);
+            pd.SetBool(nameof(pd.hasCharm), true);
+            pd.SetInt(nameof(pd.charmsOwned), 40);
+            pd.SetInt(nameof(pd.royalCharmState), 4);
+            pd.SetBool(nameof(pd.gotShadeCharm), true);
+            pd.SetInt(nameof(pd.charmCost_36), 0);
+            pd.SetBool(nameof(pd.fragileGreed_unbreakable), true);
+            pd.SetBool(nameof(pd.fragileStrength_unbreakable), true);
+            pd.SetBool(nameof(pd.fragileHealth_unbreakable), true);
+            pd.SetInt(nameof(pd.grimmChildLevel), 5);
+            pd.SetInt(nameof(pd.charmCost_40), 3);
+            pd.SetInt(nameof(pd.charmSlots), 11);
+            UpdateCharmsEffects();
+        }
+        public static void RemoveAllCharms()
+        {
+            for (int i = 1; i <= 40; i++)
+            {
+                pd.SetBool("gotCharm_" + i, false);
+                pd.SetBool("equippedCharm_" + i, false);
+            }
+
+            pd.SetInt(nameof(pd.charmSlots), 3);
+            pd.SetBool(nameof(pd.hasCharm), false);
+            pd.SetInt(nameof(pd.charmsOwned), 0);
+            pd.SetInt(nameof(pd.royalCharmState), 0);
+            pd.SetBool(nameof(pd.gotShadeCharm), false);
+            pd.SetBool(nameof(pd.fragileGreed_unbreakable), true);
+            pd.SetBool(nameof(pd.fragileStrength_unbreakable), true);
+            pd.SetBool(nameof(pd.fragileHealth_unbreakable), true);
+            pd.SetInt(nameof(pd.grimmChildLevel), 5);
+            pd.SetInt(nameof(pd.charmCost_40), 2);
+            pd.SetInt(nameof(pd.charmSlots), 3);
+            pd.equippedCharms.Clear();
+            pd.SetInt(nameof(pd.charmSlotsFilled), 0);
+            UpdateCharmsEffects();
+        }
+        public static void IncreaseGrimmChildLevel()
+        {
+            if (pd.GetBool(nameof(pd.gotCharm_40)))
+            {
+                pd.SetBool(nameof(pd.gotCharm_40), true);
+            }
+            int level = pd.GetInt(nameof(pd.grimmChildLevel));
+            level += 1;
+            if (level >= 6) level = 0;
+            int cost = level == 5 ? 3 : 2;
+            pd.SetInt(nameof(pd.grimmChildLevel), level);
+            pd.SetInt(nameof(pd.charmCost_40), cost);
+            pd.SetBool(nameof(pd.destroyedNightmareLantern), level == 5);
+            Object.Destroy(GameObject.FindWithTag("Grimmchild"));
+            UpdateCharmsEffects();
+            GameManager.instance.StartCoroutine(SpawnGrimmChild());
+
+            IEnumerator SpawnGrimmChild()
+            {
+                for (int i = 0; i < 2; i++) yield return null;
+                hc.transform.Find("Charm Effects").gameObject.LocateMyFSM("Spawn Grimmchild").SendEvent("CHARM EQUIP CHECK");
+            }
+        }
+        public static void IncreaseRoyalGameState()
+        {
+            if (!pd.GetBool(nameof(pd.gotCharm_36)))
+            {
+                pd.SetBool(nameof(pd.gotCharm_36), true);
+            }
+            string name = nameof(pd.royalCharmState);
+            int num = pd.GetInt(name);
+            if (num < 4)
+            {
+                pd.SetInt(name, num + 1);
+                num = num + 1;
+            }
+            else
+            {
+                pd.SetInt(name, 1);
+                num = 1;
+            }
+            int cost = num switch
+            {
+                3 => 5,
+                4 => 0,
+                _ => pd.GetInt(nameof(pd.charmCost_36))
+            };
+            pd.SetInt(nameof(pd.gotCharm_36), cost);
+        }
+        public static void IncreaseSpellLevel(Spell spell)
+        {
+            string name = spell switch
+            {
+                Spell.Fireball => nameof(pd.fireballLevel),
+                Spell.Quake => nameof(pd.quakeLevel),
+                Spell.Scream => nameof(pd.screamLevel),
+                _ => null
+            };
+            if (name == null) return;
+            int num = pd.GetInt(name);
+            if (num < 2) pd.SetInt(name, num + 1);
+            else pd.SetInt(name, 0);
         }
         #endregion
     }
