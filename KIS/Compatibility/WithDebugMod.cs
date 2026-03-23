@@ -52,7 +52,16 @@ namespace KIS.Compatibility
             if (!KnightInSilksong.IsKnight) return;
             if (DebugMod.DebugMod.noclip)
             {
-                hc?.transform.position = DebugMod.DebugMod.noclipPos;
+                if (hc?.transitionState == GlobalEnums.HeroTransitionState.WAITING_TO_TRANSITION && SaveState.loadingSavestate == null)
+                {
+                    hc?.transform.position = DebugMod.DebugMod.noclipPos;
+                    // hc.GetComponent<Rigidbody2D>().constraints |= RigidbodyConstraints2D.FreezePosition;
+                }
+                else
+                {
+                    DebugMod.DebugMod.noclipPos = hc.transform.position;
+                    // hc.GetComponent<Rigidbody2D>().constraints &= ~RigidbodyConstraints2D.FreezePosition;
+                }
             }
             if (DebugMod.DebugMod.infiniteSilk)
             {
