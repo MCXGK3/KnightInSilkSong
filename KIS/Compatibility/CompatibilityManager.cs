@@ -22,28 +22,28 @@ public interface ICompatibility
     public void Init();
     public void Update();
 
+
 }
 public static class CompatibilityManager
 {
-    private static List<ICompatibility> compatibilities = new List<ICompatibility>();
+    private static Dictionary<string, ICompatibility> compatibilities = new();
+
 
     public static void CheckAndInit()
     {
         "Checking for compatible mods...".LogDebug();
         foreach (var type in Assembly.GetExecutingAssembly().GetTypesSafely())
         {
-            type.Name.LogDebug();
             var requiresModAttribute = type.GetCustomAttribute<RequiresModAttribute>();
             if (requiresModAttribute != null)
             {
                 if (Chainloader.PluginInfos.ContainsKey(requiresModAttribute.Id))
                 {
-                    if (Activator.CreateInstance(type) is ICompatibility compatibility)
+                    if (!compatibilities.ContainsKey(requiresModAttribute.Id))
                     {
-                        $"Initializing compatibility for mod: {compatibility.ModName}".LogInfo();
-                        compatibility.Init();
-                        compatibilities.Add(compatibility);
+                        compatibilities.Add(requiresModAttribute.Id, Activator.CreateInstance(type) as ICompatibility);
                     }
+                    compatibilities[requiresModAttribute.Id]?.Init();
                 }
                 else
                 {
@@ -56,7 +56,7 @@ public static class CompatibilityManager
     {
         foreach (var compatibility in compatibilities)
         {
-            compatibility.Update();
+            compatibility.Value.Update();
         }
     }
 

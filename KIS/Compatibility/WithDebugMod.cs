@@ -5,6 +5,9 @@ using DebugMod.UI.Canvas;
 using TeamCherry.Localization;
 using UnityEngine.UI;
 using KIS.Utils;
+using DebugMod.SaveStates;
+using System.IO;
+using Newtonsoft.Json.Utilities;
 namespace KIS.Compatibility
 {
     [RequiresMod(DebugMod.DebugMod.Id)]
@@ -26,7 +29,22 @@ namespace KIS.Compatibility
         {
             DebugMod.DebugMod.Log("Debug Mod detected KIS, initializing compatibility.");
             KnightInSilksong.Instance.self_hormony.PatchAll(typeof(WithDebugMod));
+            LoadKnightPD();
 
+        }
+
+        private void LoadKnightPD()
+        {
+            foreach (var page_states in SaveStateManager.fileStates)
+            {
+                int page = page_states.Key;
+                foreach (var index_state in page_states.Value)
+                {
+                    int index = Array.IndexOf(page_states.Value, index_state);
+                    if (index_state == null) continue;
+                    SaveStateManager_LoadFromFile_Postfix(page, index, ref index_state.data);
+                }
+            }
         }
 
         public void Update()
@@ -51,6 +69,101 @@ namespace KIS.Compatibility
             Knight.HeroBox.inactive = DebugMod.DebugMod.heroColliderDisabled;
             infinite_jump = PlayerData.instance?.infiniteAirJump ?? false;
         }
+        #region SaveState
+        private static Dictionary<PlayerData, Knight.PlayerData> states_hd_to_kd = new();
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(SaveState), nameof(SaveState.Save), MethodType.Normal)]
+        public static void SaveState_Save_Postfix(SaveState __instance)
+        {
+            if (!KnightInSilksong.IsKnight) return;
+            if (__instance == null || __instance.data == null || __instance.data.savedPd == null) return;
+            states_hd_to_kd[__instance.data.savedPd] = JsonUtility.FromJson<Knight.PlayerData>(JsonUtility.ToJson(pd));
+        }
+        //The `Load` is an Enumerator so we use `HUDFixes` instaead
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(DebugMod.SaveStates.SaveState), nameof(DebugMod.SaveStates.SaveState.HUDFixes), MethodType.Normal)]
+        public static void DebugMod_SaveStates_SaveState_HudFixes_Postfix(DebugMod.SaveStates.SaveState __instance)
+        {
+            if (!KnightInSilksong.IsKnight) return;
+            if (__instance.data == null || !__instance.IsSet()) return;
+            hc.transform.position = __instance.data.savePos;
+            if (__instance.data.savedPd == null) return;
+            if (states_hd_to_kd.TryGetValue(__instance.data.savedPd, out Knight.PlayerData saveKd))
+            {
+                JsonUtility.FromJsonOverwrite(JsonUtility.ToJson(saveKd), pd);
+            }
+            pd.health = saveKd.health;
+            pd.MPCharge = saveKd.MPCharge;
+            pd.MPReserve = saveKd.MPReserve;
+            var hud = KnightInSilksong.Instance.hud_instance.gameObject;
+            FSMUtility.SendEventToGameObject(hud, "HERO LEAVE", true);
+            FSMUtility.SendEventToGameObject(hud, "HERO DAMAGED", true);
+            hud.transform.Find("Soul Orb/Orb Full").gameObject.SetActive(false);
+            var soul = hud.transform.Find("Soul Orb").gameObject;
+            // soul.SetActive(false);
+            // soul.SetActive(true);
+            FSMUtility.SendEventToGameObject(soul, "MP RESERVE DOWN", true);
+            if (saveKd.GetInt(nameof(saveKd.MPCharge)) >= saveKd.GetInt(nameof(saveKd.maxMP)))
+            {
+                FSMUtility.SendEventToGameObject(soul, "MP GAIN", true);
+            }
+            else
+            {
+                FSMUtility.SendEventToGameObject(soul, "MP LOSE", true);
+            }
+            hc?.CancelDamageRecoil();
+            var invPulse = hc.GetComponent<InvulnerablePulse>();
+            invPulse?.StopInvulnerablePulse();
+            hc.transitionState = GlobalEnums.HeroTransitionState.WAITING_TO_TRANSITION;
+            hc.cState.invulnerable = false;
+
+
+
+
+
+        }
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(SaveStateManager), nameof(SaveStateManager.SaveToFile), MethodType.Normal)]
+        public static void SaveStateManager_SaveToFile_Postfix(SaveState.SaveStateData data, int page, int index)
+        {
+            if (data == null || data.savedPd == null || !states_hd_to_kd.ContainsKey(data.savedPd)) return;
+            $"Save {data == null} {data.savedPd == null} {!states_hd_to_kd.ContainsKey(data.savedPd)}".LogDebug();
+            try
+            {
+                string filePath = SaveStateManager.GetFilePath(page, index);
+                string filename = Path.GetFileName(filePath);
+                filePath = Path.Combine(Path.GetDirectoryName(filePath), "knightPD_" + filename);
+                filePath.LogDebug();
+                File.WriteAllText(filePath, JsonUtility.ToJson(states_hd_to_kd[data.savedPd], true));
+            }
+            catch (Exception ex)
+            {
+                ex.LogDebug();
+            }
+        }
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(SaveStateManager), nameof(SaveStateManager.LoadFromFile), MethodType.Normal)]
+        public static void SaveStateManager_LoadFromFile_Postfix(int page, int index, ref SaveState.SaveStateData __result)
+        {
+            $"Load {__result.savedPd}".LogDebug();
+            if (__result.savedPd == null) return;
+            string filePath = SaveStateManager.GetFilePath(page, index);
+            string filename = Path.GetFileName(filePath);
+            filePath = Path.Combine(Path.GetDirectoryName(filePath), "knightPD_" + filename);
+            $"Load {filePath}".LogDebug();
+            try
+            {
+                if (File.Exists(filePath))
+                {
+                    states_hd_to_kd[__result.savedPd] = JsonUtility.FromJson<Knight.PlayerData>(File.ReadAllText(filePath));
+                }
+            }
+            catch (Exception ex)
+            {
+                ex.LogDebug();
+            }
+        }
+        #endregion
         #region Replace Functions
         [HarmonyPrefix]
         [HarmonyPatch(typeof(Knight.PlayerData), nameof(Knight.PlayerData.TakeHealth), MethodType.Normal)]
@@ -60,12 +173,8 @@ namespace KIS.Compatibility
             DebugMod.ModHooks.PlayerData_TakeHealth(ref amount);
             return true;
         }
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(DebugMod.SaveStates.SaveState), nameof(DebugMod.SaveStates.SaveState.Load), MethodType.Enumerator)]
-        public static void DebugMod_SaveStates_SaveState_Load_Postfix(DebugMod.SaveStates.SaveState __instance)
-        {
-            if (!KnightInSilksong.IsKnight) return;
-        }
+
+
         [HarmonyPrefix]
         [HarmonyPatch(typeof(BindableFunctions), nameof(BindableFunctions.GiveMask), MethodType.Normal)]
         public static bool BindableFunctions_GiveMask_Prefix()
@@ -472,6 +581,8 @@ namespace KIS.Compatibility
             __instance.AppendBasicControl(LangKey.DEBUG_REMOVE_ALL_CHARMS.Localize(),
                                             RemoveAllCharms);
             __instance.AppendRow(1);
+            __instance.AppendBasicControl(LangKey.DEBUG_FIX_CHARMSLOTS.Localize(), () => pd.CalculateNotchesUsed());
+            __instance.AppendRow(1);
             __instance.AppendRow(1);
             var text = __instance.AppendSectionHeader(LangKey.DEBUG_PROMPT.Localize());
             text.FontSize = MainPanel.KeybindHeaderFontSize;
@@ -730,7 +841,7 @@ namespace KIS.Compatibility
                 4 => 0,
                 _ => pd.GetInt(nameof(pd.charmCost_36))
             };
-            pd.SetInt(nameof(pd.gotCharm_36), cost);
+            pd.SetInt(nameof(pd.charmCost_36), cost);
         }
         public static void IncreaseSpellLevel(Spell spell)
         {

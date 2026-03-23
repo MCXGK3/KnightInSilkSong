@@ -123,5 +123,6 @@
   "DEBUG_DECREASE_CHARMSLOTS": "Decrease CharmSlots",
   "DEBUG_ALL_SKILL": "All Skills",
   "DEBUG_DASH_NAME": "Dash",
-  "DEBUG_PROMPT": "Other functions share buttons"
+  "DEBUG_PROMPT": "Other functions share buttons",
+  "DEBUG_FIX_CHARMSLOTS": "Fix charmslots used"
 }

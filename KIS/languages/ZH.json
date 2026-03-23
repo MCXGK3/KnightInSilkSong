@@ -123,5 +123,6 @@
   "DEBUG_DECREASE_CHARMSLOTS": "减少护符槽",
   "DEBUG_ALL_SKILL": "给予全技能",
   "DEBUG_DASH_NAME": "冲刺",
-  "DEBUG_PROMPT": "其他功能与大黄蜂共用按键"
+  "DEBUG_PROMPT": "其他功能与大黄蜂共用按键",
+  "DEBUG_FIX_CHARMSLOTS":"修复护符所占槽位"
 }
