@@ -1,6 +1,7 @@
 using HutongGames.PlayMaker;
 using HutongGames.PlayMaker.Actions;
 using KIS;
+using KIS.Compatibility;
 
 [HarmonyPatch(typeof(CallMethodProper), "PreCache")]
 class PatchCallMethodProper : GeneralPatch
@@ -202,7 +203,7 @@ class PatchDoMethodCall : GeneralPatch
                 {
                     if (PrepatcherPlugin.PlayerDataAccess.hasBrolly)
                     {
-                        Knight.PlayerData.instance.SetBool(nameof(Knight.PlayerData.infiniteAirJump), false);
+                        Knight.PlayerData.instance.SetBool(nameof(Knight.PlayerData.infiniteAirJump), WithDebugMod.infinite_jump);
                     }
                 }
                 else if (__instance.methodName.value == "StartAnimationControlToIdle")

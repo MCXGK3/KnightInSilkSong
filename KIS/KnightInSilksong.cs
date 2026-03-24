@@ -6,6 +6,8 @@ using HutongGames.PlayMaker.Actions;
 using UnityEngine.Audio;
 using BepInEx.Configuration;
 using TeamCherry.Localization;
+using Newtonsoft.Json.UnityConverters.Helpers;
+using KIS.Compatibility;
 
 namespace KIS;
 
@@ -108,7 +110,7 @@ public partial class KnightInSilksong : BaseUnityPlugin
         DontDestroyOnLoad(knight);
         ModuleManager.Init();
         self_hormony = new Harmony(Id);
-        foreach (var type in Assembly.GetExecutingAssembly().GetTypes())
+        foreach (var type in Assembly.GetExecutingAssembly().GetTypesSafely())
         {
             if (type.IsSubclassOf(typeof(GeneralPatch)) && !type.IsAbstract)
             {
@@ -125,7 +127,8 @@ public partial class KnightInSilksong : BaseUnityPlugin
     }
     internal void Start()
     {
-        foreach (var type in Assembly.GetExecutingAssembly().GetTypes())
+        Compatibility.CompatibilityManager.CheckAndInit();
+        foreach (var type in Assembly.GetExecutingAssembly().GetTypesSafely())
         {
             if (type.IsSubclassOf(typeof(StartPatch)) && !type.IsAbstract)
             {
@@ -269,7 +272,7 @@ public partial class KnightInSilksong : BaseUnityPlugin
         });
         proxy.AddTransition("Idle", "PARRIED", "Parried");
         // KnightController.ClearMP();
-        Knight.PlayerData.instance.SetBool(nameof(Knight.PlayerData.infiniteAirJump), false);
+        Knight.PlayerData.instance.SetBool(nameof(Knight.PlayerData.infiniteAirJump), WithDebugMod.infinite_jump);
         Knight.PlayerData.instance.SetInt(nameof(Knight.PlayerData.MPCharge), 0);
         Knight.PlayerData.instance.SetInt(nameof(Knight.PlayerData.MPReserve), 0);
         //why didn't tc put the needle back in its original position?
@@ -326,6 +329,7 @@ public partial class KnightInSilksong : BaseUnityPlugin
         {
             ProgressionManager.setProgression();
         }
+        Compatibility.CompatibilityManager.UpdateAll();
 
 
     }

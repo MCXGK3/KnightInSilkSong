@@ -606,4 +606,17 @@ public class Patch_HeroController_CocoonBroken : GeneralPatch
         Knight.PlayerData.instance?.EndSoulLimiter();
     }
 }
+[HarmonyPatch(typeof(HeroController), nameof(HeroController.DamageSelf), MethodType.Normal)]
+public class Patch_HeroController_DamageSelf : GeneralPatch
+{
+    public static bool Prefix(HeroController __instance)
+    {
+        if (!KnightInSilksong.IsKnight) return true;
+        Knight.HeroController.instance.TakeDamage(Knight.HeroController.instance.gameObject, CollisionSide.left, 1, (int)HazardType.NON_HAZARD);
+        return true;
+    }
+    public static void Postfix(HeroController __instance)
+    {
+    }
+}
 

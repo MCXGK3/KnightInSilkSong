@@ -3,6 +3,7 @@ using BepInEx;
 using GlobalEnums;
 using HutongGames.PlayMaker;
 using KIS;
+using TeamCherry.Localization;
 public enum Tool
 {
     /// <summary>
@@ -430,6 +431,18 @@ public enum Charm
     /// </summary>
     VoidHeart = 36
 }
+public enum Spell
+{
+    Scream,
+    Fireball,
+    Quake
+}
+public enum NailArt
+{
+    GREAT_SLASH,
+    DASH_SLASH,
+    CYCLONE
+}
 public static class KISHelper
 {
     //useful actions
@@ -533,7 +546,6 @@ public static class KISHelper
     {
         return "gotCharm_" + (int)charm;
     }
-
     public static void CheckForDamageHero(this Knight.HeroBox heroBox, GameObject gameObject)
     {
         DamageHero component = gameObject.GetComponent<DamageHero>();
@@ -569,6 +581,32 @@ public static class KISHelper
                 heroBox.isHitBuffered = true;
             }
         }
+    }
+    public static Type[] GetTypesSafely(this Assembly asm)
+    {
+        try
+        {
+            return asm.GetTypes();
+        }
+        catch (ReflectionTypeLoadException ex)
+        {
+            return ex.Types.Where(x => x is not null).ToArray();
+        }
+    }
+    public static bool IsAssignableFromSafely(this Type self, Type other)
+    {
+        try
+        {
+            return self.IsAssignableFrom(other);
+        }
+        catch
+        {
+            return false;
+        }
+    }
+    public static LocalisedString Localize(this LangKey key)
+    {
+        return new($"Mods.{KnightInSilksong.Id}", MoreLanguge.GetInGameKey(key));
     }
 }
 
