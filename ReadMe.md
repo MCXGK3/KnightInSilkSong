@@ -39,6 +39,7 @@ It allows you to switch between the Knight and Hornet in the game.
 | Shield.png     | Patchwork\Spritesheets\\Orbit Shield Cln(Hollownest)\atlas0.png      |
 | Weaver.png     | Patchwork\Spritesheets\\Weaverling Cln(Hollownest)\atlas0.png        |
 | Liquid.png     | Patchwork\Spritesheets\\HUD_Soulorb_fills(Hollownest)\atlas0.png     |
+| Sprint.png     | Patchwork\Spritesheets\\Knight Dream Gate Cln(Hollownest)\atlas0.png |
 | OrbFull.png    | Patchwork\Sprites\T2D\soul_orb_glow0000.png                          |
 
 ## Special Thanks
