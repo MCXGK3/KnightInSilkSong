@@ -543,7 +543,7 @@ namespace KIS.Compatibility
             __instance.AppendRow(1, 1, 1);
             __instance.AppendIncrementControl(LangKey.DEBUG_DASH_NAME.Localize(), GetDashLevel, ToggleDash);
             __instance.AppendToggleControl(LangKey.DEBUG_WALL_JUMP_NAME.Localize(),
-                                            () => pd.GetBool(nameof(pd.hasWalljump)),
+                                            () => pd.hasWalljump,
                                             ToggleWallJump);
             __instance.AppendToggleControl(LangKey.DEBUG_DOUBLE_JUMP_NAME.Localize(),
                                             () => pd.GetBool(nameof(pd.hasDoubleJump)),
@@ -690,7 +690,7 @@ namespace KIS.Compatibility
         }
         public static void ToggleWallJump()
         {
-            if (!pd.GetBool(nameof(pd.hasWalljump)))
+            if (!pd.hasWalljump)
             {
                 pd.SetBool(nameof(pd.hasWalljump), true);
                 pd.SetBool(nameof(pd.canWallJump), true);
