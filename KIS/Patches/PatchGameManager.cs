@@ -55,6 +55,7 @@ public class Patch_GameManager_StartNewGame : GeneralPatch
         int save_slot = __instance.profileID;
         if (save_slot == 0) return true;
         KnightInSilksong.Instance.current_data = SlotData.CreateSave(save_slot, KnightInSilksong.default_sync.Value);
+        KnightInSilksong.Instance.current_data.LoadSave();
         return true;
     }
     public static void Postfix(GameManager __instance, bool permadeathMode, bool bossRushMode)
