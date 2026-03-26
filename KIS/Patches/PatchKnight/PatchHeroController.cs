@@ -223,3 +223,12 @@ public class Patch_Knight_HeroController_Update10 : GeneralPatch
         __instance.transform.SetScale2D(scale);
     }
 }
+[HarmonyPatch(typeof(Knight.HeroController), nameof(Knight.HeroController.DoDoubleJump), MethodType.Normal)]
+public class Patch_Knight_HeroController_DoDoubleJump : GeneralPatch
+{
+    public static void Postfix(Knight.HeroController __instance)
+    {
+        if (Knight.PlayerData.instance.infiniteAirJump)
+            __instance.doubleJumped = false;
+    }
+}
