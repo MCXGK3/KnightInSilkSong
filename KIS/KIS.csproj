@@ -34,6 +34,7 @@
     <!-- <PackageReference Include="UnityEngine.Modules" Version="6000.0.50" IncludeAssets="compile" /> -->
     <PackageReference Include="Silksong.PrepatcherPlugin" Version="1.3.0" PrivateAssets="all"/>
     <PackageReference Include="Silksong.DebugMod" Version="*" PrivateAssets="all" Publicize="true"/>
+    <PackageReference Include="Silksong.ModMenu" Version="*" PrivateAssets="all" Publicize="true"/>
 
     <LocalReferences Include="$(ManagedDir)*.dll" Exclude="$(ManagedDir)Mono*.dll;$(ManagedDir)netstandard.dll;$(ManagedDir)System*.dll;$(ManagedDir)mscorlib.dll" />
     <Reference Include="@(LocalReferences)" Private="false" Publicize="true" />

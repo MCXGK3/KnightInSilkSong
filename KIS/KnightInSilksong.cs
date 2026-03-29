@@ -11,6 +11,7 @@ using KIS.Compatibility;
 
 namespace KIS;
 
+[ModMenuIgnore]
 [BepInDependency(PrepatcherPlugin.PrepatcherPlugin.Id)]
 [BepInAutoPlugin(id: "io.github.shownyoung.knightinsilksong")]
 public partial class KnightInSilksong : BaseUnityPlugin
