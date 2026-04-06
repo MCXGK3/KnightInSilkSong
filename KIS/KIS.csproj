@@ -22,7 +22,7 @@
   <PropertyGroup>
     <!--These properties will control the generated plugin info. Version is also used by various parts of the build system.-->
     <AssemblyTitle>KnightInSilkSong</AssemblyTitle>
-    <Version>0.6.0</Version>
+    <Version>0.6.5</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -34,6 +34,7 @@
     <!-- <PackageReference Include="UnityEngine.Modules" Version="6000.0.50" IncludeAssets="compile" /> -->
     <PackageReference Include="Silksong.PrepatcherPlugin" Version="1.3.0" PrivateAssets="all"/>
     <PackageReference Include="Silksong.DebugMod" Version="*" PrivateAssets="all" Publicize="true"/>
+    <PackageReference Include="Silksong.ModMenu" Version="*" PrivateAssets="all" Publicize="true"/>
 
     <LocalReferences Include="$(ManagedDir)*.dll" Exclude="$(ManagedDir)Mono*.dll;$(ManagedDir)netstandard.dll;$(ManagedDir)System*.dll;$(ManagedDir)mscorlib.dll" />
     <Reference Include="@(LocalReferences)" Private="false" Publicize="true" />
@@ -61,10 +62,13 @@
           <Package Include="../README.md" />
           <Package Include="../CHANGELOG.md" />
           <Package Include="../manifest.json" />
+          <Package Include="../icon.png" />
       </ItemGroup>
 
       <Copy SourceFiles="@(Binaries)" DestinationFolder="$(PublishFolder)/$(ModName)/ThunderStore" />
+      <Copy SourceFiles="@(I18N)" DestinationFolder="$(PublishFolder)/$(ModName)/ThunderStore/plugins/languages"/>
       <Copy SourceFiles="@(Binaries)" DestinationFolder="$(PublishFolder)/$(ModName)/GitHub" />
+      <Copy SourceFiles="@(I18N)" DestinationFolder="$(PublishFolder)/$(ModName)/GitHub/languages" />
       <Copy SourceFiles="@(Package)" DestinationFolder="$(PublishFolder)/$(ModName)/ThunderStore" />
       <Copy SourceFiles="../README.md" DestinationFolder="$(PublishFolder)/$(ModName)/GitHub" />
       <Copy SourceFiles="../CHANGELOG.md" DestinationFolder="$(PublishFolder)/$(ModName)/GitHub" />

@@ -4,6 +4,7 @@
   "CHARM_NAME_24_G": "Codicia irrompible",
   "INV_NAME_SUPERDASH": "Corazón de cristal",
   "INV_NAME_ART_CYCLONE": "Corte ciclón",
+  "INV_NAME_SOULORBS_ALL": "Vasija de alma",
   "CHARM_DESC_23_G": "Aumenta la salud del portador, con lo que puede recibir más daño.<br><br>Este amuleto es irrompible.",
   "CHARM_NAME_40_N": "Melodía Despreocupada",
   "CHARM_NAME_23_G": "Corazón irrompible",
@@ -18,6 +19,7 @@
   "CHARM_DESC_BROKEN": "Este amuleto se ha roto y el poder de su interior se ha apagado. No se puede equipar.",
   "CHARM_NAME_12": "Espinas de agonía",
   "CHARM_DESC_6": "Encarna la furia y el heroísmo que afloran en quienes están a punto de morir.<br><br>La fuerza del portador aumentará cuando se encuentre cercano a la muerte.",
+  "PANE_MAP": "Mapa",
   "CHARM_NAME_23_BRK": "Corazón frágil (reparar)",
   "CHARM_DESC_40_N": "Token conmemorando el inicio de una nueva amistad.<br><br>Contiene una canción de protección que defenderá al portador del daño.",
   "CHARM_DESC_40_F": "Símbolo de un ritual completo, contiene una llama escarlata viva.",
@@ -45,6 +47,7 @@
   "CHARM_DESC_5": "Protege a su portador con una dura coraza mientras concentra el ALMA.<br><br>La coraza no es indestructible y se hará añicos si absorbe demasiado daño.",
   "CHARM_NAME_24_BRK": "Codicia frágil (reparar)",
   "CHARM_NAME_4": "Coraza robusta",
+  "INV_NAME_NOTCH": "Muesca de amuletos",
   "CHARM_NAME_8": "Corazón de saviavida",
   "CHARM_DESC_8": "Contiene un núcleo vivo que gotea valiosa saviavida.<br><br>Al descansar, el portador obtendrá un revestimiento de saviavida que le protege de una pequeña cantidad de daño.",
   "CHARM_DESC_13": "Concedida libremente por la tribu mantis a aquellos a los que respetan.<br><br>Aumenta mucho el alcance del aguijón del portador, lo que le permite golpear enemigos desde más lejos.",
@@ -63,6 +66,7 @@
   "CHARM_NAME_24": "Codicia frágil",
   "CHARM_NAME_27": "Bendición de Joni",
   "CHARM_NAME_26": "Gloria del Maestro de aguijones",
+  "INV_NAME_SHADOWDASH": "Capa sombría",
   "CHARM_NAME_32": "Corte rápido",
   "CHARM_TXT_COST": "Coste",
   "CHARM_NAME_19": "Piedra de chamán",
@@ -96,6 +100,7 @@
   "CHARM_DESC_23_BROKEN": "Aumenta la salud del portador, con lo que puede recibir más daño.<br><br>Este amuleto se ha roto y el poder de su interior se ha apagado. No se puede equipar.",
   "CHARM_DESC_33": "Como reflejo de los deseos del Santuario de Almas de dominar el ALMA, mejora la habilidad del portador para lanzar hechizos.<br><br>Reduce el coste de ALMA al lanzar hechizos.",
   "CHARM_NAME_6": "Furia de los caídos",
+  "INV_NAME_DASH": "Capa de ala de polilla",
   "CHARM_DESC_2": "Susurra su ubicación al portador siempre que se abra el mapa, algo con lo que los viajeros solitarios podrán encontrar su ubicación actual.",
   "CHARM_DESC_25_BROKEN": "Endurece al portador, aumentando el daño que causa a los enemigos con su aguijón.<br><br>Este amuleto se ha roto y el poder de su interior se ha apagado. No se puede equipar.",
   "CHARM_NAME_37": "Maestro de Sprints",
@@ -113,5 +118,6 @@
   "CHARM_DESC_12": "Sienten el dolor de su portador y sueltan golpes al mundo que las rodea.<br><br>Al recibir daño, hace brotar vides espinosos que dañan a los enemigos cercanos.",
   "CHARM_DESC_25_G": "Endurece al portador, aumentando el daño que causa a los enemigos con su aguijón.<br><br>Este amuleto es irrompible.",
   "CHARM_DESC_40": "Llevado por aquellos que forman parte del Ritual de la compañía de grimm.<br><br>El portador debe buscar los grimarios y recolectar sus llamas. Las llamas que no se han recogido aparecerán en el mapa del portador",
-  "CHARM_NAME_25_G": "Fuerza irrompible"
+  "CHARM_NAME_25_G": "Fuerza irrompible",
+  "NAME_BLESSING": "Bendición de Salubra"
 }

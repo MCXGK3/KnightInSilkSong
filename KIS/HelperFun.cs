@@ -1,3 +1,4 @@
+using System.Collections;
 using System.IO;
 using BepInEx;
 using GlobalEnums;
@@ -607,6 +608,47 @@ public static class KISHelper
     public static LocalisedString Localize(this LangKey key)
     {
         return new($"Mods.{KnightInSilksong.Id}", MoreLanguge.GetInGameKey(key));
+    }
+    public static LocalisedString Localize(this Tool tool)
+    {
+        switch (tool)
+        {
+            case Tool.Curve_Claws_Upgraded:
+                return new("Tools", "CURVE_CLAWS_UPG_NAME");
+            case Tool.WebShot_Architect:
+                return LangKey.MM_SILKSHOT_ARCHITECT.Localize();
+            case Tool.WebShot_Forge:
+                return LangKey.MM_SILKSHOT_FORGE.Localize();
+            case Tool.WebShot_Weaver:
+                return LangKey.MM_SILKSHOT_WEAVER.Localize();
+            case Tool.Rosary_Cannon:
+                return new("Tools", "ROSARYCANNON_NAME");
+            case Tool.Silk_Snare:
+                return new("Tools", "SNARE_NAME");
+            case Tool.Lifeblood_Syringe:
+                return new("Tools", "SYRINGE_LIFEBLOOD_NAME");
+            case Tool.Brolly_Spike:
+                return new("Tools", "BROLLYSPIKE_NAME");
+            case Tool.Dazzle_Bind_Upgraded:
+                return new("Tools", "DAZZLE_BIND_UPG_NAME");
+            case Tool.Pinstress_Tool:
+                return new("Tools", "PINSTRESS_NAME");
+            case Tool.Screw_Attack:
+                return new("Tools", "SCREWATTACK_NAME");
+            default:
+                return new("Tools", tool.ToString().ToUpper() + "_NAME");
+        }
+    }
+    public static LocalisedString Localize(this Charm charm)
+    {
+        switch (charm)
+        {
+            case Charm.VoidHeart:
+                return new($"Mods.{KnightInSilksong.Id}", "CHARM_NAME_36_C");
+            default:
+                return new($"Mods.{KnightInSilksong.Id}", "CHARM_NAME_" + (int)charm);
+        }
+
     }
 }
 

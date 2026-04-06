@@ -4,6 +4,7 @@
   "CHARM_NAME_24_G": "Unzerbrechliche Gier",
   "INV_NAME_SUPERDASH": "Kristallherz",
   "INV_NAME_ART_CYCLONE": "Wirbelhieb",
+  "INV_NAME_SOULORBS_ALL": "Seelengefäß",
   "CHARM_DESC_23_G": "Erhöht die Gesundheit des Trägers und ermöglicht ihm, mehr Schaden einzustecken.<br><br>Dieser Talisman ist unzerbrechlich.",
   "CHARM_NAME_40_N": "Sorglose Melodie",
   "CHARM_NAME_23_G": "Unzerbrechliches Herz",
@@ -18,6 +19,7 @@
   "CHARM_DESC_BROKEN": "Dieser Talisman ist zerbrochen und die Kraft darin ist verstummt. Er kann nicht ausgerüstet werden.",
   "CHARM_NAME_12": "Dornen der Qual",
   "CHARM_DESC_6": "Verkörpert den Zorn und das Heldentum derer, die kurz vor dem Tod stehen.<br><br>Die Stärke des Trägers erhöht sich, wenn dieser dem Tode nah ist.",
+  "PANE_MAP": "Karte",
   "CHARM_NAME_23_BRK": "Fragiles Herz (Reparieren)",
   "CHARM_DESC_40_N": "Zeichen des Beginns einer wunderbaren neuen Freundschaft.<br><br>Enthält ein schützendes Lied, das den Träger vor Schaden bewahren kann.",
   "CHARM_DESC_40_F": "Symbol eines vollendeten Rituals. Enthält eine lebendige, scharlachrote Flamme.",
@@ -45,6 +47,7 @@
   "CHARM_DESC_5": "Beschützt den Träger beim Fokussieren von SEELE mit einem harten Panzer.<br><br>Der Panzer ist nicht unzerstörbar und zerbricht bei zu viel Schaden.",
   "CHARM_NAME_24_BRK": "Fragile Gier (Reparieren)",
   "CHARM_NAME_4": "Robuster Panzer",
+  "INV_NAME_NOTCH": "Talismansockel",
   "CHARM_NAME_8": "Lebensblut-Herz",
   "CHARM_DESC_8": "Enthält einen lebendigen Kern, durch den Lebensblut strömt.<br><br>Beim Ausruhen erhält der Träger einen Überzug mit Lebensblut, der vor einer geringen Menge Schaden schützt.",
   "CHARM_DESC_13": "Vom Stamm der Mantis an diejenigen vergeben, die von ihnen respektiert werden.<br><br>Erhöht die Reichweite des Nagels des Trägers dramatisch, so dass Gegner aus größerer Entfernung getroffen werden können.",
@@ -63,6 +66,7 @@
   "CHARM_NAME_24": "Fragile Gier",
   "CHARM_NAME_27": "Jonis Segen",
   "CHARM_NAME_26": "Pracht des Nagelmeisters",
+  "INV_NAME_SHADOWDASH": "Schattenumhang",
   "CHARM_NAME_32": "Schneller Hieb",
   "CHARM_TXT_COST": "Preis",
   "CHARM_NAME_19": "Schamanenstein",
@@ -96,6 +100,7 @@
   "CHARM_DESC_23_BROKEN": "Erhöht die Gesundheit des Trägers und ermöglicht ihm, mehr Schaden einzustecken.<br><br>Dieser Talisman ist zerbrochen und die Kraft darin ist verstummt. Er kann nicht ausgerüstet werden.",
   "CHARM_DESC_33": "Spiegelt den Wunsch des Seelenheiligtums wider, SEELE zu beherrschen, und verbessert die Zauberfähigkeiten des Trägers.<br><br>Reduziert die SEELE-Kosten von Zaubern.",
   "CHARM_NAME_6": "Furor der Gefallenen",
+  "INV_NAME_DASH": "Mottenflügel-Umhang",
   "CHARM_DESC_2": "Flüstert dem Träger seinen Standort zu, wenn er eine Karte öffnet, und lässt ihn so seine genaue Lage bestimmen.",
   "CHARM_DESC_25_BROKEN": "Macht den Träger stärker und erhöht den Schaden, den er Gegnern mit dem Nagel zufügt.<br><br>Dieser Talisman ist zerbrochen und die Kraft darin ist verstummt. Er kann nicht ausgerüstet werden.",
   "CHARM_NAME_37": "Laufmeister",
@@ -113,5 +118,6 @@
   "CHARM_DESC_12": "Spürt den Schmerz des Trägers und schlägt um sich.<br><br>Lässt beim Erleiden von Schaden dornige Ranken sprießen, die Gegnern in der Nähe Schaden zufügen.",
   "CHARM_DESC_25_G": "Macht den Träger stärker und erhöht den Schaden, den er Gegnern mit dem Nagel zufügt.<br><br>Dieser Talisman ist unzerbrechlich.",
   "CHARM_DESC_40": "Getragen von jenen, die am Ritual der Grimmigen Truppe teilhaben.<br><br>Der Träger muss die Grimmsippe suchen und ihre Flammen sammeln. Nicht eingesammelte Flammen werden auf der Karte des Trägers erscheinen.",
-  "CHARM_NAME_25_G": "Unzerbrechliche Stärke"
+  "CHARM_NAME_25_G": "Unzerbrechliche Stärke",
+  "NAME_BLESSING": "Salubras Segen"
 }
