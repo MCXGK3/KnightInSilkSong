@@ -32,21 +32,21 @@ internal partial class SyncManager
     private static SyncBaseInfo SameNameSync(string path)
     {
         // they should have the same name and value
-        return new SyncBaseInfo(path, null, path, null, true);
+        return new SyncBaseInfo(path, null, path, null, SyncMode.EQUAL);
     }
     private static SyncBaseInfo SameValueSync(string hdPath, string kdPath)
     {
         // they should have the same value
-        return new SyncBaseInfo(hdPath, null, kdPath, null, true);
+        return new SyncBaseInfo(hdPath, null, kdPath, null, SyncMode.EQUAL);
     }
     private static SyncBaseInfo DefaultValue(string kdPath, object kdValue)
     {
-        return new(null, null, kdPath, kdValue, false);
+        return new(null, null, kdPath, kdValue, SyncMode.SET);
     }
     private static SyncBaseInfo Tool2Charm(Tool tool, Charm charm, bool always_equal = true)
     {
 
-        return new(FromTool.prefix + tool.GetToolName(), true, charm.GetCharmName(), true, always_equal);
+        return new(FromTool.prefix + tool.GetToolName(), true, charm.GetCharmName(), true, always_equal ? SyncMode.EQUAL : SyncMode.CONTRIBUTE);
     }
 
 
@@ -55,9 +55,6 @@ internal partial class SyncManager
         return [
             //movement
             SameNameSync(nameof(hd.hasDash)),
-            SameValueSync(nameof(hd.hasDash), nameof(kd.canDash)),
-            DefaultValue(nameof(kd.hasShadowDash),false),
-            // SameValueSync(nameof(hd.),nameof(kd.hasShadowDash)),
             SameNameSync(nameof(hd.hasWalljump)),
             SameNameSync(nameof(hd.hasDoubleJump)),
             SameValueSync(nameof(hd.hasDash), nameof(kd.hasSuperDash)),
@@ -65,17 +62,17 @@ internal partial class SyncManager
             // spells
 
             DefaultValue(nameof(kd.fireballLevel), 0),
-            new (nameof(hd.hasNeedleThrow), true, nameof(kd.fireballLevel), 1, false),
-            new (nameof(hd.hasSilkCharge), true, nameof(kd.fireballLevel), 2, false),
+            new (nameof(hd.hasNeedleThrow), true, nameof(kd.fireballLevel), 1, SyncMode.CONTRIBUTE),
+            new (nameof(hd.hasSilkCharge), true, nameof(kd.fireballLevel), 2, SyncMode.CONTRIBUTE),
             DefaultValue(nameof(kd.quakeLevel), 0),
-            new (nameof(hd.hasParry), true, nameof(kd.quakeLevel), 1, false),
-            new (nameof(hd.hasSilkBossNeedle), true, nameof(kd.quakeLevel), 2, false),
+            new (nameof(hd.hasParry), true, nameof(kd.quakeLevel), 1, SyncMode.CONTRIBUTE),
+            new (nameof(hd.hasSilkBossNeedle), true, nameof(kd.quakeLevel), 2, SyncMode.CONTRIBUTE),
             DefaultValue(nameof(kd.screamLevel), 0),
-            new (nameof(hd.hasThreadSphere), true, nameof(kd.screamLevel), 1, false),
-            new (nameof(hd.hasSilkBomb), true, nameof(kd.screamLevel), 2, false),
+            new (nameof(hd.hasThreadSphere), true, nameof(kd.screamLevel), 1, SyncMode.CONTRIBUTE),
+            new (nameof(hd.hasSilkBomb), true, nameof(kd.screamLevel), 2, SyncMode.CONTRIBUTE),
             //upgrades
+            DefaultValue(nameof(kd.MPReserveMax),0),
             SameNameSync(nameof(hd.maxHealthBase)),
-            SameNameSync(nameof(hd.nailDamage)),
             SameValueSync(nameof(hd.nailUpgrades), nameof(kd.nailSmithUpgrades)),
 
             //misc
@@ -84,7 +81,6 @@ internal partial class SyncManager
             SameValueSync(nameof(hd.permadeathMode), nameof(kd.permadeathMode)),
             SameNameSync(nameof(hd.bossRushMode)),
             SameValueSync(nameof(hd.HasBoundCrestUpgrader), nameof(kd.salubraBlessing)),
-            SameValueSync(nameof(hd.hasChargeSlash), nameof(kd.hasNailArt)),
             SameValueSync(nameof(hd.hasChargeSlash), nameof(kd.hasCyclone)),
             SameValueSync(nameof(hd.hasChargeSlash), nameof(kd.hasDashSlash)),
             SameValueSync(nameof(hd.hasChargeSlash), nameof(kd.hasUpwardSlash)),
@@ -92,7 +88,7 @@ internal partial class SyncManager
 
 
             //charm
-            new(FromUnlockedSlots.CheckKey, null, nameof(kd.charmSlots), null, true),
+            new(FromUnlockedSlots.CheckKey, null, nameof(kd.charmSlots), null, SyncMode.EQUAL),
             Tool2Charm(Tool.Compass, Charm.WaywardCompass),
             Tool2Charm(Tool.Sting_Shard, Charm.Weaversong),
             Tool2Charm(Tool.Pimpilo, Charm.DefendersCrest),
@@ -114,8 +110,8 @@ internal partial class SyncManager
             Tool2Charm(Tool.Spool_Extender, Charm.SpellTwister),
             Tool2Charm(Tool.Reserve_Bind, Charm.Hiveblood),
             DefaultValue(Charm.SporeShroom.GetCharmName(), false),
-            Tool2Charm(Tool.Dazzle_Bind, Charm.SporeShroom),
-            Tool2Charm(Tool.Dazzle_Bind_Upgraded, Charm.SporeShroom),
+            Tool2Charm(Tool.Dazzle_Bind, Charm.SporeShroom,false),
+            Tool2Charm(Tool.Dazzle_Bind_Upgraded, Charm.SporeShroom,false),
             Tool2Charm(Tool.Revenge_Crystal, Charm.ThornsOfAgony),
             Tool2Charm(Tool.Zap_Imbuement, Charm.ShamanStone),
             Tool2Charm(Tool.Quick_Sling, Charm.SoulCatcher),
@@ -136,7 +132,7 @@ internal partial class SyncManager
             Tool2Charm(Tool.Cogwork_Flier, Charm.Grimmchild, false),
             // new(FromTool.prefix+Tool.Cogwork_Flier.GetToolName(),true,nameof(kd.grimmChildLevel),4),
             Tool2Charm(Tool.Magnetite_Dice, Charm.Grimmchild, false),
-            new(FromTool.prefix + Tool.Magnetite_Dice.GetToolName(), true, nameof(kd.grimmChildLevel), 5, false),
+            new(FromTool.prefix + Tool.Magnetite_Dice.GetToolName(), true, nameof(kd.grimmChildLevel), 5, SyncMode.SET),
             Tool2Charm(Tool.Scuttlebrace, Charm.Dashmaster),
             Tool2Charm(Tool.Sprintmaster, Charm.Sprintmaster),
             Tool2Charm(Tool.Musician_Charm, Charm.DreamWielder),

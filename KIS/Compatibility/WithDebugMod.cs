@@ -142,7 +142,7 @@ namespace KIS.Compatibility
                 string filePath = SaveStateManager.GetFilePath(page, index);
                 string filename = Path.GetFileName(filePath);
                 filePath = Path.Combine(Path.GetDirectoryName(filePath), "knightPD_" + filename);
-                filePath.LogDebug();
+                // filePath.LogDebug();
                 File.WriteAllText(filePath, JsonUtility.ToJson(states_hd_to_kd[data.savedPd], true));
             }
             catch (Exception ex)
@@ -154,12 +154,12 @@ namespace KIS.Compatibility
         [HarmonyPatch(typeof(SaveStateManager), nameof(SaveStateManager.LoadFromFile), MethodType.Normal)]
         public static void SaveStateManager_LoadFromFile_Postfix(int page, int index, ref SaveState.SaveStateData __result)
         {
-            $"Load {__result.savedPd}".LogDebug();
+            // $"Load {__result.savedPd}".LogDebug();
             if (__result.savedPd == null) return;
             string filePath = SaveStateManager.GetFilePath(page, index);
             string filename = Path.GetFileName(filePath);
             filePath = Path.Combine(Path.GetDirectoryName(filePath), "knightPD_" + filename);
-            $"Load {filePath}".LogDebug();
+            // $"Load {filePath}".LogDebug();
             try
             {
                 if (File.Exists(filePath))

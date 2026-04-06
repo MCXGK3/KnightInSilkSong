@@ -1,23 +1,61 @@
 using BepInEx;
+using GlobalEnums;
+using Newtonsoft.Json;
+using TeamCherry.Localization;
 namespace KIS;
 
 internal partial class SyncManager
 {
+    public enum SyncMode
+    {
+        EQUAL,
+        SET,
+        CONTRIBUTE
+    }
+
+
     public class SyncBaseInfo
     {
         public string hdPath = null;
         public object hdValue = null;
         public string kdPath = null;
         public object kdValue = null;
-        public bool always_equal = false;
+        [JsonProperty(Required = Required.Always)]
+        public string operation = SyncMode.EQUAL.ToString();
+        [JsonIgnore]
+        public SyncMode SyncMode
+        {
+            get
+            {
 
-        public SyncBaseInfo(string hdPath, object hdValue, string kdPath, object kdValue, bool always_equal)
+                if (Enum.TryParse(typeof(SyncMode), operation, out object temp))
+                {
+                    field = (SyncMode)temp;
+                }
+                return field;
+            }
+            set
+            {
+                field = value;
+                operation = field.ToString();
+            }
+        }
+
+        public SyncBaseInfo(string hdPath, object hdValue, string kdPath, object kdValue, SyncMode operation)
         {
             this.hdPath = hdPath;
             this.hdValue = hdValue;
             this.kdPath = kdPath;
             this.kdValue = kdValue;
-            this.always_equal = always_equal;
+            this.operation = operation.ToString();
+            if (this.hdValue is long t1)
+            {
+                this.hdValue = (int)t1;
+            }
+            if (this.kdValue is long t2)
+            {
+                this.kdValue = (int)t2;
+            }
         }
     }
     public abstract class SyncEntry(SyncManager.SyncBaseInfo info)
@@ -27,6 +65,7 @@ internal partial class SyncManager
         public abstract string SubscribeHDPath { get; }
         public Action<object> dirty_action = null;
         public abstract SyncBaseInfo ToBaseInfo();
+        public SyncMode mode = Enum.TryParse(info.operation, out SyncMode res) ? res : SyncMode.EQUAL;
         protected virtual object GetKDValue()
         {
             if (kd.GetType().GetField(KDPath) != null)
@@ -106,7 +145,7 @@ internal partial class SyncManager
 
         public override SyncBaseInfo ToBaseInfo()
         {
-            return new(null, null, kdPath, kdValue, false);
+            return new(null, null, kdPath, kdValue, SyncMode.SET);
         }
     }
     public class HD2KDSync : SyncEntry
@@ -117,13 +156,15 @@ internal partial class SyncManager
         protected object kdValue;
         protected bool always_equal;
         protected static PlayerData hd => PlayerData.instance;
+        protected SyncMode sync_mode;
         public HD2KDSync(SyncBaseInfo info) : base(info)
         {
             hdPath = info.hdPath;
             hdValue = info.hdValue;
             kdPath = info.kdPath;
             kdValue = info.kdValue;
-            always_equal = info.always_equal;
+            sync_mode = info.SyncMode;
+            always_equal = info.SyncMode == SyncMode.EQUAL;
         }
 
         public override string KDPath => kdPath;
@@ -148,7 +189,31 @@ internal partial class SyncManager
 
         public override bool ApplyValue()
         {
-            object res = always_equal ? GetHDValue() : kdValue;
+            object res = null;
+            Type type = kd.GetType().GetField(KDPath).FieldType;
+            switch (sync_mode)
+            {
+                case SyncMode.CONTRIBUTE:
+                    if (type == typeof(bool))
+                    {
+                        res = true;
+                    }
+                    else if (type == typeof(int))
+                    {
+                        res = (int)GetKDValue() + 1;
+                    }
+                    else
+                    {
+                        $"CONTRIBUTE to type {type} for {KDPath}".LogWarning();
+                    }
+                    break;
+                case SyncMode.EQUAL:
+                    res = GetHDValue();
+                    break;
+                case SyncMode.SET:
+                    res = kdValue;
+                    break;
+            }
             if (!Equals(res, GetKDValue()))
             {
                 _SetKDValue(res);
@@ -164,7 +229,7 @@ internal partial class SyncManager
 
         public override SyncBaseInfo ToBaseInfo()
         {
-            return new(hdPath, hdValue, kdPath, kdValue, always_equal);
+            return new(hdPath, hdValue, kdPath, kdValue, always_equal ? SyncMode.EQUAL : SyncMode.SET);
         }
     }
 
@@ -217,13 +282,62 @@ internal partial class SyncManager
         }
 
     }
-
+    static void UpdateNailArtState()
+    {
+        kd.SetBool(nameof(kd.hasNailArt),
+                        kd.GetBool(nameof(kd.hasDashSlash)) || kd.GetBool(nameof(kd.hasUpwardSlash)) || kd.GetBool(nameof(kd.hasCyclone)));
+        kd.SetBool(nameof(kd.hasAllNailArts),
+                    kd.GetBool(nameof(kd.hasDashSlash)) && kd.GetBool(nameof(kd.hasUpwardSlash)) && kd.GetBool(nameof(kd.hasCyclone)));
+    }
     static Dictionary<string, Action<object>> dirty_action_dict = new()
     {
         {nameof(kd.nailDamage),(val)=>PlayMakerFSM.BroadcastEvent("UPDATE NAIL DAMAGE")},
         {nameof(kd.charmSlots),(val)=>{kd.charmSlots=Math.Max(Math.Min(kd.charmSlots,11),3);}},
         {nameof(kd.maxHealthBase),(val)=>{kd.maxHealthBase=Math.Min(kd.maxHealthBase,9);}},
-        {nameof(kd.nailSmithUpgrades),(val)=>{SyncManager.Instance.H2KSyncData(nameof(hd.nailDamage));}}
+        {nameof(kd.nailSmithUpgrades),(val)=>{
+                                int level=Math.Min((int)val,4);
+                                kd.SetInt(nameof(kd.nailSmithUpgrades),level);
+                                kd.SetInt(nameof(kd.nailDamage),5+(4*(int)level));
+                                PlayMakerFSM.BroadcastEvent("UPDATE NAIL DAMAGE");
+                                }},
+        {nameof(kd.hasDash),(val)=>{kd.SetBool(nameof(kd.canDash),(bool)val);}},
+        {nameof(kd.hasShadowDash),(val)=>{kd.SetBool(nameof(kd.canShadowDash),(bool)val);}},
+        {nameof(kd.hasDashSlash),(val)=>UpdateNailArtState()},
+        {nameof(kd.hasUpwardSlash),(val)=>UpdateNailArtState()},
+        {nameof(kd.hasCyclone),(val)=>UpdateNailArtState()},
+        {
+            nameof(kd.grimmChildLevel),
+            (val) =>
+            {
+                int level=(int)val;
+                if (level > 5) level = 5;
+                int cost = level == 5 ? 3 : 2;
+                kd.SetInt(nameof(kd.grimmChildLevel), level);
+                kd.SetInt(nameof(kd.charmCost_40), cost);
+                kd.SetBool(nameof(kd.destroyedNightmareLantern), level == 5);
+            }
+        },
+        {
+            nameof(kd.royalCharmState),
+            (val) =>
+            {
+                int level=(int)val;
+                if(level>4) level=4;
+                int cost=level==4 ? 0 : 5;
+                kd.SetInt(nameof(kd.royalCharmState), level);
+                kd.SetInt(nameof(kd.charmCost_36), cost);
+            }
+        },
+        {nameof(kd.fireballLevel),(val)=>kd.SetInt(nameof(kd.fireballLevel),Math.Min((int)val,2))},
+        {nameof(kd.quakeLevel),(val)=>kd.SetInt(nameof(kd.quakeLevel),Math.Min((int)val,2))},
+        {nameof(kd.screamLevel),(val)=>kd.SetInt(nameof(kd.screamLevel),Math.Min((int)val,2))},
+        {nameof(kd.permadeathMode),(val)=>kd.SetInt(nameof(kd.permadeathMode),Math.Min((int)val,1))},
+        {nameof(kd.MPReserveMax),(val)=>kd.SetInt(nameof(kd.MPReserveMax),Math.Min((int)val,99))}
+
+
+
+
+
     };
     private static void AddNecessarySyncAction(SyncEntry entry)
     {

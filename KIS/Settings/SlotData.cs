@@ -30,7 +30,7 @@ public class SlotData
     // public ConfigEntry<bool> inf_jump_in_wind;
     // public ConfigEntry<bool> pogoable_ring;
     // public ConfigEntry<bool> upward_superdash;
-    List<SyncBaseInfo> baseInfos;
+    internal List<SyncBaseInfo> baseInfos;
     public Knight.PlayerData playerData;
     private void Setting2Default()
     {
@@ -131,6 +131,17 @@ public class SlotData
             }
         }
         baseInfos = DefaultConfig();
+        foreach (var info in baseInfos)
+        {
+            if (info.hdValue is long t1)
+            {
+                info.hdValue = (int)t1;
+            }
+            if (info.kdValue is long t2)
+            {
+                info.kdValue = (int)t2;
+            }
+        }
 
     }
 }
