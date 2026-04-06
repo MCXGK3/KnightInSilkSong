@@ -4,6 +4,7 @@
   "CHARM_NAME_24_G": "Ganância Inquebrável",
   "INV_NAME_SUPERDASH": "Coração de Cristal",
   "INV_NAME_ART_CYCLONE": "Corte Ciclone",
+  "INV_NAME_SOULORBS_ALL": "Receptáculo de Alma",
   "CHARM_DESC_23_G": "Aumenta a vida do portador, permitindo-lhe sofrer mais dano.<br><br>Este amuleto é inquebrável.",
   "CHARM_NAME_40_N": "Melodia Despreocupada",
   "CHARM_NAME_23_G": "Coração Inquebrável",
@@ -18,6 +19,7 @@
   "CHARM_DESC_BROKEN": "Esse Amuleto se quebrou, e o poder em seu interior foi silenciado. Não pode ser equipado.",
   "CHARM_NAME_12": "Espinhos da Agonia",
   "CHARM_DESC_6": "Incorpora a fúria e o heroísmo que vem sobre aqueles que estão prestes a morrer.<br><br>Quando próximo da morte, a força do portador irá aumentar.",
+  "PANE_MAP": "Mapa",
   "CHARM_NAME_23_BRK": "Coração Frágil (reparar)",
   "CHARM_DESC_40_N": "Um símbolo comemorando o começo de uma amizade.<br><br>Contém uma música de proteção que pode defender o portador de danos.",
   "CHARM_DESC_40_F": "Símbolo de um ritual completo. Contém uma chama escarlate viva.",
@@ -45,6 +47,7 @@
   "CHARM_DESC_5": "Protege o portador com uma carapaça dura enquanto estiver focando ALMA.<br><br>A carapaça não é indestrutível e se quebrará se absorver muito dano.",
   "CHARM_NAME_24_BRK": "Ganância Frágil (reparar)",
   "CHARM_NAME_4": "Carapaça Robusta",
+  "INV_NAME_NOTCH": "Encaixe de Amuleto",
   "CHARM_NAME_8": "Coração de Sangue Vital",
   "CHARM_DESC_8": "Contém um núcleo vivo que goteja sangue vital precioso.<br><br>Ao descansar, o portador irá ganhar uma camada de Sangue Vital que lhe protege de uma moderada quantidade de dano.",
   "CHARM_DESC_13": "Livremente dado pela Tribo Louva-a-Deus para aqueles que eles respeitam.<br><br>Aumenta consideravelmente o alcance do ferrão do portador, permitindo-lhe atingir os inimigos de mais longe.",
@@ -63,6 +66,7 @@
   "CHARM_NAME_24": "Ganância Frágil",
   "CHARM_NAME_27": "Bênção de Joni",
   "CHARM_NAME_26": "Glória do Mestre do Ferrão",
+  "INV_NAME_SHADOWDASH": "Manto Sombrio",
   "CHARM_NAME_32": "Corte Rápido",
   "CHARM_TXT_COST": "Custo",
   "CHARM_NAME_19": "Pedra do Xamã",
@@ -96,6 +100,7 @@
   "CHARM_DESC_23_BROKEN": "Aumenta a vida do portador, permitindo-lhe sofrer mais dano.<br><br>Esse Amuleto se quebrou, e o poder de seu interior foi silenciado. Não pode ser equipado.",
   "CHARM_DESC_33": "Refletindo os desejos do Santuário das Almas de dominar a ALMA, melhora a capacidade do portador de lançar magias.<br><br>Reduz o custo de ALMA para a canalização de magias.",
   "CHARM_NAME_6": "Fúria dos Caídos",
+  "INV_NAME_DASH": "Manto de Asa da Mariposa",
   "CHARM_DESC_2": "Sussurra sua localização ao portador sempre que o mapa estiver aberto, permitindo que os aventureiros identifiquem sua localização atual.",
   "CHARM_DESC_25_BROKEN": "Fortalece o portador, aumentando o dano causado aos inimigos com o ferrão.<br><br>Este Amuleto se quebrou, e o poder de seu interior foi silenciado. Não pode ser equipado.",
   "CHARM_NAME_37": "Mestre da Corrida",
@@ -113,5 +118,6 @@
   "CHARM_DESC_12": "Sente a dor do seu portador e ataca o mundo ao seu redor.<br><br>Quando dano é recebido, brotam-se vinhas espinhentas que machucam inimigos próximos.",
   "CHARM_DESC_25_G": "Fortalece o portador, aumentando o dano causado aos inimigos com o ferrão.<br><br>Este amuleto é inquebrável.",
   "CHARM_DESC_40": "Usado por aqueles que participam do Ritual da Trupe Grimm.<br><br>O portador deve buscar os Grimmários e coletar suas chamas. Chamas não coletadas aparecerão no mapa do portador.",
-  "CHARM_NAME_25_G": "Força Inquebrável"
+  "CHARM_NAME_25_G": "Força Inquebrável",
+  "NAME_BLESSING": "Bênção de Salubra"
 }

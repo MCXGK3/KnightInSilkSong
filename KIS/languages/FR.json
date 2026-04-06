@@ -4,6 +4,7 @@
   "CHARM_NAME_24_G": "Cupidité Irréversible",
   "INV_NAME_SUPERDASH": "Coeur de cristal",
   "INV_NAME_ART_CYCLONE": "Entaille cyclone",
+  "INV_NAME_SOULORBS_ALL": "Réceptacle d’Âme",
   "CHARM_DESC_23_G": "Augmente la santé de son porteur, lui permettant de subir plus de dégâts.<br><br>Ce Charme est incassable.",
   "CHARM_NAME_40_N": "Mélodie Insouciante",
   "CHARM_NAME_23_G": "Coeur Indestructible",
@@ -18,6 +19,7 @@
   "CHARM_DESC_BROKEN": "Ce Charme a été brisé et le pouvoir qu’il contenait a été réduit au silence. Il ne peut pas être équipé.",
   "CHARM_NAME_12": "Épines d’agonie",
   "CHARM_DESC_6": "Un Charme donnant forme à la fureur et l’héroïsme de ceux qui sont sur le point de mourir.<br><br>Proche de la mort, son porteur deviendra plus fort.",
+  "PANE_MAP": "Carte",
   "CHARM_NAME_23_BRK": "Coeur fragile (Réparation)",
   "CHARM_DESC_40_N": "Un symbole commémorant le début d’une amitié.<br><br> Ce Charme contient une chanson de protection qui peut défendre son porteur contre les dégâts reçus.",
   "CHARM_DESC_40_F": "Symbole d’un rituel achevé. Recèle en son coeur une flamme vivante et écarlate.",
@@ -45,6 +47,7 @@
   "CHARM_DESC_5": "Ce Charme octroie à son porteur une carapace renforcée lors de la canalisation de l’ÂME.<br><br>La carapace n’est pas indestructible et sera détruite après avoir subi trop de dégâts.",
   "CHARM_NAME_24_BRK": "Avarice fragile (Réparation)",
   "CHARM_NAME_4": "Carapace infrangible",
+  "INV_NAME_NOTCH": "Emplacement de Charme",
   "CHARM_NAME_8": "Coeur sang-de-vie",
   "CHARM_DESC_8": "Un Charme contenant un coeur qui bat, pompant du précieux sang-de-vie.<br><br>Octroie à son porteur au repos, une fine couche de sang-de-vie, qui le protégera contre une faible quantité des dégâts reçus.",
   "CHARM_DESC_13": "Un Charme qui a été offert par la tribu des mantes religieuses en gage de respect.<br><br>Augmente grandement la portée de l’aiguillon du porteur, lui permettant de frapper les ennemis à une plus longue distance.",
@@ -63,6 +66,7 @@
   "CHARM_NAME_24": "Avarice fragile",
   "CHARM_NAME_27": "Bénédiction de Joni",
   "CHARM_NAME_26": "Gloire du Maître d’Aiguillons",
+  "INV_NAME_SHADOWDASH": "Cape des ombres",
   "CHARM_NAME_32": "Entaille rapide",
   "CHARM_TXT_COST": "Coût",
   "CHARM_NAME_19": "Pierre du shaman",
@@ -96,6 +100,7 @@
   "CHARM_DESC_23_BROKEN": "Un Charme augmentant  la santé de son porteur, lui permettant de subir plus de dégâts.<br><br>Ce Charme a été brisé et le pouvoir qu’il contenait a été réduit au silence. Il ne peut pas être équipé.",
   "CHARM_DESC_33": "Un Charme reflétant le désir ardent du sanctuaire de l'Âme, de maîtriser l’utilisation de l’ÂME.<br><br>Améliore la capacité du porteur à lancer des sorts. Réduis le coût des sorts liés à l’ÂME.",
   "CHARM_NAME_6": "Fureur des disparus",
+  "INV_NAME_DASH": "Cape d’ailes de papillon",
   "CHARM_DESC_2": "Murmure au porteur de ce Charme son emplacement sur la carte. Permets aux voyageurs de localiser leur position.",
   "CHARM_DESC_25_BROKEN": "Un Charme augmentant la force de son porteur et les dégâts causés aux ennemis avec l’aiguillon.<br><br>\nCe Charme a été brisé et le pouvoir qu’il contenait a été réduit au silence. Il ne peut pas être équipé.",
   "CHARM_NAME_37": "Maître de la vitesse",
@@ -113,5 +118,6 @@
   "CHARM_DESC_12": "Un Charme qui ressent la douleur de son porteur et riposte contre tout ce qui l’entoure.<br><br>Lorsque son porteur subit des dégâts, libère des vignes épineuses qui blessent les ennemis proches.",
   "CHARM_DESC_25_G": "Renforce son porteur en augmentant le taux de dégâts infligés aux ennemis avec l’Aiguillon.<br><br>Ce Charme est incassable.",
   "CHARM_DESC_40": "Porté par ceux qui participent au Rituel de la Troupe de Grimm.<br><br> Le porteur doit chercher ceux de la race du Grimm et collecter leur flamme. Des flammes non collectées apparaîtront sur la carte du porteur.",
-  "CHARM_NAME_25_G": "Force Inébranlable"
+  "CHARM_NAME_25_G": "Force Inébranlable",
+  "NAME_BLESSING": "Bénédiction de Salubra"
 }

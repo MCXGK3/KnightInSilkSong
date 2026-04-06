@@ -4,6 +4,7 @@
   "CHARM_NAME_24_G": "Avidità Indistruttibile",
   "INV_NAME_SUPERDASH": "Cuore di Cristallo",
   "INV_NAME_ART_CYCLONE": "Attacco Ciclone",
+  "INV_NAME_SOULORBS_ALL": "Ricettacolo delle Anime",
   "CHARM_DESC_23_G": "Aumenta la salute di chi lo indossa, permettendogli di sopportare più danni.<br><br>Questo Amuleto è indistruttibile.",
   "CHARM_NAME_40_N": "Melodia Scanzonata",
   "CHARM_NAME_23_G": "Cuore Indistruttibile",
@@ -18,6 +19,7 @@
   "CHARM_DESC_BROKEN": "Questo Amuleto è rotto e il potere in esso contenuto è stato azzerato. Non può essere equipaggiato.",
   "CHARM_NAME_12": "Spine dell’Agonia",
   "CHARM_DESC_6": "Incarna la furia e l’eroismo di chi sta per morire.<br><br>La forza di chi lo indossa aumenta quando è vicino alla morte.",
+  "PANE_MAP": "Mappa",
   "CHARM_NAME_23_BRK": "Cuore Fragile (Ripara)",
   "CHARM_DESC_40_N": "Pegno che ricorda l’inizio di un’amicizia.<br><br>Racchiude un canto di protezione che può difendere dai danni chi lo indossa.",
   "CHARM_DESC_40_F": "Simbolo di un rituale completato. Contiene una viva fiamma scarlatta.",
@@ -45,6 +47,7 @@
   "CHARM_DESC_5": "Protegge chi lo indossa con un robusto carapace mentre concentra le ANIME.<br><br>Il carapace non è indistruttibile e si romperà dopo aver subito una certa quantità di danni.",
   "CHARM_NAME_24_BRK": "Avidità Fragile (Ripara)",
   "CHARM_NAME_4": "Carapace Saldo",
+  "INV_NAME_NOTCH": "Incavo per Amuleto",
   "CHARM_NAME_8": "Cuore di Sangue Vitale",
   "CHARM_DESC_8": "Contiene un nucleo vivente che stilla il prezioso sangue vitale.<br><br>Mentre riposa, chi lo indossa viene schermato dal sangue vitale, che lo protegge da una modesta quantità di danni.",
   "CHARM_DESC_13": "Offerto in dono dalla Tribù delle Mantidi in segno di rispetto.<br><br>Aumenta notevolmente la portata dell’aculeo, permettendo di colpire i nemici più distanti.",
@@ -63,6 +66,7 @@
   "CHARM_NAME_24": "Avidità Fragile",
   "CHARM_NAME_27": "Benedizione di Joni",
   "CHARM_NAME_26": "Gloria del Maestro d’Aculeo",
+  "INV_NAME_SHADOWDASH": "Mantello dell’Ombra",
   "CHARM_NAME_32": "Attacco Rapido",
   "CHARM_TXT_COST": "Costo",
   "CHARM_NAME_19": "Pietra Sciamanica",
@@ -96,6 +100,7 @@
   "CHARM_DESC_23_BROKEN": "Aumenta la salute di chi lo indossa, permettendogli di sopportare più danni.<br><br>Questo Amuleto è rotto e il potere in esso contenuto è stato azzerato. Non può essere equipaggiato.",
   "CHARM_DESC_33": "Riflette il desiderio del Sacrario delle Anime di poter padroneggiare le ANIME.<br><br>Migliora la capacità di lanciare incantesimi, riducendo il numero di ANIME necessarie per farlo.",
   "CHARM_NAME_6": "Furia del Caduto",
+  "INV_NAME_DASH": "Mantello Ali di Falena",
   "CHARM_DESC_2": "Sussurra a chi la usa la sua posizione sulla mappa, permettendo ai viaggiatori di capire dove si trovano.",
   "CHARM_DESC_25_BROKEN": "Accresce la forza di chi lo indossa, aumentando i danni inflitti ai nemici con l’aculeo.<br><br>Questo Amuleto è rotto e il potere in esso contenuto è stato azzerato. Non può essere equipaggiato.",
   "CHARM_NAME_37": "Maestro della Corsa",
@@ -113,5 +118,6 @@
   "CHARM_DESC_12": "Percepisce il dolore di chi lo indossa e si scatena contro chi gli sta intorno.<br><br>Se il possessore subisce danni, libera dei rampicanti spinosi che feriscono i nemici vicini.",
   "CHARM_DESC_25_G": "Accresce la forza di chi lo indossa, aumentando i danni inflitti ai nemici con l’aculeo.<br><br>Questo Amuleto è indistruttibile.",
   "CHARM_DESC_40": "Indossato da chi prende parte al Rituale della Compagnia di Grimm.<br><br>Chi lo indossa dovrà cercare i Grimmori e raccogliere le loro fiamme. Le fiamme non raccolte appariranno sulla mappa del possessore.",
-  "CHARM_NAME_25_G": "Forza Indistruttibile"
+  "CHARM_NAME_25_G": "Forza Indistruttibile",
+  "NAME_BLESSING": "Benedizione di Salubra"
 }
