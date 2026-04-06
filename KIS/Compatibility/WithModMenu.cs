@@ -439,8 +439,6 @@ public class EntryLine
             id = FromTool.prefix + tool.GetToolName()
         };
     }
-    //TODO: 需要完成的路径有，从HornetInfo和KnightInfo到BaseInfo，从syncentry到entryline的转换，以及一些dirty action的添加
-    //TODO: 还需要添加各种本地化字符串，还要处理显示数据与底层存储数据不一致的情况（比如灵魂容器为123，但涉及具体指标为33，66，99）
     public static List<HornetVariableInfo> AcceptableHornetVariables = new List<HornetVariableInfo>()
     {
         GeneralHornetInfo<bool>(nameof(hd.hasDash),new("UI","INV_NAME_SKILL_SPRINT")),

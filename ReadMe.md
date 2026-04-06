@@ -48,9 +48,7 @@ Credit to @olvior for the effort to enable the knight to beat the game completel
 
 ## Future Plans
 
-- In-game adjustment of synchronous configuration based on ModMenu. 基于ModMenu实现同步配置的局内调整
-- Achieve compatibility and adaptation with Debug. 实现与Debug的兼容适配
-- Supplement the required text based on I18N. 基于I18N补充所需文本
+- Fix a lot of bugs. 修很多bug
 - The processing required to achieve ending 2 and 3. 实现结局二三所需的处理
 
 ## Attention

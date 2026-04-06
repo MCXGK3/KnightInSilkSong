@@ -1,3 +1,9 @@
+## v0.6.5
+
+- Localization based on I18N
+- Increased compatibility with Debug
+- Implemented local adjustment of synchronous configuration based on Modmenu
+
 ## v0.6.0
 
 - Fixed a lot of bugs
