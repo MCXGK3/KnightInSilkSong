@@ -13,6 +13,7 @@ namespace KIS;
 
 [ModMenuIgnore]
 [BepInDependency(PrepatcherPlugin.PrepatcherPlugin.Id)]
+[BepInDependency(DebugMod.DebugMod.Id, BepInDependency.DependencyFlags.SoftDependency)]
 [BepInAutoPlugin(id: "io.github.shownyoung.knightinsilksong")]
 public partial class KnightInSilksong : BaseUnityPlugin
 {

@@ -2,12 +2,9 @@ using System.Collections;
 using DebugMod;
 using DebugMod.UI;
 using DebugMod.UI.Canvas;
-using TeamCherry.Localization;
-using UnityEngine.UI;
-using KIS.Utils;
 using DebugMod.SaveStates;
 using System.IO;
-using Newtonsoft.Json.Utilities;
+
 namespace KIS.Compatibility
 {
     [RequiresMod(DebugMod.DebugMod.Id)]
@@ -17,7 +14,6 @@ namespace KIS.Compatibility
 
         public string ModId => DebugMod.DebugMod.Id;
 
-        public DebugMod.DebugMod debug => DebugMod.DebugMod.instance;
         static Knight.PlayerData pd => Knight.PlayerData.instance;
         static Knight.HeroController hc => Knight.HeroController.instance;
         private static PlayMakerFSM _refKnightSlash;
@@ -28,23 +24,21 @@ namespace KIS.Compatibility
         public void Init()
         {
             DebugMod.DebugMod.Log("Debug Mod detected KIS, initializing compatibility.");
+            
             KnightInSilksong.Instance.self_hormony.PatchAll(typeof(WithDebugMod));
-            LoadKnightPD();
-
-        }
-
-        private void LoadKnightPD()
-        {
-            foreach (var page_states in SaveStateManager.fileStates)
-            {
-                int page = page_states.Key;
-                foreach (var index_state in page_states.Value)
-                {
-                    int index = Array.IndexOf(page_states.Value, index_state);
-                    if (index_state == null) continue;
-                    SaveStateManager_LoadFromFile_Postfix(page, index, ref index_state.data);
-                }
-            }
+            
+            DebugMod.DebugMod.AddTranslationSheet($"Mods.io.github.shownyoung.knightinsilksong");
+            
+            SaveState.OnSave += OnSave;
+            SaveState.AfterLoad += AfterLoad;
+            
+            DebugMod.DebugMod.AddTextToInfoPanel("Character", 
+                () => KnightInSilksong.IsKnight ? "Knight" : "Hornet", 
+                DebugMod.DebugMod.InfoPanelColumn.RIGHT
+            );
+            
+            //TODO: insert tab before keybinds tab so we don't mess up the structure :(
+            // we can hack this now with an ILManipulator or just wait for DebugMod to expose nicer ways to create UI
         }
 
         public void Update()
@@ -78,32 +72,27 @@ namespace KIS.Compatibility
             Knight.HeroBox.inactive = DebugMod.DebugMod.heroColliderDisabled;
             infinite_jump = PlayerData.instance?.infiniteAirJump ?? false;
         }
+        
         #region SaveState
-        private static Dictionary<PlayerData, Knight.PlayerData> states_hd_to_kd = new();
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(SaveState), nameof(SaveState.Save), MethodType.Normal)]
-        public static void SaveState_Save_Postfix(SaveState __instance)
+        private static void OnSave(SaveState state)
         {
             if (!KnightInSilksong.IsKnight) return;
-            if (__instance == null || __instance.data == null || __instance.data.savedPd == null) return;
-            states_hd_to_kd[__instance.data.savedPd] = JsonUtility.FromJson<Knight.PlayerData>(JsonUtility.ToJson(pd));
+            state.data.customData["KIS.KnightPd"] = JsonUtility.ToJson(pd);
         }
-        //The `Load` is an Enumerator so we use `HUDFixes` instaead
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(DebugMod.SaveStates.SaveState), nameof(DebugMod.SaveStates.SaveState.HUDFixes), MethodType.Normal)]
-        public static void DebugMod_SaveStates_SaveState_HudFixes_Postfix(DebugMod.SaveStates.SaveState __instance)
+
+        private static void AfterLoad(SaveState state)
         {
-            if (!KnightInSilksong.IsKnight) return;
-            if (__instance.data == null || !__instance.IsSet()) return;
-            hc.transform.position = __instance.data.savePos;
-            if (__instance.data.savedPd == null) return;
-            if (states_hd_to_kd.TryGetValue(__instance.data.savedPd, out Knight.PlayerData saveKd))
-            {
-                JsonUtility.FromJsonOverwrite(JsonUtility.ToJson(saveKd), pd);
-            }
-            pd.health = saveKd.health;
-            pd.MPCharge = saveKd.MPCharge;
-            pd.MPReserve = saveKd.MPReserve;
+            if (!state.data.customData.TryGetValue("KIS.KnightPd", out var statePdJson)) return;
+            if (!KnightInSilksong.IsKnight) return; // TODO: automatically switch to knight if state is knight?
+            
+            JsonUtility.FromJsonOverwrite(JsonUtility.ToJson(statePdJson), pd);
+            
+            hc.transform.position = state.data.savePos;
+            // These should be written by JsonOverwrite, no?
+            // pd.health = saveKd.health;
+            // pd.MPCharge = saveKd.MPCharge;
+            // pd.MPReserve = saveKd.MPReserve;
+            
             var hud = KnightInSilksong.Instance.hud_instance.gameObject;
             FSMUtility.SendEventToGameObject(hud, "HERO LEAVE", true);
             FSMUtility.SendEventToGameObject(hud, "HERO DAMAGED", true);
@@ -112,67 +101,51 @@ namespace KIS.Compatibility
             // soul.SetActive(false);
             // soul.SetActive(true);
             FSMUtility.SendEventToGameObject(soul, "MP RESERVE DOWN", true);
-            if (saveKd.GetInt(nameof(saveKd.MPCharge)) >= saveKd.GetInt(nameof(saveKd.maxMP)))
-            {
-                FSMUtility.SendEventToGameObject(soul, "MP GAIN", true);
-            }
-            else
-            {
-                FSMUtility.SendEventToGameObject(soul, "MP LOSE", true);
-            }
-            hc?.CancelDamageRecoil();
-            var invPulse = hc.GetComponent<InvulnerablePulse>();
+            FSMUtility.SendEventToGameObject(soul,
+                pd.GetInt(nameof(pd.MPCharge)) >= pd.GetInt(nameof(pd.maxMP)) ? "MP GAIN" : "MP LOSE", true);
+            
+            hc!.CancelDamageRecoil();
+            var invPulse = hc!.GetComponent<InvulnerablePulse>();
             invPulse?.StopInvulnerablePulse();
             hc.transitionState = GlobalEnums.HeroTransitionState.WAITING_TO_TRANSITION;
             hc.cState.invulnerable = false;
-
-
-
-
-
         }
+        
+        /// <summary>
+        /// States created with Knight active on versions before 0.6.6 stored playerData separately;
+        /// write this into the customData appropriately & delete the old files. 
+        /// </summary>
+        [HarmonyPatch(typeof(SaveStateManager), nameof(SaveStateManager.LoadFileStates))]
         [HarmonyPostfix]
-        [HarmonyPatch(typeof(SaveStateManager), nameof(SaveStateManager.SaveToFile), MethodType.Normal)]
-        public static void SaveStateManager_SaveToFile_Postfix(SaveState.SaveStateData data, int page, int index)
+        private static void UpgradeLegacyStates()
         {
-            if (data == null || data.savedPd == null || !states_hd_to_kd.ContainsKey(data.savedPd)) return;
-            $"Save {data == null} {data.savedPd == null} {!states_hd_to_kd.ContainsKey(data.savedPd)}".LogDebug();
-            try
+            foreach (var (page, statePage) in SaveStateManager.fileStates)
             {
-                string filePath = SaveStateManager.GetFilePath(page, index);
-                string filename = Path.GetFileName(filePath);
-                filePath = Path.Combine(Path.GetDirectoryName(filePath), "knightPD_" + filename);
-                // filePath.LogDebug();
-                File.WriteAllText(filePath, JsonUtility.ToJson(states_hd_to_kd[data.savedPd], true));
-            }
-            catch (Exception ex)
-            {
-                ex.LogDebug();
-            }
-        }
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(SaveStateManager), nameof(SaveStateManager.LoadFromFile), MethodType.Normal)]
-        public static void SaveStateManager_LoadFromFile_Postfix(int page, int index, ref SaveState.SaveStateData __result)
-        {
-            // $"Load {__result.savedPd}".LogDebug();
-            if (__result.savedPd == null) return;
-            string filePath = SaveStateManager.GetFilePath(page, index);
-            string filename = Path.GetFileName(filePath);
-            filePath = Path.Combine(Path.GetDirectoryName(filePath), "knightPD_" + filename);
-            // $"Load {filePath}".LogDebug();
-            try
-            {
-                if (File.Exists(filePath))
+                for (var i = 0; i < statePage.Length; i++) 
                 {
-                    states_hd_to_kd[__result.savedPd] = JsonUtility.FromJson<Knight.PlayerData>(File.ReadAllText(filePath));
+                    var state = statePage[i];
+                    if (state == null) continue;
+                    var filePath = SaveStateManager.GetFilePath(page, i);
+                    filePath = Path.Combine(Path.GetDirectoryName(filePath)!, "knightPD_" + Path.GetFileName(filePath));
+                    try
+                    {
+                        if (File.Exists(filePath))
+                        {
+                            KnightInSilksong.logger.LogInfo($"Found knightPD file for state p{page}[{i}], upgrading...");
+                            state.data.customData["KIS.KnightPd"] = File.ReadAllText(filePath);
+                            SaveStateManager.SaveToFile(state.data, page, i);
+                            File.Delete(filePath);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        ex.LogDebug();
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                ex.LogDebug();
             }
         }
         #endregion
+        
         #region Replace Functions
         [HarmonyPrefix]
         [HarmonyPatch(typeof(Knight.PlayerData), nameof(Knight.PlayerData.TakeHealth), MethodType.Normal)]
@@ -374,19 +347,13 @@ namespace KIS.Compatibility
 
         #region Adjust InfoPanel
         [HarmonyPostfix]
-        [HarmonyPatch(typeof(InfoPanel), MethodType.Constructor)]
-        public static void InfoPanel__Postfix(InfoPanel __instance)
-        {
-            __instance.AppendInfo("Character", () => KnightInSilksong.IsKnight ? "Knight" : "Hornet");
-        }
-        [HarmonyPostfix]
         [HarmonyPatch(typeof(InfoPanel), nameof(InfoPanel.AppendInfo), [typeof(string), typeof(Func<string>)])]
         public static void InfoPanel_AppendInfo_Postfix(InfoPanel __instance, string label, ref Func<string> info)
         {
             Color silver = new(192f / 255, 192f / 255, 192f / 255);
             int counter = __instance.counter - 1;
-            CanvasText labelText = (CanvasText)__instance.elements[$"Label{counter}"];
-            CanvasText infoText = (CanvasText)__instance.elements[$"Info{counter}"];
+            CanvasText labelText = (CanvasText)__instance.byName[$"Label{counter}"];
+            CanvasText infoText = (CanvasText)__instance.byName[$"Info{counter}"];
             void KnightLabel(string ori_name, string knight_name)
             {
                 labelText.OnUpdate += () =>
@@ -407,7 +374,6 @@ namespace KIS.Compatibility
                     if (!KnightInSilksong.IsKnight)
                     {
                         infoText.Color = Color.white;
-                        return;
                     }
                     else
                     {
@@ -501,14 +467,10 @@ namespace KIS.Compatibility
                 case "Invincible":
                     KnightBool(() => pd.isInvincible);
                     break;
-                case "Character":
-                    KnightInfo(() => KnightInSilksong.IsKnight ? "Knight" : "Hornet");
-                    break;
-                default:
-                    break;
             }
         }
         #endregion
+        
         #region  KnightPanel
         private static void UpdateCharmsEffects()
         {
@@ -526,74 +488,82 @@ namespace KIS.Compatibility
         [HarmonyPatch(typeof(MainPanel), MethodType.Constructor)]
         public static void MainPanel_Postfix(MainPanel __instance)
         {
+            void AppendLeveledTile(string name, Func<int> getter, Action effect, List<Texture2D> icons, bool includeLabel = true, int defaultRowWidth = 5)
+            {
+                CanvasPanel leveledTile = null;
+                leveledTile = __instance.AppendLabeledTile(name, () =>
+                {
+                    var level = getter.Invoke();
+                    var icon = level < icons.Count ? icons[level] : null;
+                    if (icon != null)
+                    {
+                        // ReSharper disable once AccessToModifiedClosure
+                        leveledTile!.Get<CanvasImage>("Icon")?.SetImage(icon);
+                    }
+                    return level > 0;
+                }, effect);
+            }
+            
             __instance.AddTab("Knight");
             __instance.AppendSectionHeader("Skill");
             __instance.AppendRow(1);
-            __instance.AppendBasicControl(LangKey.DEBUG_ALL_SKILL.Localize(), GiveAllSkills);
-            __instance.AppendRow(1, 1, 1);
-            __instance.AppendIncrementControl(LangKey.DEBUG_SCREAM_NAME.Localize(),
-                                                () => pd.GetInt(nameof(pd.screamLevel)),
-                                                () => IncreaseSpellLevel(Spell.Scream));
-            __instance.AppendIncrementControl(LangKey.DEBUG_FIREBALL_NAME.Localize(),
-                                                () => pd.GetInt(nameof(pd.fireballLevel)),
-                                                () => IncreaseSpellLevel(Spell.Fireball));
-            __instance.AppendIncrementControl(LangKey.DEBUG_QUAKE_NAME.Localize(),
-                                                () => pd.GetInt(nameof(pd.quakeLevel)),
-                                                () => IncreaseSpellLevel(Spell.Quake));
-            __instance.AppendRow(1, 1, 1);
-            __instance.AppendIncrementControl(LangKey.DEBUG_DASH_NAME.Localize(), GetDashLevel, ToggleDash);
-            __instance.AppendToggleControl(LangKey.DEBUG_WALL_JUMP_NAME.Localize(),
+            __instance.AppendBasicControl(nameof(LangKey.DEBUG_ALL_SKILL), GiveAllSkills);
+            
+            AppendLeveledTile(nameof(LangKey.DEBUG_SCREAM_NAME), () => pd.GetInt(nameof(pd.screamLevel)), () => IncreaseSpellLevel(Spell.Scream), 
+                [UICommon.images["Spell_CrossStitch"], UICommon.images["Spell_PaleNails"], UICommon.images["Spell_RuneRage"]]);
+            AppendLeveledTile(nameof(LangKey.DEBUG_FIREBALL_NAME),() => pd.GetInt(nameof(pd.fireballLevel)), () => IncreaseSpellLevel(Spell.Fireball), []);
+            AppendLeveledTile(nameof(LangKey.DEBUG_QUAKE_NAME), () => pd.GetInt(nameof(pd.quakeLevel)), () => IncreaseSpellLevel(Spell.Quake), []);
+            
+            AppendLeveledTile(nameof(LangKey.DEBUG_DASH_NAME), GetDashLevel, ToggleDash, []);
+            __instance.AppendLabeledTile("INV_NAME_WALLJUMP",
                                             () => pd.hasWalljump,
                                             ToggleWallJump);
-            __instance.AppendToggleControl(LangKey.DEBUG_DOUBLE_JUMP_NAME.Localize(),
+            __instance.AppendLabeledTile("INV_NAME_DOUBLEJUMP",
                                             () => pd.GetBool(nameof(pd.hasDoubleJump)),
                                             ToggleDoubleJump);
-            __instance.AppendRow(1, 1);
-            __instance.AppendIncrementControl(LangKey.DEBUG_DREAM_NAIL_NAME.Localize(), GetDreamNailLevel, ToggleDreamNail);
-            __instance.AppendToggleControl(LangKey.DEBUG_DREAM_GATE_NAME.Localize(),
+            AppendLeveledTile("INV_NAME_DREAMNAIL_A", GetDreamNailLevel, ToggleDreamNail, []);
+            __instance.AppendLabeledTile("INV_NAME_DREAMGATE",
                                             () => pd.GetBool(nameof(pd.hasDreamGate)),
                                             ToggleDreamGate);
-            __instance.AppendRow(1, 1);
-            __instance.AppendToggleControl(LangKey.DEBUG_SUPER_DASH_NAME.Localize(),
+            __instance.AppendLabeledTile(nameof(LangKey.DEBUG_SUPER_DASH_NAME),
                                             () => pd.GetBool(nameof(pd.hasSuperDash)),
                                             ToggleSuperDash);
-            __instance.AppendToggleControl(LangKey.DEBUG_ACID_SWIM_NAME.Localize(),
+            __instance.AppendLabeledTile(nameof(LangKey.DEBUG_ACID_SWIM_NAME),
                                             () => pd.GetBool(nameof(pd.hasAcidArmour)),
                                             ToggleAcidSwim);
-            __instance.AppendRow(1, 1, 1);
-            __instance.AppendToggleControl(LangKey.DEBUG_GREAT_SLASH_NAME.Localize(),
+            __instance.AppendLabeledTile(nameof(LangKey.DEBUG_GREAT_SLASH_NAME),
                                             () => pd.GetBool(nameof(pd.hasDashSlash)),
                                             () => ToggleNailArt(NailArt.GREAT_SLASH));
-            __instance.AppendToggleControl(LangKey.DEBUG_DASH_SLASH_NAME.Localize(),
+            __instance.AppendLabeledTile(nameof(LangKey.DEBUG_DASH_SLASH_NAME),
                                             () => pd.GetBool(nameof(pd.hasUpwardSlash)),
                                             () => ToggleNailArt(NailArt.DASH_SLASH));
-            __instance.AppendToggleControl(LangKey.DEBUG_CYCLONE_NAME.Localize(),
+            __instance.AppendLabeledTile(nameof(LangKey.DEBUG_CYCLONE_NAME),
                                             () => pd.GetBool(nameof(pd.hasCyclone)),
                                             () => ToggleNailArt(NailArt.CYCLONE));
             __instance.AppendSectionHeader("Charm");
             __instance.AppendRow(1);
-            __instance.AppendBasicControl(LangKey.DEBUG_ALL_CHARMS.Localize(),
+            __instance.AppendBasicControl(nameof(LangKey.DEBUG_ALL_CHARMS),
                                             GiveAllCharms);
-            __instance.AppendRow(1, 1);
-            __instance.AppendIncrementControl(LangKey.KING_SOUL.Localize(),
+            __instance.AppendTileRow(2);
+            AppendLeveledTile(nameof(LangKey.KING_SOUL),
                                                 () => pd.GetInt(nameof(pd.royalCharmState)),
-                                                IncreaseRoyalGameState);
-            __instance.AppendIncrementControl(LangKey.GRIMM_CHILD.Localize(),
+                                                IncreaseRoyalGameState, []);
+            AppendLeveledTile(nameof(LangKey.GRIMM_CHILD),
                                                 () => pd.GetInt(nameof(pd.grimmChildLevel)),
-                                                IncreaseGrimmChildLevel);
+                                                IncreaseGrimmChildLevel, []);
             __instance.AppendRow(1, 1);
-            __instance.AppendBasicControl(LangKey.DEBUG_INCREASE_CHARMSLOTS.Localize(),
+            __instance.AppendBasicControl(nameof(LangKey.DEBUG_INCREASE_CHARMSLOTS),
                                                 IncreaseCharmSlots);
-            __instance.AppendBasicControl(LangKey.DEBUG_DECREASE_CHARMSLOTS.Localize(),
+            __instance.AppendBasicControl(nameof(LangKey.DEBUG_DECREASE_CHARMSLOTS),
                                                 DecreaseCharmSlots);
             __instance.AppendRow(1);
-            __instance.AppendBasicControl(LangKey.DEBUG_REMOVE_ALL_CHARMS.Localize(),
+            __instance.AppendBasicControl(nameof(LangKey.DEBUG_REMOVE_ALL_CHARMS),
                                             RemoveAllCharms);
             __instance.AppendRow(1);
-            __instance.AppendBasicControl(LangKey.DEBUG_FIX_CHARMSLOTS.Localize(), () => pd.CalculateNotchesUsed());
+            __instance.AppendBasicControl(nameof(LangKey.DEBUG_FIX_CHARMSLOTS), () => pd.CalculateNotchesUsed());
             __instance.AppendRow(1);
             __instance.AppendRow(1);
-            var text = __instance.AppendSectionHeader(LangKey.DEBUG_PROMPT.Localize());
+            var text = __instance.AppendSectionHeader(nameof(LangKey.DEBUG_PROMPT));
             text.FontSize = MainPanel.KeybindHeaderFontSize;
 
         }

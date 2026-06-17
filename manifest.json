@@ -1,0 +1,11 @@
+{
+	"name": "KnightInSilksong",
+	"version_number": "0.6.6",
+	"website_url": "https://github.com/MCXGK3/KnightInSilkSong",
+	"description": "A mod that allows you to control little knight in Silksong",
+	"dependencies": [
+		"BepInEx-BepInExPack_Silksong-5.4.2303",
+		"silksong_modding-SilksongPrepatcher-1.3.0",
+		"silksong_modding-I18N-1.0.3"
+	]
+}
