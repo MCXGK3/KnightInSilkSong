@@ -33,7 +33,12 @@ public class ProgressionManager
         {
             "hang_13",[
                 new(53f,17.5f)
-            ]}
+            ]},
+        {
+            "peak_01",[
+                new(30.56f,66.5f)
+            ]
+        }
     };
 
     public static void setup()

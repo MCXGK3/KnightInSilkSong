@@ -53,7 +53,7 @@ public class Patch_NailSlash_OnTriggerEnter2D : GeneralPatch
             if (p1 != null)
             {
                 Transform p2 = p1.transform.parent;
-                if (p1 != null)
+                if (p2 != null)
                 {
                     GameObject gate = p2.gameObject;
                     if (gate.GetComponent<HarpoonRingSlideLock>() != null)
@@ -63,6 +63,11 @@ public class Patch_NailSlash_OnTriggerEnter2D : GeneralPatch
                     }
                 }
             }
+        }
+        else if (otherCollider.gameObject.GetComponentInChildren<HarpoonHook>() != null && __instance.slashAngle == 270f)
+        {
+            Knight.HeroController.instance.ShroomBounce();
+            return false;
         }
         return true;
     }

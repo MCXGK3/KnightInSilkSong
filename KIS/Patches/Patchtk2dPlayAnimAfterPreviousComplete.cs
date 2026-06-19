@@ -8,6 +8,10 @@ public class Patch_tk2dPlayAnimAfterPreviousComplete_OnEnter : GeneralPatch
     {
         if (KnightInSilksong.IsKnight)
         {
+            if (__instance.animator == null || __instance.animator.gameObject == null)
+            {
+                return true;
+            }
             if (__instance.animator.gameObject != Knight.HeroController.instance.gameObject)
             {
                 return true;
