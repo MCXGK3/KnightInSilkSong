@@ -604,11 +604,18 @@ namespace KIS.Compatibility
                                                 KISHelper.ResourceTexture("charm_grimmkin_03"),
                                                 KISHelper.ResourceTexture("charm_grimmkin_04"),
                                                 KISHelper.ResourceTexture("charm_grimmkin_05")]);
-            __instance.AppendRow(1, 1);
-            __instance.AppendBasicControl(LangKey.DEBUG_INCREASE_CHARMSLOTS.InGameKey(),
-                                                IncreaseCharmSlots);
-            __instance.AppendBasicControl(LangKey.DEBUG_DECREASE_CHARMSLOTS.InGameKey(),
-                                                DecreaseCharmSlots);
+            __instance.AppendRow(1);
+            __instance.AppendNumericControl(LangKey.CHARMSLOT_NAME.InGameKey(),
+                                            () => pd.charmSlots,
+                                            3,
+                                            (val) => pd.SetInt(nameof(pd.charmSlots), (int)val),
+                                            IncreaseCharmSlots,
+                                            DecreaseCharmSlots,
+                                            () => pd.SetInt(nameof(pd.charmSlots), 3));
+            // __instance.AppendBasicControl(LangKey.DEBUG_INCREASE_CHARMSLOTS.InGameKey(),
+            //                                     IncreaseCharmSlots);
+            // __instance.AppendBasicControl(LangKey.DEBUG_DECREASE_CHARMSLOTS.InGameKey(),
+            //                                     DecreaseCharmSlots);
             __instance.AppendRow(1);
             __instance.AppendBasicControl(LangKey.DEBUG_REMOVE_ALL_CHARMS.InGameKey(),
                                             RemoveAllCharms);
