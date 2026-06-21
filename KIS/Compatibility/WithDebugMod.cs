@@ -24,19 +24,19 @@ namespace KIS.Compatibility
         public void Init()
         {
             DebugMod.DebugMod.Log("Debug Mod detected KIS, initializing compatibility.");
-            
+
             KnightInSilksong.Instance.self_hormony.PatchAll(typeof(WithDebugMod));
-            
+
             DebugMod.DebugMod.AddTranslationSheet($"Mods.io.github.shownyoung.knightinsilksong");
-            
+
             SaveState.OnSave += OnSave;
             SaveState.AfterLoad += AfterLoad;
-            
-            DebugMod.DebugMod.AddTextToInfoPanel("Character", 
-                () => KnightInSilksong.IsKnight ? "Knight" : "Hornet", 
+
+            DebugMod.DebugMod.AddTextToInfoPanel("Character",
+                () => KnightInSilksong.IsKnight ? "Knight" : "Hornet",
                 DebugMod.DebugMod.InfoPanelColumn.RIGHT
             );
-            
+
             //TODO: insert tab before keybinds tab so we don't mess up the structure :(
             // we can hack this now with an ILManipulator or just wait for DebugMod to expose nicer ways to create UI
         }
@@ -72,7 +72,7 @@ namespace KIS.Compatibility
             Knight.HeroBox.inactive = DebugMod.DebugMod.heroColliderDisabled;
             infinite_jump = PlayerData.instance?.infiniteAirJump ?? false;
         }
-        
+
         #region SaveState
         private static void OnSave(SaveState state)
         {
@@ -84,15 +84,15 @@ namespace KIS.Compatibility
         {
             if (!state.data.customData.TryGetValue("KIS.KnightPd", out var statePdJson)) return;
             if (!KnightInSilksong.IsKnight) return; // TODO: automatically switch to knight if state is knight?
-            
+
             JsonUtility.FromJsonOverwrite(JsonUtility.ToJson(statePdJson), pd);
-            
+
             hc.transform.position = state.data.savePos;
             // These should be written by JsonOverwrite, no?
             // pd.health = saveKd.health;
             // pd.MPCharge = saveKd.MPCharge;
             // pd.MPReserve = saveKd.MPReserve;
-            
+
             var hud = KnightInSilksong.Instance.hud_instance.gameObject;
             FSMUtility.SendEventToGameObject(hud, "HERO LEAVE", true);
             FSMUtility.SendEventToGameObject(hud, "HERO DAMAGED", true);
@@ -103,14 +103,14 @@ namespace KIS.Compatibility
             FSMUtility.SendEventToGameObject(soul, "MP RESERVE DOWN", true);
             FSMUtility.SendEventToGameObject(soul,
                 pd.GetInt(nameof(pd.MPCharge)) >= pd.GetInt(nameof(pd.maxMP)) ? "MP GAIN" : "MP LOSE", true);
-            
+
             hc!.CancelDamageRecoil();
             var invPulse = hc!.GetComponent<InvulnerablePulse>();
             invPulse?.StopInvulnerablePulse();
             hc.transitionState = GlobalEnums.HeroTransitionState.WAITING_TO_TRANSITION;
             hc.cState.invulnerable = false;
         }
-        
+
         /// <summary>
         /// States created with Knight active on versions before 0.6.6 stored playerData separately;
         /// write this into the customData appropriately & delete the old files. 
@@ -121,7 +121,7 @@ namespace KIS.Compatibility
         {
             foreach (var (page, statePage) in SaveStateManager.fileStates)
             {
-                for (var i = 0; i < statePage.Length; i++) 
+                for (var i = 0; i < statePage.Length; i++)
                 {
                     var state = statePage[i];
                     if (state == null) continue;
@@ -145,7 +145,7 @@ namespace KIS.Compatibility
             }
         }
         #endregion
-        
+
         #region Replace Functions
         [HarmonyPrefix]
         [HarmonyPatch(typeof(Knight.PlayerData), nameof(Knight.PlayerData.TakeHealth), MethodType.Normal)]
@@ -470,7 +470,7 @@ namespace KIS.Compatibility
             }
         }
         #endregion
-        
+
         #region  KnightPanel
         private static void UpdateCharmsEffects()
         {
@@ -503,67 +503,120 @@ namespace KIS.Compatibility
                     return level > 0;
                 }, effect);
             }
-            
+
+            void AppendCustomImageTitle(string name, Func<bool> getter, Action effect, Texture2D icon, bool includeLabel = true, int defaultRowWidth = 5)
+            {
+                CanvasPanel customImageTitle = null;
+                customImageTitle = __instance.AppendLabeledTile(name, () =>
+                {
+
+                    if (icon != null)
+                    {
+                        customImageTitle!.Get<CanvasImage>("Icon")?.SetImage(icon);
+                    }
+                    return getter.Invoke();
+                }, effect, includeLabel: includeLabel, defaultRowWidth: defaultRowWidth);
+            }
+            void AppendCustomImageTitleByName(string name, Func<bool> getter, Action effect, string icon_name, bool includeLabel = true, int defaultRowWidth = 5)
+            {
+                AppendCustomImageTitle(name, getter, effect, KISHelper.ResourceTexture(icon_name), includeLabel, defaultRowWidth);
+            }
             __instance.AddTab("Knight");
             __instance.AppendSectionHeader("Skill");
             __instance.AppendRow(1);
-            __instance.AppendBasicControl(nameof(LangKey.DEBUG_ALL_SKILL), GiveAllSkills);
-            
-            AppendLeveledTile(nameof(LangKey.DEBUG_SCREAM_NAME), () => pd.GetInt(nameof(pd.screamLevel)), () => IncreaseSpellLevel(Spell.Scream), 
-                [UICommon.images["Spell_CrossStitch"], UICommon.images["Spell_PaleNails"], UICommon.images["Spell_RuneRage"]]);
-            AppendLeveledTile(nameof(LangKey.DEBUG_FIREBALL_NAME),() => pd.GetInt(nameof(pd.fireballLevel)), () => IncreaseSpellLevel(Spell.Fireball), []);
-            AppendLeveledTile(nameof(LangKey.DEBUG_QUAKE_NAME), () => pd.GetInt(nameof(pd.quakeLevel)), () => IncreaseSpellLevel(Spell.Quake), []);
-            
-            AppendLeveledTile(nameof(LangKey.DEBUG_DASH_NAME), GetDashLevel, ToggleDash, []);
-            __instance.AppendLabeledTile("INV_NAME_WALLJUMP",
+            __instance.AppendBasicControl(LangKey.DEBUG_ALL_SKILL.InGameKey(), GiveAllSkills);
+
+            AppendLeveledTile(LangKey.DEBUG_SCREAM_NAME.InGameKey(), () => pd.GetInt(nameof(pd.screamLevel)), () => IncreaseSpellLevel(Spell.Scream),
+                [KISHelper.ResourceTexture("inv_spell_slot"), KISHelper.ResourceTexture("inv_scream_01"), KISHelper.ResourceTexture("inv_scream_02")]);
+            AppendLeveledTile(LangKey.DEBUG_FIREBALL_NAME.InGameKey(), () => pd.GetInt(nameof(pd.fireballLevel)), () => IncreaseSpellLevel(Spell.Fireball),
+                [KISHelper.ResourceTexture("inv_spell_slot"), KISHelper.ResourceTexture("inv_fireball_01"), KISHelper.ResourceTexture("inv_fireball_02")]);
+            AppendLeveledTile(LangKey.DEBUG_QUAKE_NAME.InGameKey(), () => pd.GetInt(nameof(pd.quakeLevel)), () => IncreaseSpellLevel(Spell.Quake),
+                [KISHelper.ResourceTexture("inv_spell_slot"), KISHelper.ResourceTexture("inv_quake_01"), KISHelper.ResourceTexture("inv_quake_02")]);
+
+            AppendLeveledTile(LangKey.DEBUG_DASH_NAME.InGameKey(), GetDashLevel, ToggleDash,
+                [KISHelper.ResourceTexture("inv_spell_slot"), KISHelper.ResourceTexture("inv_dash_cloak"), KISHelper.ResourceTexture("inv_shade_cloak")]);
+            AppendCustomImageTitleByName(LangKey.DEBUG_WALL_JUMP_NAME.InGameKey(),
                                             () => pd.hasWalljump,
-                                            ToggleWallJump);
-            __instance.AppendLabeledTile("INV_NAME_DOUBLEJUMP",
+                                            ToggleWallJump,
+                                            "inv_mantis_claw");
+            AppendCustomImageTitleByName(LangKey.DEBUG_DOUBLE_JUMP_NAME.InGameKey(),
                                             () => pd.GetBool(nameof(pd.hasDoubleJump)),
-                                            ToggleDoubleJump);
-            AppendLeveledTile("INV_NAME_DREAMNAIL_A", GetDreamNailLevel, ToggleDreamNail, []);
-            __instance.AppendLabeledTile("INV_NAME_DREAMGATE",
+                                            ToggleDoubleJump,
+                                            "inv_emperor_wings");
+            AppendLeveledTile(LangKey.DEBUG_DREAM_NAIL_NAME.InGameKey(), GetDreamNailLevel, ToggleDreamNail,
+                [KISHelper.ResourceTexture("inv_spell_slot"), KISHelper.ResourceTexture("inv_dream_nail"), KISHelper.ResourceTexture("inv_dream_nail_upgraded")]);
+            AppendCustomImageTitleByName(LangKey.DEBUG_DREAM_GATE_NAME.InGameKey(),
                                             () => pd.GetBool(nameof(pd.hasDreamGate)),
-                                            ToggleDreamGate);
-            __instance.AppendLabeledTile(nameof(LangKey.DEBUG_SUPER_DASH_NAME),
+                                            ToggleDreamGate,
+                                            "inv_dream_gate");
+            AppendCustomImageTitleByName(LangKey.DEBUG_SUPER_DASH_NAME.InGameKey(),
                                             () => pd.GetBool(nameof(pd.hasSuperDash)),
-                                            ToggleSuperDash);
-            __instance.AppendLabeledTile(nameof(LangKey.DEBUG_ACID_SWIM_NAME),
+                                            ToggleSuperDash,
+                                            "inv_crystal_heart");
+            AppendCustomImageTitleByName(LangKey.DEBUG_ACID_SWIM_NAME.InGameKey(),
                                             () => pd.GetBool(nameof(pd.hasAcidArmour)),
-                                            ToggleAcidSwim);
-            __instance.AppendLabeledTile(nameof(LangKey.DEBUG_GREAT_SLASH_NAME),
+                                            ToggleAcidSwim,
+                                            "inv_acid_armour");
+            AppendCustomImageTitleByName(LangKey.DEBUG_GREAT_SLASH_NAME.InGameKey(),
                                             () => pd.GetBool(nameof(pd.hasDashSlash)),
-                                            () => ToggleNailArt(NailArt.GREAT_SLASH));
-            __instance.AppendLabeledTile(nameof(LangKey.DEBUG_DASH_SLASH_NAME),
+                                            () => ToggleNailArt(NailArt.GREAT_SLASH),
+                                            "inv_upgraded_slash");
+            AppendCustomImageTitleByName(LangKey.DEBUG_DASH_SLASH_NAME.InGameKey(),
                                             () => pd.GetBool(nameof(pd.hasUpwardSlash)),
-                                            () => ToggleNailArt(NailArt.DASH_SLASH));
-            __instance.AppendLabeledTile(nameof(LangKey.DEBUG_CYCLONE_NAME),
+                                            () => ToggleNailArt(NailArt.DASH_SLASH),
+                                            "inv_dash_slash");
+            AppendCustomImageTitleByName(LangKey.DEBUG_CYCLONE_NAME.InGameKey(),
                                             () => pd.GetBool(nameof(pd.hasCyclone)),
-                                            () => ToggleNailArt(NailArt.CYCLONE));
+                                            () => ToggleNailArt(NailArt.CYCLONE),
+                                            "inv_cyclone");
             __instance.AppendSectionHeader("Charm");
             __instance.AppendRow(1);
-            __instance.AppendBasicControl(nameof(LangKey.DEBUG_ALL_CHARMS),
+            __instance.AppendBasicControl(LangKey.DEBUG_ALL_CHARMS.InGameKey(),
                                             GiveAllCharms);
-            __instance.AppendTileRow(2);
-            AppendLeveledTile(nameof(LangKey.KING_SOUL),
+            // __instance.AppendTileRow(2);
+            AppendLeveledTile(LangKey.CHARM_HEART.InGameKey(),
+                                                () => GetHeartCharmState(),
+                                                IncreaseHeartCharmState,
+                                                [KISHelper.ResourceTexture("inv_spell_slot"),KISHelper.ResourceTexture("charm_glass_heart"),
+                                                KISHelper.ResourceTexture("charm_broken_heart"),KISHelper.ResourceTexture("charm_full_heart")]);
+            AppendLeveledTile(LangKey.CHARM_GREED.InGameKey(),
+                                                () => GetGreedCharmState(),
+                                                IncreaseGreedCharmState,
+                                                [KISHelper.ResourceTexture("inv_spell_slot"),KISHelper.ResourceTexture("charm_glass_greed"),
+                                                KISHelper.ResourceTexture("charm_broken_greed"),KISHelper.ResourceTexture("charm_full_greed")]);
+            AppendLeveledTile(LangKey.CHARM_STRENGTH.InGameKey(),
+                                                () => GetStrengthCharmState(),
+                                                IncreaseStrengthCharmState,
+                                                [KISHelper.ResourceTexture("inv_spell_slot"),KISHelper.ResourceTexture("charm_glass_strength"),
+                                                KISHelper.ResourceTexture("charm_broken_strength"),KISHelper.ResourceTexture("charm_full_strength")]);
+            AppendLeveledTile(LangKey.KING_SOUL.InGameKey(),
                                                 () => pd.GetInt(nameof(pd.royalCharmState)),
-                                                IncreaseRoyalGameState, []);
-            AppendLeveledTile(nameof(LangKey.GRIMM_CHILD),
+                                                IncreaseRoyalCharmState,
+                                                [KISHelper.ResourceTexture("inv_spell_slot"), KISHelper.ResourceTexture("charm_white_left"),
+                                                KISHelper.ResourceTexture("charm_white_right"), KISHelper.ResourceTexture("charm_white_full"),
+                                                KISHelper.ResourceTexture("charm_black")]);
+            AppendLeveledTile(LangKey.GRIMM_CHILD.InGameKey(),
                                                 () => pd.GetInt(nameof(pd.grimmChildLevel)),
-                                                IncreaseGrimmChildLevel, []);
+                                                IncreaseGrimmChildLevel,
+                                                [KISHelper.ResourceTexture("inv_spell_slot"),
+                                                KISHelper.ResourceTexture("charm_grimmkin_01"),
+                                                KISHelper.ResourceTexture("charm_grimmkin_02"),
+                                                KISHelper.ResourceTexture("charm_grimmkin_03"),
+                                                KISHelper.ResourceTexture("charm_grimmkin_04"),
+                                                KISHelper.ResourceTexture("charm_grimmkin_05")]);
             __instance.AppendRow(1, 1);
-            __instance.AppendBasicControl(nameof(LangKey.DEBUG_INCREASE_CHARMSLOTS),
+            __instance.AppendBasicControl(LangKey.DEBUG_INCREASE_CHARMSLOTS.InGameKey(),
                                                 IncreaseCharmSlots);
-            __instance.AppendBasicControl(nameof(LangKey.DEBUG_DECREASE_CHARMSLOTS),
+            __instance.AppendBasicControl(LangKey.DEBUG_DECREASE_CHARMSLOTS.InGameKey(),
                                                 DecreaseCharmSlots);
             __instance.AppendRow(1);
-            __instance.AppendBasicControl(nameof(LangKey.DEBUG_REMOVE_ALL_CHARMS),
+            __instance.AppendBasicControl(LangKey.DEBUG_REMOVE_ALL_CHARMS.InGameKey(),
                                             RemoveAllCharms);
             __instance.AppendRow(1);
-            __instance.AppendBasicControl(nameof(LangKey.DEBUG_FIX_CHARMSLOTS), () => pd.CalculateNotchesUsed());
+            __instance.AppendBasicControl(LangKey.DEBUG_FIX_CHARMSLOTS.InGameKey(), () => pd.CalculateNotchesUsed());
             __instance.AppendRow(1);
             __instance.AppendRow(1);
-            var text = __instance.AppendSectionHeader(nameof(LangKey.DEBUG_PROMPT));
+            var text = __instance.AppendSectionHeader(LangKey.DEBUG_PROMPT.InGameKey());
             text.FontSize = MainPanel.KeybindHeaderFontSize;
 
         }
@@ -796,7 +849,7 @@ namespace KIS.Compatibility
                 hc?.transform.Find("Charm Effects").gameObject.LocateMyFSM("Spawn Grimmchild").SendEvent("CHARM EQUIP CHECK");
             }
         }
-        public static void IncreaseRoyalGameState()
+        public static void IncreaseRoyalCharmState()
         {
             if (!pd.GetBool(nameof(pd.gotCharm_36)))
             {
@@ -821,6 +874,48 @@ namespace KIS.Compatibility
                 _ => pd.GetInt(nameof(pd.charmCost_36))
             };
             pd.SetInt(nameof(pd.charmCost_36), cost);
+        }
+        public static int GetHeartCharmState()
+        {
+            if (!pd.GetBool(nameof(pd.gotCharm_23))) return 0;
+            if (pd.GetBool(nameof(pd.fragileHealth_unbreakable))) return 3;
+            if (pd.GetBool(nameof(pd.brokenCharm_23))) return 2;
+            return 1;
+        }
+        public static void IncreaseHeartCharmState()
+        {
+            int now = GetHeartCharmState();
+            pd.SetBool(nameof(pd.gotCharm_23), now != 3);
+            pd.SetBool(nameof(pd.fragileHealth_unbreakable), now == 2);
+            pd.SetBool(nameof(pd.brokenCharm_23), now == 1);
+        }
+        public static int GetGreedCharmState()
+        {
+            if (!pd.GetBool(nameof(pd.gotCharm_24))) return 0;
+            if (pd.GetBool(nameof(pd.fragileGreed_unbreakable))) return 3;
+            if (pd.GetBool(nameof(pd.brokenCharm_24))) return 2;
+            return 1;
+        }
+        public static void IncreaseGreedCharmState()
+        {
+            int now = GetGreedCharmState();
+            pd.SetBool(nameof(pd.gotCharm_24), now != 3);
+            pd.SetBool(nameof(pd.fragileGreed_unbreakable), now == 2);
+            pd.SetBool(nameof(pd.brokenCharm_24), now == 1);
+        }
+        public static int GetStrengthCharmState()
+        {
+            if (!pd.GetBool(nameof(pd.gotCharm_25))) return 0;
+            if (pd.GetBool(nameof(pd.fragileStrength_unbreakable))) return 3;
+            if (pd.GetBool(nameof(pd.brokenCharm_25))) return 2;
+            return 1;
+        }
+        public static void IncreaseStrengthCharmState()
+        {
+            int now = GetStrengthCharmState();
+            pd.SetBool(nameof(pd.gotCharm_25), now != 3);
+            pd.SetBool(nameof(pd.fragileStrength_unbreakable), now == 2);
+            pd.SetBool(nameof(pd.brokenCharm_25), now == 1);
         }
         public static void IncreaseSpellLevel(Spell spell)
         {

@@ -451,11 +451,20 @@ public static class KISHelper
     public static Action OnQuitApp = null;
     //useful Enums
     internal const HeroDeathCocoonTypes knight_death_cocoon = (HeroDeathCocoonTypes)(1 << 30);
+    private static Dictionary<string, Texture2D> resourceTextures = new();
     public static string GetSaveDataDirectory(int slot)
     {
         return Path.Combine(Paths.ConfigPath, "shownyoung-KIS", "Slot" + slot);
     }
-    public static Texture2D LoadTexture(Stream stream)
+    public static Texture2D ResourceTexture(string name)
+    {
+        if (!resourceTextures.ContainsKey(name))
+        {
+            resourceTextures.Add(name, LoadTexture(Assembly.GetExecutingAssembly().GetManifestResourceStream("KIS.Resources.Sprites." + name + ".png")));
+        }
+        return resourceTextures[name];
+    }
+    private static Texture2D LoadTexture(Stream stream)
     {
         byte[] bytes = new byte[stream.Length];
         stream.Read(bytes, 0, bytes.Length);
@@ -469,7 +478,7 @@ public static class KISHelper
         }
         return null;
     }
-    public static Texture2D LoadTexture(string path)
+    private static Texture2D LoadTexture(string path)
     {
         // 创建文件流
         FileStream fileStream = new FileStream(path, FileMode.Open, FileAccess.Read);
@@ -604,6 +613,10 @@ public static class KISHelper
         {
             return false;
         }
+    }
+    public static String InGameKey(this LangKey langKey)
+    {
+        return MoreLanguge.GetInGameKey(langKey);
     }
     public static LocalisedString Localize(this LangKey key)
     {
