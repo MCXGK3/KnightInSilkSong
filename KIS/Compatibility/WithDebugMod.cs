@@ -38,6 +38,8 @@ namespace KIS.Compatibility
                 DebugMod.DebugMod.InfoPanelColumn.RIGHT
             );
 
+            RegisterBindableFunctions();
+
             //TODO: insert tab before keybinds tab so we don't mess up the structure :(
             // we can hack this now with an ILManipulator or just wait for DebugMod to expose nicer ways to create UI
         }
@@ -574,7 +576,7 @@ namespace KIS.Compatibility
                                             DecreaseCharmSlots,
                                             () => pd.SetInt(nameof(pd.charmSlots), 3));
             __instance.AppendRow(1);
-            __instance.AppendBasicControl(LangKey.DEBUG_FIX_CHARMSLOTS.InGameKey(), () => pd.CalculateNotchesUsed());
+            __instance.AppendBasicControl(LangKey.DEBUG_FIX_CHARMSLOTS.InGameKey(), FixCharmSlots);
             //The assignment of `KnightInSilksong.Instance.charm` is earlier than here so it's OK.
             CharmIconList charmIconList = KnightInSilksong.Instance.charm.FindGameObjectInChildren("Charm Icons").GetComponent<CharmIconList>();
             for (int i = 1; i <= 40; i++)
@@ -621,6 +623,15 @@ namespace KIS.Compatibility
             var text = __instance.AppendSectionHeader(LangKey.DEBUG_PROMPT.InGameKey());
             text.FontSize = MainPanel.KeybindHeaderFontSize;
 
+        }
+        private static void RegisterBindableFunctions()
+        {
+            DebugMod.DebugMod.AddActionToKeyBindList(GiveAllSkills, LangKey.DEBUG_ALL_SKILL.InGameKey(), "KNIGHT");
+            DebugMod.DebugMod.AddActionToKeyBindList(GiveAllCharms, LangKey.DEBUG_ALL_CHARMS.InGameKey(), "KNIGHT");
+            DebugMod.DebugMod.AddActionToKeyBindList(RemoveAllCharms, LangKey.DEBUG_REMOVE_ALL_CHARMS.InGameKey(), "KNIGHT");
+            DebugMod.DebugMod.AddActionToKeyBindList(IncreaseCharmSlots, LangKey.DEBUG_INCREASE_CHARMSLOTS.InGameKey(), "KNIGHT");
+            DebugMod.DebugMod.AddActionToKeyBindList(DecreaseCharmSlots, LangKey.DEBUG_DECREASE_CHARMSLOTS.InGameKey(), "KNIGHT");
+            DebugMod.DebugMod.AddActionToKeyBindList(FixCharmSlots, LangKey.DEBUG_FIX_CHARMSLOTS.InGameKey(), "KNIGHT");
         }
         private static void UpdateCharmsEffects()
         {
@@ -786,6 +797,10 @@ namespace KIS.Compatibility
             pd.equippedCharms.Clear();
             pd.SetInt(nameof(pd.charmSlotsFilled), 0);
             UpdateCharmsEffects();
+        }
+        public static void FixCharmSlots()
+        {
+            pd.CalculateNotchesUsed();
         }
 
         public static void CycleCharm(int charmId) => CycleCharm((Charm)charmId);
