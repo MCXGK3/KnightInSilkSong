@@ -37,6 +37,8 @@ public partial class KnightInSilksong : BaseUnityPlugin
     public static ConfigEntry<bool> default_sync;
     public static ConfigEntry<float> knight_scaleX;
     public static ConfigEntry<float> knight_scaleY;
+
+    internal static bool KeybindEnabled = true;
     internal static bool IsKnight => Instance.iskight;
     bool iskight = false;
     public static int KnightDamage => 1 << 30;
@@ -320,8 +322,7 @@ public partial class KnightInSilksong : BaseUnityPlugin
     }
     private void Update()
     {
-
-        if (Input.GetKeyDown(toggleButton.Value) || shouldToggleKnight)
+        if ((KeybindEnabled && Input.GetKeyDown(toggleButton.Value)) || shouldToggleKnight)
         {
             ToggleKnight();
             shouldToggleKnight = false;

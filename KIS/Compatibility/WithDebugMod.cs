@@ -37,8 +37,37 @@ namespace KIS.Compatibility
                 () => KnightInSilksong.IsKnight ? "Knight" : "Hornet",
                 DebugMod.DebugMod.InfoPanelColumn.RIGHT
             );
-
+            
+            
             RegisterBindableFunctions();
+            
+            // Delegate Switch Character keybind handling to DebugMod
+            KnightInSilksong.KeybindEnabled = false;
+            string toggleKnightBindName = LangKey.SWITCH_CHARACTER.InGameKey();
+            if (KnightInSilksong.toggleButton.Value != KeyCode.None) DebugMod.DebugMod.UpdateBind(toggleKnightBindName, KnightInSilksong.toggleButton.Value);
+            
+            KnightInSilksong.toggleButton.SettingChanged += (_, _) =>
+            {
+                // Sync our updates to DebugMod
+                if (KnightInSilksong.toggleButton.Value == KeyCode.None && DebugMod.DebugMod.settings.binds.ContainsKey(toggleKnightBindName))
+                {
+                    DebugMod.DebugMod.UpdateBind(toggleKnightBindName, null);
+                }
+                // Only update if the keys are different to avoid loop
+                else if (KnightInSilksong.toggleButton.Value != DebugMod.DebugMod.settings.binds.GetValueOrDefault(toggleKnightBindName)) 
+                {
+                    DebugMod.DebugMod.UpdateBind(toggleKnightBindName, KnightInSilksong.toggleButton.Value);
+                }
+            };
+            DebugMod.DebugMod.bindUpdated += (keybindName, keycode) =>
+            {
+                if (keybindName != toggleKnightBindName) return;
+                // Sync DebugMod's updates to ours
+                if (keycode != KnightInSilksong.toggleButton.Value)
+                {
+                    KnightInSilksong.toggleButton.Value = keycode ?? KeyCode.None;
+                }
+            };
 
             //TODO: insert tab before keybinds tab so we don't mess up the structure :(
             // we can hack this now with an ILManipulator or just wait for DebugMod to expose nicer ways to create UI
@@ -513,7 +542,7 @@ namespace KIS.Compatibility
             __instance.AddTab("Knight");
             __instance.AppendSectionHeader("Control");
             __instance.AppendRow(1);
-            __instance.AppendBasicControl(LangKey.SWITCH_CHARACTER.InGameKey(), KnightInSilksong.Instance.ToggleKnight);
+            __instance.AppendToggleControl(LangKey.SWITCH_CHARACTER.InGameKey(), () => KnightInSilksong.IsKnight, KnightInSilksong.Instance.ToggleKnight);
             __instance.AppendSectionHeader("Skill");
             __instance.AppendRow(1);
             __instance.AppendBasicControl(LangKey.DEBUG_ALL_SKILL.InGameKey(), GiveAllSkills);
@@ -632,6 +661,7 @@ namespace KIS.Compatibility
             DebugMod.DebugMod.AddActionToKeyBindList(IncreaseCharmSlots, LangKey.DEBUG_INCREASE_CHARMSLOTS.InGameKey(), "KNIGHT");
             DebugMod.DebugMod.AddActionToKeyBindList(DecreaseCharmSlots, LangKey.DEBUG_DECREASE_CHARMSLOTS.InGameKey(), "KNIGHT");
             DebugMod.DebugMod.AddActionToKeyBindList(FixCharmSlots, LangKey.DEBUG_FIX_CHARMSLOTS.InGameKey(), "KNIGHT");
+            DebugMod.DebugMod.AddActionToKeyBindList(KnightInSilksong.Instance.ToggleKnight, LangKey.SWITCH_CHARACTER.InGameKey(), "KNIGHT");
         }
         private static void UpdateCharmsEffects()
         {
