@@ -221,7 +221,7 @@ namespace KIS.Utils
         /// <param name="onEventName"></param>
         public static void RemoveTransition(this FsmState state, string onEventName)
         {
-            state.Transitions = state.Transitions.Where(t => t.EventName == onEventName).ToArray();
+            state.Transitions = state.Transitions.Where(t => t.EventName != onEventName).ToArray();
         }
 
         /// <summary>

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using DebugMod;
 using DebugMod.UI;
@@ -83,9 +84,9 @@ namespace KIS.Compatibility
         private static void AfterLoad(SaveState state)
         {
             var stateIsKnight = state.data.customData.TryGetValue("KIS.KnightPd", out var statePdJson);
-            if (KnightInSilksong.IsKnight != stateIsKnight) KnightInSilksong.Instance.ToggleKnight(); 
+            if (KnightInSilksong.IsKnight != stateIsKnight) KnightInSilksong.Instance.ToggleKnight();
             if (!stateIsKnight) return;
-            
+
             JsonUtility.FromJsonOverwrite(JsonUtility.ToJson(statePdJson), pd);
 
             hc.transform.position = state.data.savePos;
@@ -106,7 +107,7 @@ namespace KIS.Compatibility
             invPulse?.StopInvulnerablePulse();
             hc.transitionState = GlobalEnums.HeroTransitionState.WAITING_TO_TRANSITION;
             hc.cState.invulnerable = false;
-            
+
             // We need to wait a few frames before clearing the HUD,
             // because DebugMod calls HUDFixes after our AfterLoad hooks fire.
             IEnumerator WaitThenClearHud()
@@ -114,7 +115,7 @@ namespace KIS.Compatibility
                 yield return null; yield return null;
                 KnightInSilksong.Instance.DisableOriHud();
             }
-            
+
             hc?.StartCoroutine(WaitThenClearHud());
         }
 
@@ -490,6 +491,19 @@ namespace KIS.Compatibility
                     return getter.Invoke();
                 }, effect, includeLabel: includeLabel, defaultRowWidth: defaultRowWidth);
             }
+            void AppendCustomImageTitleWithSprite(string name, Func<bool> getter, Action effect, Sprite icon, bool includeLabel = true, int defaultRowWidth = 5)
+            {
+                CanvasPanel customImageTitle = null;
+                customImageTitle = __instance.AppendLabeledTile(name, () =>
+                {
+
+                    if (icon != null)
+                    {
+                        customImageTitle!.Get<CanvasImage>("Icon")?.SetImage(icon);
+                    }
+                    return getter.Invoke();
+                }, effect, includeLabel: includeLabel, defaultRowWidth: defaultRowWidth);
+            }
             void AppendCustomImageTitleByName(string name, Func<bool> getter, Action effect, string icon_name, bool includeLabel = true, int defaultRowWidth = 5)
             {
                 AppendCustomImageTitle(name, getter, effect, KISHelper.ResourceTexture(icon_name), includeLabel, defaultRowWidth);
@@ -548,35 +562,6 @@ namespace KIS.Compatibility
                                             GiveAllCharms);
             __instance.AppendBasicControl(LangKey.DEBUG_REMOVE_ALL_CHARMS.InGameKey(),
                 RemoveAllCharms);
-            __instance.AppendTileRow(5);
-            AppendLeveledTile(LangKey.CHARM_HEART.InGameKey(),
-                                                () => GetFragileState(Charm.UnbreakableHeart),
-                                                () => CycleCharm(Charm.UnbreakableHeart),
-                                                [KISHelper.ResourceTexture("charm_glass_heart"), KISHelper.ResourceTexture("charm_broken_heart"),
-                                                    KISHelper.ResourceTexture("charm_full_heart")]);
-            AppendLeveledTile(LangKey.CHARM_GREED.InGameKey(),
-                                                () => GetFragileState(Charm.UnbreakableGreed),
-                                                () => CycleCharm(Charm.UnbreakableGreed),
-                                                [KISHelper.ResourceTexture("charm_glass_greed"), KISHelper.ResourceTexture("charm_broken_greed"), 
-                                                    KISHelper.ResourceTexture("charm_full_greed")]);
-            AppendLeveledTile(LangKey.CHARM_STRENGTH.InGameKey(),
-                                                () => GetFragileState(Charm.UnbreakableStrength),
-                                                () => CycleCharm(Charm.UnbreakableStrength),
-                                                [KISHelper.ResourceTexture("charm_glass_strength"), KISHelper.ResourceTexture("charm_broken_strength"), 
-                                                    KISHelper.ResourceTexture("charm_full_strength")]);
-            AppendLeveledTile(LangKey.KING_SOUL.InGameKey(),
-                                                () => !pd.gotCharm_36 ? 0 : pd.royalCharmState,
-                                                () => CycleCharm(Charm.VoidHeart),
-                                                [KISHelper.ResourceTexture("charm_white_left"), KISHelper.ResourceTexture("charm_white_right"), 
-                                                    KISHelper.ResourceTexture("charm_white_full"), KISHelper.ResourceTexture("charm_black")]);
-            AppendLeveledTile(LangKey.GRIMM_CHILD.InGameKey(),
-                                                () => !pd.gotCharm_40 ? 0 : pd.grimmChildLevel,
-                                                () => CycleCharm(Charm.Grimmchild),
-                                                [KISHelper.ResourceTexture("charm_grimmkin_01"),
-                                                KISHelper.ResourceTexture("charm_grimmkin_02"),
-                                                KISHelper.ResourceTexture("charm_grimmkin_03"),
-                                                KISHelper.ResourceTexture("charm_grimmkin_04"),
-                                                KISHelper.ResourceTexture("charm_grimmkin_05")]);
             __instance.AppendRow(1);
             __instance.AppendNumericControl(LangKey.CHARMSLOT_NAME.InGameKey(),
                                             () => pd.charmSlots,
@@ -587,29 +572,72 @@ namespace KIS.Compatibility
                                             () => pd.SetInt(nameof(pd.charmSlots), 3));
             __instance.AppendRow(1);
             __instance.AppendBasicControl(LangKey.DEBUG_FIX_CHARMSLOTS.InGameKey(), () => pd.CalculateNotchesUsed());
+            //The assignment of `KnightInSilksong.Instance.charm` is earlier than here so it's OK.
+            CharmIconList charmIconList = KnightInSilksong.Instance.charm.FindGameObjectInChildren("Charm Icons").GetComponent<CharmIconList>();
+            for (int i = 1; i <= 40; i++)
+            {
+                if (i % 5 == 1) __instance.AppendTileRow(5);
+                Charm charm = (Charm)i;
+                if (charm.IsFragileCharm())
+                {
+                    string name = charm.ToString().Replace("Unbreakable", "").ToLower();
+                    AppendLeveledTile(charm.InGameKey(),
+                                                () => GetFragileState(charm),
+                                                () => CycleCharm(charm),
+                                                [KISHelper.ResourceTexture("charm_glass_"+name), KISHelper.ResourceTexture("charm_broken_"+name),
+                                                    KISHelper.ResourceTexture("charm_full_"+name)]);
+                    continue;
+                }
+                switch (charm)
+                {
+                    case Charm.Grimmchild:
+                        AppendLeveledTile(LangKey.GRIMM_CHILD.InGameKey(),
+                                                () => !pd.gotCharm_40 ? 0 : pd.grimmChildLevel,
+                                                () => CycleCharm(charm),
+                                                [KISHelper.ResourceTexture("charm_grimmkin_01"),
+                                                KISHelper.ResourceTexture("charm_grimmkin_02"),
+                                                KISHelper.ResourceTexture("charm_grimmkin_03"),
+                                                KISHelper.ResourceTexture("charm_grimmkin_04"),
+                                                KISHelper.ResourceTexture("charm_grimmkin_05")]);
+                        break;
+                    case Charm.VoidHeart:
+                        AppendLeveledTile(LangKey.KING_SOUL.InGameKey(),
+                                                () => !pd.gotCharm_36 ? 0 : pd.royalCharmState,
+                                                () => CycleCharm(Charm.VoidHeart),
+                                                [KISHelper.ResourceTexture("charm_white_left"), KISHelper.ResourceTexture("charm_white_right"),
+                                                    KISHelper.ResourceTexture("charm_white_full"), KISHelper.ResourceTexture("charm_black")]);
+                        break;
+                    default:
+                        AppendCustomImageTitleWithSprite(charm.InGameKey(),
+                                                            () => pd.GetBool("gotCharm_" + (int)charm),
+                                                            () => CycleCharm(charm),
+                                                            charmIconList.GetSprite(i));
+                        break;
+                }
+            }
             var text = __instance.AppendSectionHeader(LangKey.DEBUG_PROMPT.InGameKey());
             text.FontSize = MainPanel.KeybindHeaderFontSize;
 
         }
-        
+
         private static void UpdateCharmsEffects()
         {
             PlayMakerFSM.BroadcastEvent("CHARM INDICATOR CHECK");
             PlayMakerFSM.BroadcastEvent("CHARM EQUIP CHECK");
-            
+
             IEnumerator SpawnGrimmChild()
             {
                 for (int i = 0; i < 2; i++) yield return null;
                 hc?.transform.Find("Charm Effects").gameObject.LocateMyFSM("Spawn Grimmchild").SendEvent("CHARM EQUIP CHECK");
             }
-            
+
             Object.Destroy(GameObject.FindWithTag("Grimmchild"));
             if (pd.equippedCharm_40) // Grimmchild
             {
                 GameManager.instance.StartCoroutine(SpawnGrimmChild());
             }
         }
-        
+
         public static void ToggleNailArt(NailArt nailArt)
         {
             var name = nailArt.PdGotField();
@@ -667,7 +695,7 @@ namespace KIS.Compatibility
         }
         public static int GetDashLevel()
         {
-            return !pd.GetBool(nameof(pd.hasDash)) ? 0 : 
+            return !pd.GetBool(nameof(pd.hasDash)) ? 0 :
                 pd.GetBool(nameof(pd.hasShadowDash)) ? 2 : 1;
         }
         public static void CycleDash()
@@ -784,7 +812,9 @@ namespace KIS.Compatibility
                         _ => pd.charmCost_36
                     };
                     break;
-                case 23: case 24: case 25: // Fragile charms
+                case 23:
+                case 24:
+                case 25: // Fragile charms
                     var nextState = (GetFragileState(charm) + 1) % 4;  // range 0-3
                     pd.SetBool(charm.PdGotField(), nextState != 0);
                     pd.SetBool(charm.PdUnbreakableField(), nextState == 3);
