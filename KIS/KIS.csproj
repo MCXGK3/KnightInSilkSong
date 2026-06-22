@@ -62,7 +62,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../Knight/Knight.csproj" Publicize="true"/>
-    <EmbeddedResource Include="Resources/*" />
+    <EmbeddedResource Include="Resources/**" />
   </ItemGroup>
   <ItemGroup>
       <Binaries Include="$(TargetPath)" LocalDir="/" PackDir="plugins" />

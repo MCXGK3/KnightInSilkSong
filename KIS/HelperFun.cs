@@ -663,5 +663,25 @@ public static class KISHelper
         }
 
     }
-}
+    
+    public static string PdGotField(this Charm charm) => $"gotCharm_{(int)charm}";
+    public static bool IsFragileCharm(this Charm charm) => (int)charm is >= 23 and <= 25;
+    public static string PdBrokenField(this Charm charm) => charm.IsFragileCharm() ? 
+        $"brokenCharm_{(int)charm}" : throw new ArgumentOutOfRangeException(nameof(charm), charm, "Not a fragile charm!");
+    public static string PdUnbreakableField(this Charm charm) => charm switch
+        {
+            Charm.UnbreakableHeart => "fragileHealth_unbreakable",
+            Charm.UnbreakableGreed => "fragileGreed_unbreakable",
+            Charm.UnbreakableStrength => "fragileStrength_unbreakable",
+            _ => throw new ArgumentOutOfRangeException(nameof(charm), charm, "Not a fragile charm!")
+        };
 
+    public static string PdGotField(this NailArt nailArt) => nailArt switch
+        {
+            // These names look wrong. They are not. This is how TC named them :)
+            NailArt.GREAT_SLASH => "hasDashSlash",
+            NailArt.DASH_SLASH => "hasUpwardSlash",
+            NailArt.CYCLONE => "hasCyclone",
+            _ => throw new ArgumentOutOfRangeException(nameof(nailArt), nailArt, "Not a nail art!")
+        };
+}

@@ -472,18 +472,6 @@ namespace KIS.Compatibility
         #endregion
 
         #region  KnightPanel
-        private static void UpdateCharmsEffects()
-        {
-            PlayMakerFSM.BroadcastEvent("CHARM INDICATOR CHECK");
-            PlayMakerFSM.BroadcastEvent("CHARM EQUIP CHECK");
-        }
-        private static void UpdateNailArtStates()
-        {
-            pd.SetBool(nameof(pd.hasNailArt),
-                        pd.GetBool(nameof(pd.hasDashSlash)) || pd.GetBool(nameof(pd.hasUpwardSlash)) || pd.GetBool(nameof(pd.hasCyclone)));
-            pd.SetBool(nameof(pd.hasAllNailArts),
-                        pd.GetBool(nameof(pd.hasDashSlash)) && pd.GetBool(nameof(pd.hasUpwardSlash)) && pd.GetBool(nameof(pd.hasCyclone)));
-        }
         [HarmonyPostfix]
         [HarmonyPatch(typeof(MainPanel), MethodType.Constructor)]
         public static void MainPanel_Postfix(MainPanel __instance)
@@ -494,14 +482,15 @@ namespace KIS.Compatibility
                 leveledTile = __instance.AppendLabeledTile(name, () =>
                 {
                     var level = getter.Invoke();
-                    var icon = level < icons.Count ? icons[level] : null;
+                    var iconIndex = Math.Max(0, level - 1);
+                    var icon = iconIndex < icons.Count ? icons[iconIndex] : null;
                     if (icon != null)
                     {
                         // ReSharper disable once AccessToModifiedClosure
                         leveledTile!.Get<CanvasImage>("Icon")?.SetImage(icon);
                     }
                     return level > 0;
-                }, effect);
+                }, effect, includeLabel: includeLabel, defaultRowWidth: defaultRowWidth);
             }
 
             void AppendCustomImageTitle(string name, Func<bool> getter, Action effect, Texture2D icon, bool includeLabel = true, int defaultRowWidth = 5)
@@ -527,14 +516,14 @@ namespace KIS.Compatibility
             __instance.AppendBasicControl(LangKey.DEBUG_ALL_SKILL.InGameKey(), GiveAllSkills);
 
             AppendLeveledTile(LangKey.DEBUG_SCREAM_NAME.InGameKey(), () => pd.GetInt(nameof(pd.screamLevel)), () => IncreaseSpellLevel(Spell.Scream),
-                [KISHelper.ResourceTexture("inv_spell_slot"), KISHelper.ResourceTexture("inv_scream_01"), KISHelper.ResourceTexture("inv_scream_02")]);
+                [KISHelper.ResourceTexture("inv_scream_01"), KISHelper.ResourceTexture("inv_scream_02")]);
             AppendLeveledTile(LangKey.DEBUG_FIREBALL_NAME.InGameKey(), () => pd.GetInt(nameof(pd.fireballLevel)), () => IncreaseSpellLevel(Spell.Fireball),
-                [KISHelper.ResourceTexture("inv_spell_slot"), KISHelper.ResourceTexture("inv_fireball_01"), KISHelper.ResourceTexture("inv_fireball_02")]);
+                [KISHelper.ResourceTexture("inv_fireball_01"), KISHelper.ResourceTexture("inv_fireball_02")]);
             AppendLeveledTile(LangKey.DEBUG_QUAKE_NAME.InGameKey(), () => pd.GetInt(nameof(pd.quakeLevel)), () => IncreaseSpellLevel(Spell.Quake),
-                [KISHelper.ResourceTexture("inv_spell_slot"), KISHelper.ResourceTexture("inv_quake_01"), KISHelper.ResourceTexture("inv_quake_02")]);
+                [KISHelper.ResourceTexture("inv_quake_01"), KISHelper.ResourceTexture("inv_quake_02")]);
 
-            AppendLeveledTile(LangKey.DEBUG_DASH_NAME.InGameKey(), GetDashLevel, ToggleDash,
-                [KISHelper.ResourceTexture("inv_spell_slot"), KISHelper.ResourceTexture("inv_dash_cloak"), KISHelper.ResourceTexture("inv_shade_cloak")]);
+            AppendLeveledTile(LangKey.DEBUG_DASH_NAME.InGameKey(), GetDashLevel, CycleDash,
+                [KISHelper.ResourceTexture("inv_dash_cloak"), KISHelper.ResourceTexture("inv_shade_cloak")]);
             AppendCustomImageTitleByName(LangKey.DEBUG_WALL_JUMP_NAME.InGameKey(),
                                             () => pd.hasWalljump,
                                             ToggleWallJump,
@@ -543,8 +532,8 @@ namespace KIS.Compatibility
                                             () => pd.GetBool(nameof(pd.hasDoubleJump)),
                                             ToggleDoubleJump,
                                             "inv_emperor_wings");
-            AppendLeveledTile(LangKey.DEBUG_DREAM_NAIL_NAME.InGameKey(), GetDreamNailLevel, ToggleDreamNail,
-                [KISHelper.ResourceTexture("inv_spell_slot"), KISHelper.ResourceTexture("inv_dream_nail"), KISHelper.ResourceTexture("inv_dream_nail_upgraded")]);
+            AppendLeveledTile(LangKey.DEBUG_DREAM_NAIL_NAME.InGameKey(), GetDreamNailLevel, CycleDreamNail,
+                [KISHelper.ResourceTexture("inv_dream_nail"), KISHelper.ResourceTexture("inv_dream_nail_upgraded")]);
             AppendCustomImageTitleByName(LangKey.DEBUG_DREAM_GATE_NAME.InGameKey(),
                                             () => pd.GetBool(nameof(pd.hasDreamGate)),
                                             ToggleDreamGate,
@@ -570,36 +559,36 @@ namespace KIS.Compatibility
                                             () => ToggleNailArt(NailArt.CYCLONE),
                                             "inv_cyclone");
             __instance.AppendSectionHeader("Charm");
-            __instance.AppendRow(1);
+            __instance.AppendRow(1, 1);
             __instance.AppendBasicControl(LangKey.DEBUG_ALL_CHARMS.InGameKey(),
                                             GiveAllCharms);
-            // __instance.AppendTileRow(2);
+            __instance.AppendBasicControl(LangKey.DEBUG_REMOVE_ALL_CHARMS.InGameKey(),
+                RemoveAllCharms);
+            __instance.AppendTileRow(5);
             AppendLeveledTile(LangKey.CHARM_HEART.InGameKey(),
-                                                () => GetHeartCharmState(),
-                                                IncreaseHeartCharmState,
-                                                [KISHelper.ResourceTexture("inv_spell_slot"),KISHelper.ResourceTexture("charm_glass_heart"),
-                                                KISHelper.ResourceTexture("charm_broken_heart"),KISHelper.ResourceTexture("charm_full_heart")]);
+                                                () => GetFragileState(Charm.UnbreakableHeart),
+                                                () => CycleCharm(Charm.UnbreakableHeart),
+                                                [KISHelper.ResourceTexture("charm_glass_heart"), KISHelper.ResourceTexture("charm_broken_heart"),
+                                                    KISHelper.ResourceTexture("charm_full_heart")]);
             AppendLeveledTile(LangKey.CHARM_GREED.InGameKey(),
-                                                () => GetGreedCharmState(),
-                                                IncreaseGreedCharmState,
-                                                [KISHelper.ResourceTexture("inv_spell_slot"),KISHelper.ResourceTexture("charm_glass_greed"),
-                                                KISHelper.ResourceTexture("charm_broken_greed"),KISHelper.ResourceTexture("charm_full_greed")]);
+                                                () => GetFragileState(Charm.UnbreakableGreed),
+                                                () => CycleCharm(Charm.UnbreakableGreed),
+                                                [KISHelper.ResourceTexture("charm_glass_greed"), KISHelper.ResourceTexture("charm_broken_greed"), 
+                                                    KISHelper.ResourceTexture("charm_full_greed")]);
             AppendLeveledTile(LangKey.CHARM_STRENGTH.InGameKey(),
-                                                () => GetStrengthCharmState(),
-                                                IncreaseStrengthCharmState,
-                                                [KISHelper.ResourceTexture("inv_spell_slot"),KISHelper.ResourceTexture("charm_glass_strength"),
-                                                KISHelper.ResourceTexture("charm_broken_strength"),KISHelper.ResourceTexture("charm_full_strength")]);
+                                                () => GetFragileState(Charm.UnbreakableStrength),
+                                                () => CycleCharm(Charm.UnbreakableStrength),
+                                                [KISHelper.ResourceTexture("charm_glass_strength"), KISHelper.ResourceTexture("charm_broken_strength"), 
+                                                    KISHelper.ResourceTexture("charm_full_strength")]);
             AppendLeveledTile(LangKey.KING_SOUL.InGameKey(),
-                                                () => pd.GetInt(nameof(pd.royalCharmState)),
-                                                IncreaseRoyalCharmState,
-                                                [KISHelper.ResourceTexture("inv_spell_slot"), KISHelper.ResourceTexture("charm_white_left"),
-                                                KISHelper.ResourceTexture("charm_white_right"), KISHelper.ResourceTexture("charm_white_full"),
-                                                KISHelper.ResourceTexture("charm_black")]);
+                                                () => !pd.gotCharm_36 ? 0 : pd.royalCharmState,
+                                                () => CycleCharm(Charm.VoidHeart),
+                                                [KISHelper.ResourceTexture("charm_white_left"), KISHelper.ResourceTexture("charm_white_right"), 
+                                                    KISHelper.ResourceTexture("charm_white_full"), KISHelper.ResourceTexture("charm_black")]);
             AppendLeveledTile(LangKey.GRIMM_CHILD.InGameKey(),
-                                                () => pd.GetInt(nameof(pd.grimmChildLevel)),
-                                                IncreaseGrimmChildLevel,
-                                                [KISHelper.ResourceTexture("inv_spell_slot"),
-                                                KISHelper.ResourceTexture("charm_grimmkin_01"),
+                                                () => !pd.gotCharm_40 ? 0 : pd.grimmChildLevel,
+                                                () => CycleCharm(Charm.Grimmchild),
+                                                [KISHelper.ResourceTexture("charm_grimmkin_01"),
                                                 KISHelper.ResourceTexture("charm_grimmkin_02"),
                                                 KISHelper.ResourceTexture("charm_grimmkin_03"),
                                                 KISHelper.ResourceTexture("charm_grimmkin_04"),
@@ -612,70 +601,55 @@ namespace KIS.Compatibility
                                             IncreaseCharmSlots,
                                             DecreaseCharmSlots,
                                             () => pd.SetInt(nameof(pd.charmSlots), 3));
-            // __instance.AppendBasicControl(LangKey.DEBUG_INCREASE_CHARMSLOTS.InGameKey(),
-            //                                     IncreaseCharmSlots);
-            // __instance.AppendBasicControl(LangKey.DEBUG_DECREASE_CHARMSLOTS.InGameKey(),
-            //                                     DecreaseCharmSlots);
-            __instance.AppendRow(1);
-            __instance.AppendBasicControl(LangKey.DEBUG_REMOVE_ALL_CHARMS.InGameKey(),
-                                            RemoveAllCharms);
             __instance.AppendRow(1);
             __instance.AppendBasicControl(LangKey.DEBUG_FIX_CHARMSLOTS.InGameKey(), () => pd.CalculateNotchesUsed());
-            __instance.AppendRow(1);
-            __instance.AppendRow(1);
             var text = __instance.AppendSectionHeader(LangKey.DEBUG_PROMPT.InGameKey());
             text.FontSize = MainPanel.KeybindHeaderFontSize;
 
         }
+        
+        private static void UpdateCharmsEffects()
+        {
+            PlayMakerFSM.BroadcastEvent("CHARM INDICATOR CHECK");
+            PlayMakerFSM.BroadcastEvent("CHARM EQUIP CHECK");
+            
+            IEnumerator SpawnGrimmChild()
+            {
+                for (int i = 0; i < 2; i++) yield return null;
+                hc?.transform.Find("Charm Effects").gameObject.LocateMyFSM("Spawn Grimmchild").SendEvent("CHARM EQUIP CHECK");
+            }
+            
+            Object.Destroy(GameObject.FindWithTag("Grimmchild"));
+            if (pd.equippedCharm_40) // Grimmchild
+            {
+                GameManager.instance.StartCoroutine(SpawnGrimmChild());
+            }
+        }
+        
         public static void ToggleNailArt(NailArt nailArt)
         {
-            //yes, that's how tc did.
-            string name = nailArt switch
-            {
-                NailArt.GREAT_SLASH => nameof(pd.hasDashSlash),
-                NailArt.DASH_SLASH => nameof(pd.hasUpwardSlash),
-                NailArt.CYCLONE => nameof(pd.hasCyclone),
-                _ => null
-            };
+            var name = nailArt.PdGotField();
             pd.SetBool(name, !pd.GetBool(name));
-            UpdateNailArtStates();
-            return;
+            pd.SetBool(nameof(pd.hasNailArt), pd.GetBool(nameof(pd.hasDashSlash)) || pd.GetBool(nameof(pd.hasUpwardSlash)) || pd.GetBool(nameof(pd.hasCyclone)));
+            pd.SetBool(nameof(pd.hasAllNailArts), pd.GetBool(nameof(pd.hasDashSlash)) && pd.GetBool(nameof(pd.hasUpwardSlash)) && pd.GetBool(nameof(pd.hasCyclone)));
         }
         public static void ToggleAcidSwim()
         {
-            if (!pd.GetBool(nameof(pd.hasAcidArmour)))
-            {
-                pd.SetBool(nameof(pd.hasAcidArmour), true);
-                PlayMakerFSM.BroadcastEvent("GET ACID ARMOUR");
-            }
-            else
-            {
-                pd.SetBool(nameof(pd.hasAcidArmour), false);
-            }
+            var prior = pd.GetBool(nameof(pd.hasAcidArmour));
+            pd.SetBool(nameof(pd.hasAcidArmour), !prior);
+            if (!prior) PlayMakerFSM.BroadcastEvent("GET ACID ARMOUR");
         }
         public static void ToggleSuperDash()
         {
-            if (!pd.GetBool(nameof(pd.hasSuperDash)))
-            {
-                pd.SetBool(nameof(pd.hasSuperDash), true);
-                pd.SetBool(nameof(pd.canSuperDash), true);
-            }
-            else
-            {
-                pd.SetBool(nameof(pd.hasSuperDash), false);
-                pd.SetBool(nameof(pd.canSuperDash), false);
-            }
+            var prior = pd.GetBool(nameof(pd.hasSuperDash));
+            pd.SetBool(nameof(pd.hasSuperDash), !prior);
+            pd.SetBool(nameof(pd.canSuperDash), !prior);
         }
-        public static void ToggleDreamGate()
+        public static void ToggleDreamGate() // TODO: should dreamgate be rolled into Dream Nail level?
         {
-            if (!pd.GetBool(nameof(pd.hasDreamNail)) && !pd.GetBool(nameof(pd.hasDreamGate)))
+            if (!pd.GetBool(nameof(pd.hasDreamGate)))
             {
-                pd.SetBool(nameof(pd.hasDreamNail), true);
-                pd.SetBool(nameof(pd.hasDreamGate), true);
-                hc?.gameObject.LocateMyFSM("Dream Nail").FsmVariables.FindFsmBool("Dream Warp Allowed").Value = true;
-            }
-            else if (pd.GetBool(nameof(pd.hasDreamNail)) && !pd.GetBool(nameof(pd.hasDreamGate)))
-            {
+                if (!pd.GetBool(nameof(pd.hasDreamNail))) pd.SetBool(nameof(pd.hasDreamNail), true);
                 pd.SetBool(nameof(pd.hasDreamGate), true);
                 hc?.gameObject.LocateMyFSM("Dream Nail").FsmVariables.FindFsmBool("Dream Warp Allowed").Value = true;
             }
@@ -691,72 +665,35 @@ namespace KIS.Compatibility
             if (pd.GetBool(nameof(pd.hasDreamNail))) return 1;
             return 0;
         }
-        public static void ToggleDreamNail()
+        public static void CycleDreamNail()
         {
-            if (!pd.GetBool(nameof(pd.hasDreamNail)) && !pd.GetBool(nameof(pd.dreamNailUpgraded)))
-            {
-                pd.SetBool(nameof(pd.hasDreamNail), true);
-            }
-            else if (pd.GetBool(nameof(pd.hasDreamNail)) && !pd.GetBool(nameof(pd.dreamNailUpgraded)))
-            {
-                pd.SetBool(nameof(pd.dreamNailUpgraded), true);
-            }
-            else
-            {
-                pd.SetBool(nameof(pd.hasDreamNail), false);
-                pd.SetBool(nameof(pd.dreamNailUpgraded), false);
-            }
+            var nextState = (GetDreamNailLevel() + 1) % 3; // range 0-2
+            pd.SetBool(nameof(pd.hasDreamNail), nextState > 0);
+            pd.SetBool(nameof(pd.dreamNailUpgraded), nextState == 2);
         }
         public static void ToggleDoubleJump()
         {
-            if (!pd.GetBool(nameof(pd.hasDoubleJump)))
-            {
-                pd.SetBool(nameof(pd.hasDoubleJump), true);
-            }
-            else
-            {
-                pd.SetBool(nameof(pd.hasDoubleJump), false);
-            }
+            pd.SetBool(nameof(pd.hasDoubleJump), !pd.GetBool(nameof(pd.hasDoubleJump)));
         }
         public static void ToggleWallJump()
         {
-            if (!pd.hasWalljump)
-            {
-                pd.SetBool(nameof(pd.hasWalljump), true);
-                pd.SetBool(nameof(pd.canWallJump), true);
-            }
-            else
-            {
-                pd.SetBool(nameof(pd.hasWalljump), false);
-                pd.SetBool(nameof(pd.canWallJump), false);
-            }
+            var prior = pd.GetBool(nameof(pd.hasWalljump));
+            pd.SetBool(nameof(pd.hasWalljump), !prior);
+            pd.SetBool(nameof(pd.canWallJump), !prior);
         }
         public static int GetDashLevel()
         {
-            if (pd.GetBool(nameof(pd.hasDash)) && pd.GetBool(nameof(pd.hasShadowDash))) return 2;
-            if (pd.GetBool(nameof(pd.hasDash))) return 1;
-            return 0;
+            return !pd.GetBool(nameof(pd.hasDash)) ? 0 : 
+                pd.GetBool(nameof(pd.hasShadowDash)) ? 2 : 1;
         }
-        public static void ToggleDash()
+        public static void CycleDash()
         {
-            if (!pd.GetBool(nameof(pd.hasDash)) && !pd.GetBool(nameof(pd.hasShadowDash)))
-            {
-                pd.SetBool(nameof(pd.hasDash), true);
-                pd.SetBool(nameof(pd.canDash), true);
-            }
-            else if (pd.GetBool(nameof(pd.hasDash)) && !pd.GetBool(nameof(pd.hasShadowDash)))
-            {
-                pd.SetBool(nameof(pd.hasShadowDash), true);
-                pd.SetBool(nameof(pd.canShadowDash), true);
-                EventRegister.SendEvent("GOT SHADOW DASH");
-            }
-            else
-            {
-                pd.SetBool(nameof(pd.hasDash), false);
-                pd.SetBool(nameof(pd.canDash), false);
-                pd.SetBool(nameof(pd.hasShadowDash), false);
-                pd.SetBool(nameof(pd.canShadowDash), false);
-            }
+            var nextLevel = (GetDashLevel() + 1) % 3; // range 0-2
+            pd.SetBool(nameof(pd.hasDash), nextLevel > 0);
+            pd.SetBool(nameof(pd.canDash), nextLevel > 0);
+            pd.SetBool(nameof(pd.hasShadowDash), nextLevel == 2);
+            pd.SetBool(nameof(pd.canShadowDash), nextLevel == 2);
+            if (nextLevel == 2) EventRegister.SendEvent("GOT SHADOW DASH");
         }
         public static void GiveAllSkills()
         {
@@ -826,120 +763,70 @@ namespace KIS.Compatibility
             pd.SetBool(nameof(pd.fragileGreed_unbreakable), true);
             pd.SetBool(nameof(pd.fragileStrength_unbreakable), true);
             pd.SetBool(nameof(pd.fragileHealth_unbreakable), true);
-            pd.SetInt(nameof(pd.grimmChildLevel), 5);
+            pd.SetInt(nameof(pd.grimmChildLevel), 0);
             pd.SetInt(nameof(pd.charmCost_40), 2);
             pd.SetInt(nameof(pd.charmSlots), 3);
             pd.equippedCharms.Clear();
             pd.SetInt(nameof(pd.charmSlotsFilled), 0);
             UpdateCharmsEffects();
         }
-        public static void IncreaseGrimmChildLevel()
-        {
-            if (pd.GetBool(nameof(pd.gotCharm_40)))
-            {
-                pd.SetBool(nameof(pd.gotCharm_40), true);
-            }
-            int level = pd.GetInt(nameof(pd.grimmChildLevel));
-            level += 1;
-            if (level >= 6) level = 0;
-            int cost = level == 5 ? 3 : 2;
-            pd.SetInt(nameof(pd.grimmChildLevel), level);
-            pd.SetInt(nameof(pd.charmCost_40), cost);
-            pd.SetBool(nameof(pd.destroyedNightmareLantern), level == 5);
-            Object.Destroy(GameObject.FindWithTag("Grimmchild"));
-            UpdateCharmsEffects();
-            GameManager.instance.StartCoroutine(SpawnGrimmChild());
 
-            IEnumerator SpawnGrimmChild()
+        public static void CycleCharm(int charmId) => CycleCharm((Charm)charmId);
+        public static void CycleCharm(Charm charm)
+        {
+            var charmId = (int)charm;
+            var hasCharm = pd.GetBool($"gotCharm_{charmId}");
+
+            switch (charmId)
             {
-                for (int i = 0; i < 2; i++) yield return null;
-                hc?.transform.Find("Charm Effects").gameObject.LocateMyFSM("Spawn Grimmchild").SendEvent("CHARM EQUIP CHECK");
+                case 40: // Grimmchild
+                    var newChildLevel = (pd.grimmChildLevel + 1) % 6; // Range 0-5
+                    pd.SetBool(nameof(pd.gotCharm_40), newChildLevel > 0);
+                    pd.SetInt(nameof(pd.charmCost_40), newChildLevel == 5 ? 3 : 2);
+                    pd.SetInt(nameof(pd.grimmChildLevel), newChildLevel);
+                    pd.SetBool(nameof(pd.destroyedNightmareLantern), newChildLevel == 5);
+                    break;
+                case 36: // Kingsoul
+                    var newKsLevel = (pd.royalCharmState + 1) % 5; // Range 0-4
+                    pd.gotCharm_36 = newKsLevel > 0;
+                    pd.royalCharmState = newKsLevel;
+                    pd.charmCost_36 = newKsLevel switch
+                    {
+                        3 => 5,
+                        4 => 0,
+                        _ => pd.charmCost_36
+                    };
+                    break;
+                case 23: case 24: case 25: // Fragile charms
+                    var nextState = (GetFragileState(charm) + 1) % 4;  // range 0-3
+                    pd.SetBool(charm.PdGotField(), nextState != 0);
+                    pd.SetBool(charm.PdUnbreakableField(), nextState == 3);
+                    pd.SetBool(charm.PdBrokenField(), nextState == 2);
+                    break;
+                default:
+                    pd.SetBool($"gotCharm_{charmId}", !hasCharm);
+                    break;
             }
+            UpdateCharmsEffects();
         }
-        public static void IncreaseRoyalCharmState()
+
+        public static int GetFragileState(Charm charm)
         {
-            if (!pd.GetBool(nameof(pd.gotCharm_36)))
-            {
-                pd.SetBool(nameof(pd.gotCharm_36), true);
-            }
-            string name = nameof(pd.royalCharmState);
-            int num = pd.GetInt(name);
-            if (num < 4)
-            {
-                pd.SetInt(name, num + 1);
-                num = num + 1;
-            }
-            else
-            {
-                pd.SetInt(name, 1);
-                num = 1;
-            }
-            int cost = num switch
-            {
-                3 => 5,
-                4 => 0,
-                _ => pd.GetInt(nameof(pd.charmCost_36))
-            };
-            pd.SetInt(nameof(pd.charmCost_36), cost);
-        }
-        public static int GetHeartCharmState()
-        {
-            if (!pd.GetBool(nameof(pd.gotCharm_23))) return 0;
-            if (pd.GetBool(nameof(pd.fragileHealth_unbreakable))) return 3;
-            if (pd.GetBool(nameof(pd.brokenCharm_23))) return 2;
-            return 1;
-        }
-        public static void IncreaseHeartCharmState()
-        {
-            int now = GetHeartCharmState();
-            pd.SetBool(nameof(pd.gotCharm_23), now != 3);
-            pd.SetBool(nameof(pd.fragileHealth_unbreakable), now == 2);
-            pd.SetBool(nameof(pd.brokenCharm_23), now == 1);
-        }
-        public static int GetGreedCharmState()
-        {
-            if (!pd.GetBool(nameof(pd.gotCharm_24))) return 0;
-            if (pd.GetBool(nameof(pd.fragileGreed_unbreakable))) return 3;
-            if (pd.GetBool(nameof(pd.brokenCharm_24))) return 2;
-            return 1;
-        }
-        public static void IncreaseGreedCharmState()
-        {
-            int now = GetGreedCharmState();
-            pd.SetBool(nameof(pd.gotCharm_24), now != 3);
-            pd.SetBool(nameof(pd.fragileGreed_unbreakable), now == 2);
-            pd.SetBool(nameof(pd.brokenCharm_24), now == 1);
-        }
-        public static int GetStrengthCharmState()
-        {
-            if (!pd.GetBool(nameof(pd.gotCharm_25))) return 0;
-            if (pd.GetBool(nameof(pd.fragileStrength_unbreakable))) return 3;
-            if (pd.GetBool(nameof(pd.brokenCharm_25))) return 2;
-            return 1;
-        }
-        public static void IncreaseStrengthCharmState()
-        {
-            int now = GetStrengthCharmState();
-            pd.SetBool(nameof(pd.gotCharm_25), now != 3);
-            pd.SetBool(nameof(pd.fragileStrength_unbreakable), now == 2);
-            pd.SetBool(nameof(pd.brokenCharm_25), now == 1);
+            if (!pd.GetBool(charm.PdGotField())) return 0; // unobtained
+            if (pd.GetBool(charm.PdUnbreakableField())) return 3; // unbreakable
+            return pd.GetBool(charm.PdBrokenField()) ? 2 : 1; // broken / unbroken
         }
         public static void IncreaseSpellLevel(Spell spell)
         {
-            string name = spell switch
+            var name = spell switch
             {
                 Spell.Fireball => nameof(pd.fireballLevel),
                 Spell.Quake => nameof(pd.quakeLevel),
                 Spell.Scream => nameof(pd.screamLevel),
-                _ => null
+                _ => throw new ArgumentOutOfRangeException(nameof(spell), spell, "Not a valid spell")
             };
-            if (name == null) return;
-            int num = pd.GetInt(name);
-            if (num < 2) pd.SetInt(name, num + 1);
-            else pd.SetInt(name, 0);
+            pd.SetInt(name, (pd.GetInt(name) + 1) % 3); // range 0-2
         }
         #endregion
     }
-
-
 }
