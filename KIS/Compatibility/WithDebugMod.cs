@@ -477,7 +477,6 @@ namespace KIS.Compatibility
                     return level > 0;
                 }, effect, includeLabel: includeLabel, defaultRowWidth: defaultRowWidth);
             }
-
             void AppendCustomImageTitle(string name, Func<bool> getter, Action effect, Texture2D icon, bool includeLabel = true, int defaultRowWidth = 5)
             {
                 CanvasPanel customImageTitle = null;
@@ -508,7 +507,11 @@ namespace KIS.Compatibility
             {
                 AppendCustomImageTitle(name, getter, effect, KISHelper.ResourceTexture(icon_name), includeLabel, defaultRowWidth);
             }
+
             __instance.AddTab("Knight");
+            __instance.AppendSectionHeader("Control");
+            __instance.AppendRow(1);
+            __instance.AppendBasicControl(LangKey.SWITCH_CHARACTER.InGameKey(), KnightInSilksong.Instance.ToggleKnight);
             __instance.AppendSectionHeader("Skill");
             __instance.AppendRow(1);
             __instance.AppendBasicControl(LangKey.DEBUG_ALL_SKILL.InGameKey(), GiveAllSkills);
@@ -619,7 +622,6 @@ namespace KIS.Compatibility
             text.FontSize = MainPanel.KeybindHeaderFontSize;
 
         }
-
         private static void UpdateCharmsEffects()
         {
             PlayMakerFSM.BroadcastEvent("CHARM INDICATOR CHECK");

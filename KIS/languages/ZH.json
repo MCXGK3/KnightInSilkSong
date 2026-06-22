@@ -163,5 +163,6 @@
   "MM_DEFAULT_SYNC": "默认同步",
   "MM_KNIGHT_SCALE_X": "骑士水平尺寸",
   "MM_KNIGHT_SCALE_Y": "骑士竖直尺寸",
-  "MM_SYNC": "同步"
+  "MM_SYNC": "同步",
+  "SWITCH_CHARACTER":"切换角色"
 }

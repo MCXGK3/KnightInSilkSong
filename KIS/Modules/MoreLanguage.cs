@@ -72,7 +72,8 @@ public enum LangKey
     MM_DEFAULT_SYNC,
     MM_KNIGHT_SCALE_X,
     MM_KNIGHT_SCALE_Y,
-    MM_SYNC
+    MM_SYNC,
+    SWITCH_CHARACTER
 
 }
 

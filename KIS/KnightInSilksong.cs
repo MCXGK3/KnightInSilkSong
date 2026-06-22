@@ -203,6 +203,7 @@ public partial class KnightInSilksong : BaseUnityPlugin
             DialogueBox._instance.hudFSM = hud_instance.LocateMyFSM("Slide Out");
         }
         KnightController.gameObject.transform.SetScale2D(new((KnightController.transform.localScale.x > 0 ? 1 : -1) * knight_scaleX.Value, knight_scaleY.Value));
+        ProgressionManager.setup();
         OnToggleKnight?.Invoke(iskight);
 
 
@@ -323,8 +324,6 @@ public partial class KnightInSilksong : BaseUnityPlugin
         if (Input.GetKeyDown(toggleButton.Value) || shouldToggleKnight)
         {
             ToggleKnight();
-            ProgressionManager.setup();
-
             shouldToggleKnight = false;
         }
         if (HeroController.instance != null)
