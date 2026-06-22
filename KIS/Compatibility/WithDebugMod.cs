@@ -82,16 +82,13 @@ namespace KIS.Compatibility
 
         private static void AfterLoad(SaveState state)
         {
-            if (!state.data.customData.TryGetValue("KIS.KnightPd", out var statePdJson)) return;
-            if (!KnightInSilksong.IsKnight) return; // TODO: automatically switch to knight if state is knight?
-
+            var stateIsKnight = state.data.customData.TryGetValue("KIS.KnightPd", out var statePdJson);
+            if (KnightInSilksong.IsKnight != stateIsKnight) KnightInSilksong.Instance.ToggleKnight(); 
+            if (!stateIsKnight) return;
+            
             JsonUtility.FromJsonOverwrite(JsonUtility.ToJson(statePdJson), pd);
 
             hc.transform.position = state.data.savePos;
-            // These should be written by JsonOverwrite, no?
-            // pd.health = saveKd.health;
-            // pd.MPCharge = saveKd.MPCharge;
-            // pd.MPReserve = saveKd.MPReserve;
 
             var hud = KnightInSilksong.Instance.hud_instance.gameObject;
             FSMUtility.SendEventToGameObject(hud, "HERO LEAVE", true);
@@ -109,6 +106,16 @@ namespace KIS.Compatibility
             invPulse?.StopInvulnerablePulse();
             hc.transitionState = GlobalEnums.HeroTransitionState.WAITING_TO_TRANSITION;
             hc.cState.invulnerable = false;
+            
+            // We need to wait a few frames before clearing the HUD,
+            // because DebugMod calls HUDFixes after our AfterLoad hooks fire.
+            IEnumerator WaitThenClearHud()
+            {
+                yield return null; yield return null;
+                KnightInSilksong.Instance.DisableOriHud();
+            }
+            
+            hc?.StartCoroutine(WaitThenClearHud());
         }
 
         /// <summary>
@@ -278,30 +285,7 @@ namespace KIS.Compatibility
         public static bool BindableFunctions_GiveAllSkills_Prefix()
         {
             if (!KnightInSilksong.IsKnight) return true;
-            pd?.screamLevel = 2;
-            pd?.fireballLevel = 2;
-            pd?.quakeLevel = 2;
-
-            pd?.hasDash = true;
-            pd?.canDash = true;
-            pd?.hasShadowDash = true;
-            pd?.canShadowDash = true;
-            pd?.hasWalljump = true;
-            pd?.canWallJump = true;
-            pd?.hasDoubleJump = true;
-            pd?.hasSuperDash = true;
-            pd?.canSuperDash = true;
-            pd?.hasAcidArmour = true;
-
-            pd?.hasDreamNail = true;
-            pd?.dreamNailUpgraded = true;
-            pd?.hasDreamGate = true;
-
-            pd?.hasNailArt = true;
-            pd?.hasCyclone = true;
-            pd?.hasDashSlash = true;
-            pd?.hasUpwardSlash = true;
-            pd?.hasAllNailArts = true;
+            GiveAllSkills();
             return false;
         }
         [HarmonyPrefix]
@@ -697,27 +681,30 @@ namespace KIS.Compatibility
         }
         public static void GiveAllSkills()
         {
-            pd.SetInt(nameof(pd.screamLevel), 2);
-            pd.SetInt(nameof(pd.fireballLevel), 2);
-            pd.SetInt(nameof(pd.quakeLevel), 2);
-            pd.SetBool(nameof(pd.hasDash), true);
-            pd.SetBool(nameof(pd.canDash), true);
-            pd.SetBool(nameof(pd.hasShadowDash), true);
-            pd.SetBool(nameof(pd.canShadowDash), true);
-            pd.SetBool(nameof(pd.hasWalljump), true);
-            pd.SetBool(nameof(pd.canWallJump), true);
-            pd.SetBool(nameof(pd.hasDoubleJump), true);
-            pd.SetBool(nameof(pd.hasSuperDash), true);
-            pd.SetBool(nameof(pd.canSuperDash), true);
-            pd.SetBool(nameof(pd.hasAcidArmour), true);
-            pd.SetBool(nameof(pd.hasDreamNail), true);
-            pd.SetBool(nameof(pd.dreamNailUpgraded), true);
-            pd.SetBool(nameof(pd.hasDreamGate), true);
-            pd.SetBool(nameof(pd.hasNailArt), true);
-            pd.SetBool(nameof(pd.hasCyclone), true);
-            pd.SetBool(nameof(pd.hasDashSlash), true);
-            pd.SetBool(nameof(pd.hasUpwardSlash), true);
-            pd.SetBool(nameof(pd.hasAllNailArts), true);
+            pd?.screamLevel = 2;
+            pd?.fireballLevel = 2;
+            pd?.quakeLevel = 2;
+
+            pd?.hasDash = true;
+            pd?.canDash = true;
+            pd?.hasShadowDash = true;
+            pd?.canShadowDash = true;
+            pd?.hasWalljump = true;
+            pd?.canWallJump = true;
+            pd?.hasDoubleJump = true;
+            pd?.hasSuperDash = true;
+            pd?.canSuperDash = true;
+            pd?.hasAcidArmour = true;
+
+            pd?.hasDreamNail = true;
+            pd?.dreamNailUpgraded = true;
+            pd?.hasDreamGate = true;
+
+            pd?.hasNailArt = true;
+            pd?.hasCyclone = true;
+            pd?.hasDashSlash = true;
+            pd?.hasUpwardSlash = true;
+            pd?.hasAllNailArts = true;
         }
         public static void IncreaseCharmSlots()
         {
