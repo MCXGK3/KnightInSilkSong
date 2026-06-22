@@ -702,9 +702,9 @@ namespace KIS.Compatibility
         }
         public static void ToggleWallJump()
         {
-            var prior = pd.GetBool(nameof(pd.hasWalljump));
-            pd.SetBool(nameof(pd.hasWalljump), !prior);
-            pd.SetBool(nameof(pd.canWallJump), !prior);
+            var prior = pd.hasWalljump;
+            pd.hasWalljump = !prior;
+            pd.canWallJump = !prior;
         }
         public static int GetDashLevel()
         {
@@ -814,6 +814,7 @@ namespace KIS.Compatibility
                 case 40: // Grimmchild
                     var newChildLevel = (pd.grimmChildLevel + 1) % 6; // Range 0-5
                     pd.SetBool(nameof(pd.gotCharm_40), newChildLevel > 0);
+                    if (newChildLevel == 0) RemoveCharm(charmId);
                     pd.SetInt(nameof(pd.charmCost_40), newChildLevel == 5 ? 3 : 2);
                     pd.SetInt(nameof(pd.grimmChildLevel), newChildLevel);
                     pd.SetBool(nameof(pd.destroyedNightmareLantern), newChildLevel == 5);
@@ -821,6 +822,7 @@ namespace KIS.Compatibility
                 case 36: // Kingsoul
                     var newKsLevel = (pd.royalCharmState + 1) % 5; // Range 0-4
                     pd.gotCharm_36 = newKsLevel > 0;
+                    if (newKsLevel == 0) RemoveCharm(charmId);
                     pd.royalCharmState = newKsLevel;
                     pd.charmCost_36 = newKsLevel switch
                     {
@@ -834,14 +836,23 @@ namespace KIS.Compatibility
                 case 25: // Fragile charms
                     var nextState = (GetFragileState(charm) + 1) % 4;  // range 0-3
                     pd.SetBool(charm.PdGotField(), nextState != 0);
+                    if (nextState == 0) RemoveCharm(charmId);
                     pd.SetBool(charm.PdUnbreakableField(), nextState == 3);
                     pd.SetBool(charm.PdBrokenField(), nextState == 2);
                     break;
                 default:
                     pd.SetBool($"gotCharm_{charmId}", !hasCharm);
+                    if (hasCharm) RemoveCharm(charmId);
                     break;
             }
             UpdateCharmsEffects();
+        }
+
+        public static void RemoveCharm(int id)
+        {
+            pd.SetBool($"equippedCharm_{id}", false);
+            pd.equippedCharms.Remove(id);
+            pd.CalculateNotchesUsed();
         }
 
         public static int GetFragileState(Charm charm)
