@@ -37,15 +37,15 @@ namespace KIS.Compatibility
                 () => KnightInSilksong.IsKnight ? "Knight" : "Hornet",
                 DebugMod.DebugMod.InfoPanelColumn.RIGHT
             );
-            
-            
+
+
             RegisterBindableFunctions();
-            
+
             // Delegate Switch Character keybind handling to DebugMod
             KnightInSilksong.KeybindEnabled = false;
             string toggleKnightBindName = LangKey.SWITCH_CHARACTER.InGameKey();
             if (KnightInSilksong.toggleButton.Value != KeyCode.None) DebugMod.DebugMod.UpdateBind(toggleKnightBindName, KnightInSilksong.toggleButton.Value);
-            
+
             KnightInSilksong.toggleButton.SettingChanged += (_, _) =>
             {
                 // Sync our updates to DebugMod
@@ -54,7 +54,7 @@ namespace KIS.Compatibility
                     DebugMod.DebugMod.UpdateBind(toggleKnightBindName, null);
                 }
                 // Only update if the keys are different to avoid loop
-                else if (KnightInSilksong.toggleButton.Value != DebugMod.DebugMod.settings.binds.GetValueOrDefault(toggleKnightBindName)) 
+                else if (KnightInSilksong.toggleButton.Value != DebugMod.DebugMod.settings.binds.GetValueOrDefault(toggleKnightBindName))
                 {
                     DebugMod.DebugMod.UpdateBind(toggleKnightBindName, KnightInSilksong.toggleButton.Value);
                 }
@@ -732,9 +732,10 @@ namespace KIS.Compatibility
         }
         public static void ToggleWallJump()
         {
+            //Due to the existence of one-time walljump, the logic of `GetBool("hasWalljump")` is specially processed, so we directly obtain its value
             var prior = pd.hasWalljump;
-            pd.hasWalljump = !prior;
-            pd.canWallJump = !prior;
+            pd.SetBool(nameof(pd.hasWalljump), !prior);
+            pd.SetBool(nameof(pd.canWallJump), !prior);
         }
         public static int GetDashLevel()
         {
