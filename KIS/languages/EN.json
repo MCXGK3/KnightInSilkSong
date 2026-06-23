@@ -164,5 +164,15 @@
   "MM_KNIGHT_SCALE_X": "Knight Horizontal Scale",
   "MM_KNIGHT_SCALE_Y": "Knight Vertical Scale",
   "MM_SYNC": "Sync",
-  "SWITCH_CHARACTER": "Switch Character"
+  "SWITCH_CHARACTER": "Switch Character",
+  "DEBUG_KNIGHT": "KNIGHT",
+  "DEBUG_CONTROL": "CONTROL",
+  "DEBUG_SKILL": "SKILL",
+  "DEBUG_CHARM": "CHARM",
+  "DEBUG_CHARACTER": "CHARACTER",
+  "DEBUG_NAIL_BASE": "Nail Base",
+  "DEBUG_DASHING": "Dashing",
+  "DEBUG_SUPERDASHING": "Superdashing",
+  "DEBUG_CAN_SUPERDASH": "Can Superdash",
+  "DEBUG_SOUL": "Soul"
 }

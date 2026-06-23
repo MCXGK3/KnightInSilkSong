@@ -164,5 +164,15 @@
   "MM_KNIGHT_SCALE_X": "骑士水平尺寸",
   "MM_KNIGHT_SCALE_Y": "骑士竖直尺寸",
   "MM_SYNC": "同步",
-  "SWITCH_CHARACTER":"切换角色"
+  "SWITCH_CHARACTER": "切换角色",
+  "DEBUG_KNIGHT": "骑士",
+  "DEBUG_CONTROL": "功能",
+  "DEBUG_SKILL": "能力",
+  "DEBUG_CHARM": "护符",
+  "DEBUG_CHARACTER": "角色",
+  "DEBUG_NAIL_BASE": "骨钉伤害基础值",
+  "DEBUG_DASHING": "冲刺中",
+  "DEBUG_SUPERDASHING": "水晶冲刺中",
+  "DEBUG_CAN_SUPERDASH": "可水晶冲刺",
+  "DEBUG_SOUL":"灵魂"
 }

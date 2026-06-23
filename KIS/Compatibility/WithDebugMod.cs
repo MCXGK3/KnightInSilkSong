@@ -33,7 +33,7 @@ namespace KIS.Compatibility
             SaveState.OnSave += OnSave;
             SaveState.AfterLoad += AfterLoad;
 
-            DebugMod.DebugMod.AddTextToInfoPanel("Character",
+            DebugMod.DebugMod.AddTextToInfoPanel(LangKey.DEBUG_CHARACTER.InGameKey(),
                 () => KnightInSilksong.IsKnight ? "Knight" : "Hornet",
                 DebugMod.DebugMod.InfoPanelColumn.RIGHT
             );
@@ -402,85 +402,85 @@ namespace KIS.Compatibility
             void KnightT<T>(Func<T> knight_info) => KnightInfo(() => knight_info().ToString());
             switch (label)
             {
-                case "Position":
+                case "INFOPANEL_POSITION":
                     KnightInfo(() =>
                     {
                         if (hc == null) return string.Empty;
                         return $"{hc.transform.position.x:.000000#}, {hc.transform.position.y:.000000#}";
                     });
                     break;
-                case "Velocity":
+                case "INFOPANEL_VELOCITY":
                     KnightT(() => hc.current_velocity);
                     break;
-                case "Hero State":
+                case "INFOPANEL_HEROSTATE":
                     KnightT(() => hc.hero_state);
                     break;
-                case "Damage State":
+                case "INFOPANEL_DAMAGESTATE":
                     KnightT(() => hc.damageMode);
                     break;
-                case "Needle Base":
-                    KnightLabel("Needle Base", "Nail Base");
+                case "INFOPANEL_NEEDLEBASE":
+                    KnightLabel(labelText.Text, LangKey.DEBUG_NAIL_BASE.Localize());
                     KnightInfo(() => RefKnightSlash.FsmVariables.GetFsmInt("damageDealt").Value + " (Flat " + PlayerData.instance.nailDamage + ", x" + RefKnightSlash.FsmVariables.GetFsmFloat("Multiplier").Value + ")");
                     break;
-                case "Health":
+                case "INFOPANEL_HEALTH":
                     KnightInfo(() => $"{pd.health} / {pd.maxHealth}");
                     break;
-                case "Silk":
-                    KnightLabel("Silk", "Soul");
+                case "INFOPANEL_SILK":
+                    KnightLabel(labelText.Text, LangKey.DEBUG_SOUL.Localize());
                     KnightT(() => (pd.MPCharge + pd.MPReserve));
                     break;
-                case "Attacking":
+                case "INFOPANEL_ATTACKING":
                     KnightBool(() => hc.cState.attacking);
                     break;
-                case "Sprinting":
-                    KnightLabel("Sprinting", "Dashing");
+                case "INFOPANEL_SPRINTING":
+                    KnightLabel(labelText.Text, LangKey.DEBUG_DASHING.Localize());
                     KnightBool(() => hc.cState.dashing || hc.cState.shadowDashing);
                     break;
-                case "Jumping":
+                case "INFOPANEL_JUMPING":
                     KnightBool(() => (hc.cState.jumping || hc.cState.doubleJumping));
                     break;
-                case "Falling":
+                case "INFOPANEL_FALLING":
                     KnightBool(() => hc.cState.falling);
                     break;
-                case "Hardland":
+                case "INFOPANEL_HARDLAND":
                     KnightBool(() => hc.cState.willHardLand);
                     break;
-                case "Swimming":
+                case "INFOPANEL_SWIMMING":
                     KnightBool(() => hc.cState.swimming);
                     break;
-                case "Recoiling":
+                case "INFOPANEL_RECOILING":
                     KnightBool(() => hc.cState.recoiling);
                     break;
-                case "Soaring":
-                    KnightLabel("Soaring", "Superdashing");
+                case "INFOPANEL_SOARING":
+                    KnightLabel(labelText.Text, LangKey.DEBUG_SUPERDASHING.Localize());
                     KnightBool(() => hc.cState.superDashing);
                     break;
-                case "Can Cast":
+                case "INFOPANEL_CANCAST":
                     KnightBool(() => hc.CanCast());
                     break;
-                case "Can Soar":
-                    KnightLabel("Can Soar", "Can Superdash");
+                case "INFOPANEL_CANSOAR":
+                    KnightLabel(labelText.Text, LangKey.DEBUG_CAN_SUPERDASH.Localize());
                     KnightBool(() => hc.CanSuperDash());
                     break;
-                case "Can Quickmap":
+                case "INFOPANEL_CANQUICKMAP":
                     KnightBool(() => hc.CanQuickMap());
                     break;
-                case "Can Inventory":
+                case "INFOPANEL_CANINVENTORY":
                     KnightBool(() => hc.CanOpenInventory());
                     break;
-                case "Accept Input":
+                case "INFOPANEL_ACCEPTINPUT":
                     KnightBool(() => hc.acceptingInput);
                     break;
-                case "Relinquished":
+                case "INFOPANEL_CONTROLRELINQUISHED":
                     KnightBool(() => hc.controlReqlinquished);
                     break;
-                case "At Bench":
+                case "INFOPANEL_ATBENCH":
                     KnightBool(() => pd.atBench);
                     break;
-                case "Invulnerable":
+                case "INFOPANEL_INVULNERABLE":
                     KnightBool(() => hc.cState.invulnerable);
                     break;
-                case "Invincible":
+                case "INFOPANEL_INVINCIBLE":
                     KnightBool(() => pd.isInvincible);
                     break;
             }
@@ -539,11 +539,11 @@ namespace KIS.Compatibility
                 AppendCustomImageTitle(name, getter, effect, KISHelper.ResourceTexture(icon_name), includeLabel, defaultRowWidth);
             }
 
-            __instance.AddTab("Knight");
-            __instance.AppendSectionHeader("Control");
+            __instance.AddTab(LangKey.DEBUG_KNIGHT.InGameKey());
+            __instance.AppendSectionHeader(LangKey.DEBUG_CONTROL.InGameKey());
             __instance.AppendRow(1);
             __instance.AppendToggleControl(LangKey.SWITCH_CHARACTER.InGameKey(), () => KnightInSilksong.IsKnight, KnightInSilksong.Instance.ToggleKnight);
-            __instance.AppendSectionHeader("Skill");
+            __instance.AppendSectionHeader(LangKey.DEBUG_SKILL.InGameKey());
             __instance.AppendRow(1);
             __instance.AppendBasicControl(LangKey.DEBUG_ALL_SKILL.InGameKey(), GiveAllSkills);
 
@@ -590,7 +590,7 @@ namespace KIS.Compatibility
                                             () => pd.GetBool(nameof(pd.hasCyclone)),
                                             () => ToggleNailArt(NailArt.CYCLONE),
                                             "inv_cyclone");
-            __instance.AppendSectionHeader("Charm");
+            __instance.AppendSectionHeader(LangKey.DEBUG_CHARM.InGameKey());
             __instance.AppendRow(1, 1);
             __instance.AppendBasicControl(LangKey.DEBUG_ALL_CHARMS.InGameKey(),
                                             GiveAllCharms);
@@ -655,13 +655,13 @@ namespace KIS.Compatibility
         }
         private static void RegisterBindableFunctions()
         {
-            DebugMod.DebugMod.AddActionToKeyBindList(GiveAllSkills, LangKey.DEBUG_ALL_SKILL.InGameKey(), "KNIGHT");
-            DebugMod.DebugMod.AddActionToKeyBindList(GiveAllCharms, LangKey.DEBUG_ALL_CHARMS.InGameKey(), "KNIGHT");
-            DebugMod.DebugMod.AddActionToKeyBindList(RemoveAllCharms, LangKey.DEBUG_REMOVE_ALL_CHARMS.InGameKey(), "KNIGHT");
-            DebugMod.DebugMod.AddActionToKeyBindList(IncreaseCharmSlots, LangKey.DEBUG_INCREASE_CHARMSLOTS.InGameKey(), "KNIGHT");
-            DebugMod.DebugMod.AddActionToKeyBindList(DecreaseCharmSlots, LangKey.DEBUG_DECREASE_CHARMSLOTS.InGameKey(), "KNIGHT");
-            DebugMod.DebugMod.AddActionToKeyBindList(FixCharmSlots, LangKey.DEBUG_FIX_CHARMSLOTS.InGameKey(), "KNIGHT");
-            DebugMod.DebugMod.AddActionToKeyBindList(KnightInSilksong.Instance.ToggleKnight, LangKey.SWITCH_CHARACTER.InGameKey(), "KNIGHT");
+            DebugMod.DebugMod.AddActionToKeyBindList(GiveAllSkills, LangKey.DEBUG_ALL_SKILL.InGameKey(), LangKey.DEBUG_KNIGHT.InGameKey());
+            DebugMod.DebugMod.AddActionToKeyBindList(GiveAllCharms, LangKey.DEBUG_ALL_CHARMS.InGameKey(), LangKey.DEBUG_KNIGHT.InGameKey());
+            DebugMod.DebugMod.AddActionToKeyBindList(RemoveAllCharms, LangKey.DEBUG_REMOVE_ALL_CHARMS.InGameKey(), LangKey.DEBUG_KNIGHT.InGameKey());
+            DebugMod.DebugMod.AddActionToKeyBindList(IncreaseCharmSlots, LangKey.DEBUG_INCREASE_CHARMSLOTS.InGameKey(), LangKey.DEBUG_KNIGHT.InGameKey());
+            DebugMod.DebugMod.AddActionToKeyBindList(DecreaseCharmSlots, LangKey.DEBUG_DECREASE_CHARMSLOTS.InGameKey(), LangKey.DEBUG_KNIGHT.InGameKey());
+            DebugMod.DebugMod.AddActionToKeyBindList(FixCharmSlots, LangKey.DEBUG_FIX_CHARMSLOTS.InGameKey(), LangKey.DEBUG_KNIGHT.InGameKey());
+            DebugMod.DebugMod.AddActionToKeyBindList(KnightInSilksong.Instance.ToggleKnight, LangKey.SWITCH_CHARACTER.InGameKey(), LangKey.DEBUG_KNIGHT.InGameKey());
         }
         private static void UpdateCharmsEffects()
         {
