@@ -546,50 +546,48 @@ namespace KIS.Compatibility
             __instance.AppendSectionHeader(LangKey.DEBUG_SKILL.InGameKey());
             __instance.AppendRow(1);
             __instance.AppendBasicControl(LangKey.DEBUG_ALL_SKILL.InGameKey(), GiveAllSkills);
-
-            AppendLeveledTile(LangKey.DEBUG_SCREAM_NAME.InGameKey(), () => pd.GetInt(nameof(pd.screamLevel)), () => IncreaseSpellLevel(Spell.Scream),
-                [KISHelper.ResourceTexture("inv_scream_01"), KISHelper.ResourceTexture("inv_scream_02")]);
-            AppendLeveledTile(LangKey.DEBUG_FIREBALL_NAME.InGameKey(), () => pd.GetInt(nameof(pd.fireballLevel)), () => IncreaseSpellLevel(Spell.Fireball),
-                [KISHelper.ResourceTexture("inv_fireball_01"), KISHelper.ResourceTexture("inv_fireball_02")]);
-            AppendLeveledTile(LangKey.DEBUG_QUAKE_NAME.InGameKey(), () => pd.GetInt(nameof(pd.quakeLevel)), () => IncreaseSpellLevel(Spell.Quake),
-                [KISHelper.ResourceTexture("inv_quake_01"), KISHelper.ResourceTexture("inv_quake_02")]);
-
             AppendLeveledTile(LangKey.DEBUG_DASH_NAME.InGameKey(), GetDashLevel, CycleDash,
-                [KISHelper.ResourceTexture("inv_dash_cloak"), KISHelper.ResourceTexture("inv_shade_cloak")]);
+                [KISHelper.ResourceTexture("inv_dash_cloak"), KISHelper.ResourceTexture("inv_shade_cloak")], false, 7);
             AppendCustomImageTitleByName(LangKey.DEBUG_WALL_JUMP_NAME.InGameKey(),
                                             () => pd.hasWalljump,
                                             ToggleWallJump,
-                                            "inv_mantis_claw");
+                                            "inv_mantis_claw", false, 7);
             AppendCustomImageTitleByName(LangKey.DEBUG_DOUBLE_JUMP_NAME.InGameKey(),
                                             () => pd.GetBool(nameof(pd.hasDoubleJump)),
                                             ToggleDoubleJump,
-                                            "inv_emperor_wings");
+                                            "inv_emperor_wings", false, 7);
             AppendLeveledTile(LangKey.DEBUG_DREAM_NAIL_NAME.InGameKey(), GetDreamNailLevel, CycleDreamNail,
-                [KISHelper.ResourceTexture("inv_dream_nail"), KISHelper.ResourceTexture("inv_dream_nail_upgraded")]);
+                [KISHelper.ResourceTexture("inv_dream_nail"), KISHelper.ResourceTexture("inv_dream_nail_upgraded")], false, 7);
             AppendCustomImageTitleByName(LangKey.DEBUG_DREAM_GATE_NAME.InGameKey(),
                                             () => pd.GetBool(nameof(pd.hasDreamGate)),
                                             ToggleDreamGate,
-                                            "inv_dream_gate");
+                                            "inv_dream_gate", false, 7);
             AppendCustomImageTitleByName(LangKey.DEBUG_SUPER_DASH_NAME.InGameKey(),
                                             () => pd.GetBool(nameof(pd.hasSuperDash)),
                                             ToggleSuperDash,
-                                            "inv_crystal_heart");
+                                            "inv_crystal_heart", false, 7);
             AppendCustomImageTitleByName(LangKey.DEBUG_ACID_SWIM_NAME.InGameKey(),
                                             () => pd.GetBool(nameof(pd.hasAcidArmour)),
                                             ToggleAcidSwim,
-                                            "inv_acid_armour");
+                                            "inv_acid_armour", false, 7);
+            AppendLeveledTile(LangKey.DEBUG_SCREAM_NAME.InGameKey(), () => pd.GetInt(nameof(pd.screamLevel)), () => IncreaseSpellLevel(Spell.Scream),
+                [KISHelper.ResourceTexture("inv_scream_01"), KISHelper.ResourceTexture("inv_scream_02")], false, 7);
+            AppendLeveledTile(LangKey.DEBUG_FIREBALL_NAME.InGameKey(), () => pd.GetInt(nameof(pd.fireballLevel)), () => IncreaseSpellLevel(Spell.Fireball),
+                [KISHelper.ResourceTexture("inv_fireball_01"), KISHelper.ResourceTexture("inv_fireball_02")], false, 7);
+            AppendLeveledTile(LangKey.DEBUG_QUAKE_NAME.InGameKey(), () => pd.GetInt(nameof(pd.quakeLevel)), () => IncreaseSpellLevel(Spell.Quake),
+                [KISHelper.ResourceTexture("inv_quake_01"), KISHelper.ResourceTexture("inv_quake_02")], false, 7);
             AppendCustomImageTitleByName(LangKey.DEBUG_GREAT_SLASH_NAME.InGameKey(),
                                             () => pd.GetBool(nameof(pd.hasDashSlash)),
                                             () => ToggleNailArt(NailArt.GREAT_SLASH),
-                                            "inv_upgraded_slash");
+                                            "inv_upgraded_slash", false, 7);
             AppendCustomImageTitleByName(LangKey.DEBUG_DASH_SLASH_NAME.InGameKey(),
                                             () => pd.GetBool(nameof(pd.hasUpwardSlash)),
                                             () => ToggleNailArt(NailArt.DASH_SLASH),
-                                            "inv_dash_slash");
+                                            "inv_dash_slash", false, 7);
             AppendCustomImageTitleByName(LangKey.DEBUG_CYCLONE_NAME.InGameKey(),
                                             () => pd.GetBool(nameof(pd.hasCyclone)),
                                             () => ToggleNailArt(NailArt.CYCLONE),
-                                            "inv_cyclone");
+                                            "inv_cyclone", false, 7);
             __instance.AppendSectionHeader(LangKey.DEBUG_CHARM.InGameKey());
             __instance.AppendRow(1, 1);
             __instance.AppendBasicControl(LangKey.DEBUG_ALL_CHARMS.InGameKey(),
@@ -610,7 +608,7 @@ namespace KIS.Compatibility
             CharmIconList charmIconList = KnightInSilksong.Instance.charm.FindGameObjectInChildren("Charm Icons").GetComponent<CharmIconList>();
             for (int i = 1; i <= 40; i++)
             {
-                if (i % 5 == 1) __instance.AppendTileRow(5);
+                if (i % 6 == 1) __instance.AppendTileRow(6);
                 Charm charm = (Charm)i;
                 if (charm.IsFragileCharm())
                 {
@@ -619,7 +617,7 @@ namespace KIS.Compatibility
                                                 () => GetFragileState(charm),
                                                 () => CycleCharm(charm),
                                                 [KISHelper.ResourceTexture("charm_glass_"+name), KISHelper.ResourceTexture("charm_broken_"+name),
-                                                    KISHelper.ResourceTexture("charm_full_"+name)]);
+                                                    KISHelper.ResourceTexture("charm_full_"+name)], false, 6);
                     continue;
                 }
                 switch (charm)
@@ -632,20 +630,20 @@ namespace KIS.Compatibility
                                                 KISHelper.ResourceTexture("charm_grimmkin_02"),
                                                 KISHelper.ResourceTexture("charm_grimmkin_03"),
                                                 KISHelper.ResourceTexture("charm_grimmkin_04"),
-                                                KISHelper.ResourceTexture("charm_grimmkin_05")]);
+                                                KISHelper.ResourceTexture("charm_grimmkin_05")], false, 6);
                         break;
                     case Charm.VoidHeart:
                         AppendLeveledTile(LangKey.KING_SOUL.InGameKey(),
                                                 () => !pd.gotCharm_36 ? 0 : pd.royalCharmState,
                                                 () => CycleCharm(Charm.VoidHeart),
                                                 [KISHelper.ResourceTexture("charm_white_left"), KISHelper.ResourceTexture("charm_white_right"),
-                                                    KISHelper.ResourceTexture("charm_white_full"), KISHelper.ResourceTexture("charm_black")]);
+                                                    KISHelper.ResourceTexture("charm_white_full"), KISHelper.ResourceTexture("charm_black")], false, 6);
                         break;
                     default:
                         AppendCustomImageTitleWithSprite(charm.InGameKey(),
                                                             () => pd.GetBool("gotCharm_" + (int)charm),
                                                             () => CycleCharm(charm),
-                                                            charmIconList.GetSprite(i));
+                                                            charmIconList.GetSprite(i), false, 6);
                         break;
                 }
             }
