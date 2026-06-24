@@ -118,7 +118,7 @@ namespace KIS.Compatibility
             if (KnightInSilksong.IsKnight != stateIsKnight) KnightInSilksong.Instance.ToggleKnight();
             if (!stateIsKnight) return;
 
-            JsonUtility.FromJsonOverwrite(JsonUtility.ToJson(statePdJson), pd);
+            JsonUtility.FromJsonOverwrite(statePdJson, pd);
 
             hc.transform.position = state.data.savePos;
 
