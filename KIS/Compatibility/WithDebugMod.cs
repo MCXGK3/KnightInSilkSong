@@ -366,7 +366,6 @@ namespace KIS.Compatibility
         [HarmonyPatch(typeof(InfoPanel), nameof(InfoPanel.AppendInfo), [typeof(string), typeof(Func<string>)])]
         public static void InfoPanel_AppendInfo_Postfix(InfoPanel __instance, string label, ref Func<string> info)
         {
-            Color silver = new(192f / 255, 192f / 255, 192f / 255);
             int counter = __instance.counter - 1;
             CanvasText labelText = (CanvasText)__instance.byName[$"Label{counter}"];
             CanvasText infoText = (CanvasText)__instance.byName[$"Info{counter}"];
@@ -380,22 +379,9 @@ namespace KIS.Compatibility
 
             void KnightInfo(Func<string> knight_info)
             {
-                labelText.OnUpdate += () =>
-                {
-                    if (!KnightInSilksong.IsKnight) labelText.Color = Color.white;
-                    else labelText.Color = silver;
-                };
                 infoText.OnUpdate += () =>
                 {
-                    if (!KnightInSilksong.IsKnight)
-                    {
-                        infoText.Color = Color.white;
-                    }
-                    else
-                    {
-                        infoText.Color = silver;
-                        infoText.Text = knight_info();
-                    }
+                    infoText.Text = knight_info();
                 };
             }
             void KnightBool(Func<bool> knight_info) => KnightInfo(() => InfoPanel.GetStringForBool(knight_info()));
