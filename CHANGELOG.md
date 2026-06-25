@@ -1,3 +1,7 @@
+## v0.6.7
+
+- Update compatibility with Debug 1.0 by @ManicJamie
+
 ## v0.6.5
 
 - Localization based on I18N

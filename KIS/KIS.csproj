@@ -25,7 +25,7 @@
   <PropertyGroup>
     <!--These properties will control the generated plugin info. Version is also used by various parts of the build system.-->
     <AssemblyTitle>KnightInSilkSong</AssemblyTitle>
-    <Version>0.6.5</Version>
+    <Version>0.6.7</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -71,9 +71,9 @@
       </ItemGroup>
 
   <Target Name="CopyMod" AfterTargets="PostBuildEvent" Condition="'$(SilksongFolder)' != ''">
-      <Copy SourceFiles="@(Binaries)" DestinationFolder="$(SilksongPluginsFolder)/$(ModName)" />
-      <Copy SourceFiles="@(I18N)" DestinationFolder="$(SilksongPluginsFolder)/$(ModName)/languages" />
-      <Copy SourceFiles="../README.md" DestinationFolder="$(SilksongPluginsFolder)/$(ModName)" />
+      <Copy SourceFiles="@(Binaries)" DestinationFolder="$(SilksongPluginsFolder)/shownyoung-$(ModName)" />
+      <Copy SourceFiles="@(I18N)" DestinationFolder="$(SilksongPluginsFolder)/shownyoung-$(ModName)/languages" />
+      <Copy SourceFiles="../README.md" DestinationFolder="$(SilksongPluginsFolder)/shownyoung-$(ModName)" />
   </Target>
   <Target Name="BuildPushishPack" AfterTargets="CopyMod" Condition="'$(PublishFolder)' != ''">
       <ItemGroup>

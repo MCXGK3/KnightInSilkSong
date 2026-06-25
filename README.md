@@ -46,6 +46,8 @@ It allows you to switch between the Knight and Hornet in the game.
 
 Credit to @olvior for the effort to enable the knight to beat the game completely. 感谢@olvior为使小骑士能够正常完成游戏所做的努力。
 
+Credit to @ManicJamie for helping update compatibility with DebugMod 1.0. 感谢@ManicJamie帮助更新了与DebugMod1.0的兼容。
+
 ## Future Plans
 
 - Fix a lot of bugs. 修很多bug

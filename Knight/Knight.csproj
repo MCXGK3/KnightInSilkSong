@@ -42,7 +42,7 @@
           <Binaries Include="$(TargetDir)/$(TargetName).pdb" />
       </ItemGroup>
 
-      <Copy SourceFiles="@(Binaries)" DestinationFolder="$(SilksongPluginsFolder)/$(ModName)" />
+      <Copy SourceFiles="@(Binaries)" DestinationFolder="$(SilksongPluginsFolder)/shownyoung-$(ModName)" />
       <Copy Condition="Exists($(UnityFolder))" SourceFiles="$(TargetPath)" DestinationFolder="$(UnityFolder)"/>
 
   </Target>
