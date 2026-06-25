@@ -1,13 +1,11 @@
+using System;
 using System.Collections;
 using DebugMod;
 using DebugMod.UI;
 using DebugMod.UI.Canvas;
-using TeamCherry.Localization;
-using UnityEngine.UI;
-using KIS.Utils;
 using DebugMod.SaveStates;
 using System.IO;
-using Newtonsoft.Json.Utilities;
+
 namespace KIS.Compatibility
 {
     [RequiresMod(DebugMod.DebugMod.Id)]
@@ -17,7 +15,6 @@ namespace KIS.Compatibility
 
         public string ModId => DebugMod.DebugMod.Id;
 
-        public DebugMod.DebugMod debug => DebugMod.DebugMod.instance;
         static Knight.PlayerData pd => Knight.PlayerData.instance;
         static Knight.HeroController hc => Knight.HeroController.instance;
         private static PlayMakerFSM _refKnightSlash;
@@ -28,23 +25,52 @@ namespace KIS.Compatibility
         public void Init()
         {
             DebugMod.DebugMod.Log("Debug Mod detected KIS, initializing compatibility.");
+
             KnightInSilksong.Instance.self_hormony.PatchAll(typeof(WithDebugMod));
-            LoadKnightPD();
 
-        }
+            DebugMod.DebugMod.AddTranslationSheet($"Mods.io.github.shownyoung.knightinsilksong");
 
-        private void LoadKnightPD()
-        {
-            foreach (var page_states in SaveStateManager.fileStates)
+            SaveState.OnSave += OnSave;
+            SaveState.AfterLoad += AfterLoad;
+
+            DebugMod.DebugMod.AddTextToInfoPanel(LangKey.DEBUG_CHARACTER.InGameKey(),
+                () => KnightInSilksong.IsKnight ? "Knight" : "Hornet",
+                DebugMod.DebugMod.InfoPanelColumn.RIGHT
+            );
+
+
+            RegisterBindableFunctions();
+
+            // Delegate Switch Character keybind handling to DebugMod
+            KnightInSilksong.KeybindEnabled = false;
+            string toggleKnightBindName = LangKey.SWITCH_CHARACTER.InGameKey();
+            if (KnightInSilksong.toggleButton.Value != KeyCode.None) DebugMod.DebugMod.UpdateBind(toggleKnightBindName, KnightInSilksong.toggleButton.Value);
+
+            KnightInSilksong.toggleButton.SettingChanged += (_, _) =>
             {
-                int page = page_states.Key;
-                foreach (var index_state in page_states.Value)
+                // Sync our updates to DebugMod
+                if (KnightInSilksong.toggleButton.Value == KeyCode.None && DebugMod.DebugMod.settings.binds.ContainsKey(toggleKnightBindName))
                 {
-                    int index = Array.IndexOf(page_states.Value, index_state);
-                    if (index_state == null) continue;
-                    SaveStateManager_LoadFromFile_Postfix(page, index, ref index_state.data);
+                    DebugMod.DebugMod.UpdateBind(toggleKnightBindName, null);
                 }
-            }
+                // Only update if the keys are different to avoid loop
+                else if (KnightInSilksong.toggleButton.Value != DebugMod.DebugMod.settings.binds.GetValueOrDefault(toggleKnightBindName))
+                {
+                    DebugMod.DebugMod.UpdateBind(toggleKnightBindName, KnightInSilksong.toggleButton.Value);
+                }
+            };
+            DebugMod.DebugMod.bindUpdated += (keybindName, keycode) =>
+            {
+                if (keybindName != toggleKnightBindName) return;
+                // Sync DebugMod's updates to ours
+                if (keycode != KnightInSilksong.toggleButton.Value)
+                {
+                    KnightInSilksong.toggleButton.Value = keycode ?? KeyCode.None;
+                }
+            };
+
+            //TODO: insert tab before keybinds tab so we don't mess up the structure :(
+            // we can hack this now with an ILManipulator or just wait for DebugMod to expose nicer ways to create UI
         }
 
         public void Update()
@@ -78,32 +104,24 @@ namespace KIS.Compatibility
             Knight.HeroBox.inactive = DebugMod.DebugMod.heroColliderDisabled;
             infinite_jump = PlayerData.instance?.infiniteAirJump ?? false;
         }
+
         #region SaveState
-        private static Dictionary<PlayerData, Knight.PlayerData> states_hd_to_kd = new();
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(SaveState), nameof(SaveState.Save), MethodType.Normal)]
-        public static void SaveState_Save_Postfix(SaveState __instance)
+        private static void OnSave(SaveState state)
         {
             if (!KnightInSilksong.IsKnight) return;
-            if (__instance == null || __instance.data == null || __instance.data.savedPd == null) return;
-            states_hd_to_kd[__instance.data.savedPd] = JsonUtility.FromJson<Knight.PlayerData>(JsonUtility.ToJson(pd));
+            state.data.customData["KIS.KnightPd"] = JsonUtility.ToJson(pd);
         }
-        //The `Load` is an Enumerator so we use `HUDFixes` instaead
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(DebugMod.SaveStates.SaveState), nameof(DebugMod.SaveStates.SaveState.HUDFixes), MethodType.Normal)]
-        public static void DebugMod_SaveStates_SaveState_HudFixes_Postfix(DebugMod.SaveStates.SaveState __instance)
+
+        private static void AfterLoad(SaveState state)
         {
-            if (!KnightInSilksong.IsKnight) return;
-            if (__instance.data == null || !__instance.IsSet()) return;
-            hc.transform.position = __instance.data.savePos;
-            if (__instance.data.savedPd == null) return;
-            if (states_hd_to_kd.TryGetValue(__instance.data.savedPd, out Knight.PlayerData saveKd))
-            {
-                JsonUtility.FromJsonOverwrite(JsonUtility.ToJson(saveKd), pd);
-            }
-            pd.health = saveKd.health;
-            pd.MPCharge = saveKd.MPCharge;
-            pd.MPReserve = saveKd.MPReserve;
+            var stateIsKnight = state.data.customData.TryGetValue("KIS.KnightPd", out var statePdJson);
+            if (KnightInSilksong.IsKnight != stateIsKnight) KnightInSilksong.Instance.ToggleKnight();
+            if (!stateIsKnight) return;
+
+            JsonUtility.FromJsonOverwrite(statePdJson, pd);
+
+            hc.transform.position = state.data.savePos;
+
             var hud = KnightInSilksong.Instance.hud_instance.gameObject;
             FSMUtility.SendEventToGameObject(hud, "HERO LEAVE", true);
             FSMUtility.SendEventToGameObject(hud, "HERO DAMAGED", true);
@@ -112,67 +130,61 @@ namespace KIS.Compatibility
             // soul.SetActive(false);
             // soul.SetActive(true);
             FSMUtility.SendEventToGameObject(soul, "MP RESERVE DOWN", true);
-            if (saveKd.GetInt(nameof(saveKd.MPCharge)) >= saveKd.GetInt(nameof(saveKd.maxMP)))
-            {
-                FSMUtility.SendEventToGameObject(soul, "MP GAIN", true);
-            }
-            else
-            {
-                FSMUtility.SendEventToGameObject(soul, "MP LOSE", true);
-            }
-            hc?.CancelDamageRecoil();
-            var invPulse = hc.GetComponent<InvulnerablePulse>();
+            FSMUtility.SendEventToGameObject(soul,
+                pd.GetInt(nameof(pd.MPCharge)) >= pd.GetInt(nameof(pd.maxMP)) ? "MP GAIN" : "MP LOSE", true);
+
+            hc!.CancelDamageRecoil();
+            var invPulse = hc!.GetComponent<InvulnerablePulse>();
             invPulse?.StopInvulnerablePulse();
             hc.transitionState = GlobalEnums.HeroTransitionState.WAITING_TO_TRANSITION;
             hc.cState.invulnerable = false;
 
-
-
-
-
-        }
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(SaveStateManager), nameof(SaveStateManager.SaveToFile), MethodType.Normal)]
-        public static void SaveStateManager_SaveToFile_Postfix(SaveState.SaveStateData data, int page, int index)
-        {
-            if (data == null || data.savedPd == null || !states_hd_to_kd.ContainsKey(data.savedPd)) return;
-            $"Save {data == null} {data.savedPd == null} {!states_hd_to_kd.ContainsKey(data.savedPd)}".LogDebug();
-            try
+            // We need to wait a few frames before clearing the HUD,
+            // because DebugMod calls HUDFixes after our AfterLoad hooks fire.
+            IEnumerator WaitThenClearHud()
             {
-                string filePath = SaveStateManager.GetFilePath(page, index);
-                string filename = Path.GetFileName(filePath);
-                filePath = Path.Combine(Path.GetDirectoryName(filePath), "knightPD_" + filename);
-                // filePath.LogDebug();
-                File.WriteAllText(filePath, JsonUtility.ToJson(states_hd_to_kd[data.savedPd], true));
+                yield return null; yield return null;
+                KnightInSilksong.Instance.DisableOriHud();
             }
-            catch (Exception ex)
-            {
-                ex.LogDebug();
-            }
+
+            hc?.StartCoroutine(WaitThenClearHud());
         }
+
+        /// <summary>
+        /// States created with Knight active on versions before 0.6.6 stored playerData separately;
+        /// write this into the customData appropriately & delete the old files. 
+        /// </summary>
+        [HarmonyPatch(typeof(SaveStateManager), nameof(SaveStateManager.LoadFileStates))]
         [HarmonyPostfix]
-        [HarmonyPatch(typeof(SaveStateManager), nameof(SaveStateManager.LoadFromFile), MethodType.Normal)]
-        public static void SaveStateManager_LoadFromFile_Postfix(int page, int index, ref SaveState.SaveStateData __result)
+        private static void UpgradeLegacyStates()
         {
-            // $"Load {__result.savedPd}".LogDebug();
-            if (__result.savedPd == null) return;
-            string filePath = SaveStateManager.GetFilePath(page, index);
-            string filename = Path.GetFileName(filePath);
-            filePath = Path.Combine(Path.GetDirectoryName(filePath), "knightPD_" + filename);
-            // $"Load {filePath}".LogDebug();
-            try
+            foreach (var (page, statePage) in SaveStateManager.fileStates)
             {
-                if (File.Exists(filePath))
+                for (var i = 0; i < statePage.Length; i++)
                 {
-                    states_hd_to_kd[__result.savedPd] = JsonUtility.FromJson<Knight.PlayerData>(File.ReadAllText(filePath));
+                    var state = statePage[i];
+                    if (state == null) continue;
+                    var filePath = SaveStateManager.GetFilePath(page, i);
+                    filePath = Path.Combine(Path.GetDirectoryName(filePath)!, "knightPD_" + Path.GetFileName(filePath));
+                    try
+                    {
+                        if (File.Exists(filePath))
+                        {
+                            KnightInSilksong.logger.LogInfo($"Found knightPD file for state p{page}[{i}], upgrading...");
+                            state.data.customData["KIS.KnightPd"] = File.ReadAllText(filePath);
+                            SaveStateManager.SaveToFile(state.data, page, i);
+                            File.Delete(filePath);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        ex.LogDebug();
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                ex.LogDebug();
             }
         }
         #endregion
+
         #region Replace Functions
         [HarmonyPrefix]
         [HarmonyPatch(typeof(Knight.PlayerData), nameof(Knight.PlayerData.TakeHealth), MethodType.Normal)]
@@ -305,30 +317,7 @@ namespace KIS.Compatibility
         public static bool BindableFunctions_GiveAllSkills_Prefix()
         {
             if (!KnightInSilksong.IsKnight) return true;
-            pd?.screamLevel = 2;
-            pd?.fireballLevel = 2;
-            pd?.quakeLevel = 2;
-
-            pd?.hasDash = true;
-            pd?.canDash = true;
-            pd?.hasShadowDash = true;
-            pd?.canShadowDash = true;
-            pd?.hasWalljump = true;
-            pd?.canWallJump = true;
-            pd?.hasDoubleJump = true;
-            pd?.hasSuperDash = true;
-            pd?.canSuperDash = true;
-            pd?.hasAcidArmour = true;
-
-            pd?.hasDreamNail = true;
-            pd?.dreamNailUpgraded = true;
-            pd?.hasDreamGate = true;
-
-            pd?.hasNailArt = true;
-            pd?.hasCyclone = true;
-            pd?.hasDashSlash = true;
-            pd?.hasUpwardSlash = true;
-            pd?.hasAllNailArts = true;
+            GiveAllSkills();
             return false;
         }
         [HarmonyPrefix]
@@ -374,19 +363,12 @@ namespace KIS.Compatibility
 
         #region Adjust InfoPanel
         [HarmonyPostfix]
-        [HarmonyPatch(typeof(InfoPanel), MethodType.Constructor)]
-        public static void InfoPanel__Postfix(InfoPanel __instance)
-        {
-            __instance.AppendInfo("Character", () => KnightInSilksong.IsKnight ? "Knight" : "Hornet");
-        }
-        [HarmonyPostfix]
         [HarmonyPatch(typeof(InfoPanel), nameof(InfoPanel.AppendInfo), [typeof(string), typeof(Func<string>)])]
         public static void InfoPanel_AppendInfo_Postfix(InfoPanel __instance, string label, ref Func<string> info)
         {
-            Color silver = new(192f / 255, 192f / 255, 192f / 255);
             int counter = __instance.counter - 1;
-            CanvasText labelText = (CanvasText)__instance.elements[$"Label{counter}"];
-            CanvasText infoText = (CanvasText)__instance.elements[$"Info{counter}"];
+            CanvasText labelText = (CanvasText)__instance.byName[$"Label{counter}"];
+            CanvasText infoText = (CanvasText)__instance.byName[$"Info{counter}"];
             void KnightLabel(string ori_name, string knight_name)
             {
                 labelText.OnUpdate += () =>
@@ -397,255 +379,316 @@ namespace KIS.Compatibility
 
             void KnightInfo(Func<string> knight_info)
             {
-                labelText.OnUpdate += () =>
-                {
-                    if (!KnightInSilksong.IsKnight) labelText.Color = Color.white;
-                    else labelText.Color = silver;
-                };
                 infoText.OnUpdate += () =>
                 {
-                    if (!KnightInSilksong.IsKnight)
-                    {
-                        infoText.Color = Color.white;
-                        return;
-                    }
-                    else
-                    {
-                        infoText.Color = silver;
-                        infoText.Text = knight_info();
-                    }
+                    infoText.Text = knight_info();
                 };
             }
             void KnightBool(Func<bool> knight_info) => KnightInfo(() => InfoPanel.GetStringForBool(knight_info()));
             void KnightT<T>(Func<T> knight_info) => KnightInfo(() => knight_info().ToString());
             switch (label)
             {
-                case "Position":
+                case "INFOPANEL_POSITION":
                     KnightInfo(() =>
                     {
                         if (hc == null) return string.Empty;
                         return $"{hc.transform.position.x:.000000#}, {hc.transform.position.y:.000000#}";
                     });
                     break;
-                case "Velocity":
+                case "INFOPANEL_VELOCITY":
                     KnightT(() => hc.current_velocity);
                     break;
-                case "Hero State":
+                case "INFOPANEL_HEROSTATE":
                     KnightT(() => hc.hero_state);
                     break;
-                case "Damage State":
+                case "INFOPANEL_DAMAGESTATE":
                     KnightT(() => hc.damageMode);
                     break;
-                case "Needle Base":
-                    KnightLabel("Needle Base", "Nail Base");
+                case "INFOPANEL_NEEDLEBASE":
+                    KnightLabel(labelText.Text, LangKey.DEBUG_NAIL_BASE.Localize());
                     KnightInfo(() => RefKnightSlash.FsmVariables.GetFsmInt("damageDealt").Value + " (Flat " + PlayerData.instance.nailDamage + ", x" + RefKnightSlash.FsmVariables.GetFsmFloat("Multiplier").Value + ")");
                     break;
-                case "Health":
+                case "INFOPANEL_HEALTH":
                     KnightInfo(() => $"{pd.health} / {pd.maxHealth}");
                     break;
-                case "Silk":
-                    KnightLabel("Silk", "Soul");
+                case "INFOPANEL_SILK":
+                    KnightLabel(labelText.Text, LangKey.DEBUG_SOUL.Localize());
                     KnightT(() => (pd.MPCharge + pd.MPReserve));
                     break;
-                case "Attacking":
+                case "INFOPANEL_ATTACKING":
                     KnightBool(() => hc.cState.attacking);
                     break;
-                case "Sprinting":
-                    KnightLabel("Sprinting", "Dashing");
+                case "INFOPANEL_SPRINTING":
+                    KnightLabel(labelText.Text, LangKey.DEBUG_DASHING.Localize());
                     KnightBool(() => hc.cState.dashing || hc.cState.shadowDashing);
                     break;
-                case "Jumping":
+                case "INFOPANEL_JUMPING":
                     KnightBool(() => (hc.cState.jumping || hc.cState.doubleJumping));
                     break;
-                case "Falling":
+                case "INFOPANEL_FALLING":
                     KnightBool(() => hc.cState.falling);
                     break;
-                case "Hardland":
+                case "INFOPANEL_HARDLAND":
                     KnightBool(() => hc.cState.willHardLand);
                     break;
-                case "Swimming":
+                case "INFOPANEL_SWIMMING":
                     KnightBool(() => hc.cState.swimming);
                     break;
-                case "Recoiling":
+                case "INFOPANEL_RECOILING":
                     KnightBool(() => hc.cState.recoiling);
                     break;
-                case "Soaring":
-                    KnightLabel("Soaring", "Superdashing");
+                case "INFOPANEL_SOARING":
+                    KnightLabel(labelText.Text, LangKey.DEBUG_SUPERDASHING.Localize());
                     KnightBool(() => hc.cState.superDashing);
                     break;
-                case "Can Cast":
+                case "INFOPANEL_CANCAST":
                     KnightBool(() => hc.CanCast());
                     break;
-                case "Can Soar":
-                    KnightLabel("Can Soar", "Can Superdash");
+                case "INFOPANEL_CANSOAR":
+                    KnightLabel(labelText.Text, LangKey.DEBUG_CAN_SUPERDASH.Localize());
                     KnightBool(() => hc.CanSuperDash());
                     break;
-                case "Can Quickmap":
+                case "INFOPANEL_CANQUICKMAP":
                     KnightBool(() => hc.CanQuickMap());
                     break;
-                case "Can Inventory":
+                case "INFOPANEL_CANINVENTORY":
                     KnightBool(() => hc.CanOpenInventory());
                     break;
-                case "Accept Input":
+                case "INFOPANEL_ACCEPTINPUT":
                     KnightBool(() => hc.acceptingInput);
                     break;
-                case "Relinquished":
+                case "INFOPANEL_CONTROLRELINQUISHED":
                     KnightBool(() => hc.controlReqlinquished);
                     break;
-                case "At Bench":
+                case "INFOPANEL_ATBENCH":
                     KnightBool(() => pd.atBench);
                     break;
-                case "Invulnerable":
+                case "INFOPANEL_INVULNERABLE":
                     KnightBool(() => hc.cState.invulnerable);
                     break;
-                case "Invincible":
+                case "INFOPANEL_INVINCIBLE":
                     KnightBool(() => pd.isInvincible);
-                    break;
-                case "Character":
-                    KnightInfo(() => KnightInSilksong.IsKnight ? "Knight" : "Hornet");
-                    break;
-                default:
                     break;
             }
         }
         #endregion
+
         #region  KnightPanel
-        private static void UpdateCharmsEffects()
-        {
-            PlayMakerFSM.BroadcastEvent("CHARM INDICATOR CHECK");
-            PlayMakerFSM.BroadcastEvent("CHARM EQUIP CHECK");
-        }
-        private static void UpdateNailArtStates()
-        {
-            pd.SetBool(nameof(pd.hasNailArt),
-                        pd.GetBool(nameof(pd.hasDashSlash)) || pd.GetBool(nameof(pd.hasUpwardSlash)) || pd.GetBool(nameof(pd.hasCyclone)));
-            pd.SetBool(nameof(pd.hasAllNailArts),
-                        pd.GetBool(nameof(pd.hasDashSlash)) && pd.GetBool(nameof(pd.hasUpwardSlash)) && pd.GetBool(nameof(pd.hasCyclone)));
-        }
         [HarmonyPostfix]
         [HarmonyPatch(typeof(MainPanel), MethodType.Constructor)]
         public static void MainPanel_Postfix(MainPanel __instance)
         {
-            __instance.AddTab("Knight");
-            __instance.AppendSectionHeader("Skill");
+            void AppendLeveledTile(string name, Func<int> getter, Action effect, List<Texture2D> icons, bool includeLabel = true, int defaultRowWidth = 5)
+            {
+                CanvasPanel leveledTile = null;
+                leveledTile = __instance.AppendLabeledTile(name, () =>
+                {
+                    var level = getter.Invoke();
+                    var iconIndex = Math.Max(0, level - 1);
+                    var icon = iconIndex < icons.Count ? icons[iconIndex] : null;
+                    if (icon != null)
+                    {
+                        // ReSharper disable once AccessToModifiedClosure
+                        leveledTile!.Get<CanvasImage>("Icon")?.SetImage(icon);
+                    }
+                    return level > 0;
+                }, effect, includeLabel: includeLabel, defaultRowWidth: defaultRowWidth);
+            }
+            void AppendCustomImageTitle(string name, Func<bool> getter, Action effect, Texture2D icon, bool includeLabel = true, int defaultRowWidth = 5)
+            {
+                CanvasPanel customImageTitle = null;
+                customImageTitle = __instance.AppendLabeledTile(name, () =>
+                {
+
+                    if (icon != null)
+                    {
+                        customImageTitle!.Get<CanvasImage>("Icon")?.SetImage(icon);
+                    }
+                    return getter.Invoke();
+                }, effect, includeLabel: includeLabel, defaultRowWidth: defaultRowWidth);
+            }
+            void AppendCustomImageTitleWithSprite(string name, Func<bool> getter, Action effect, Sprite icon, bool includeLabel = true, int defaultRowWidth = 5)
+            {
+                CanvasPanel customImageTitle = null;
+                customImageTitle = __instance.AppendLabeledTile(name, () =>
+                {
+
+                    if (icon != null)
+                    {
+                        customImageTitle!.Get<CanvasImage>("Icon")?.SetImage(icon);
+                    }
+                    return getter.Invoke();
+                }, effect, includeLabel: includeLabel, defaultRowWidth: defaultRowWidth);
+            }
+            void AppendCustomImageTitleByName(string name, Func<bool> getter, Action effect, string icon_name, bool includeLabel = true, int defaultRowWidth = 5)
+            {
+                AppendCustomImageTitle(name, getter, effect, KISHelper.ResourceTexture(icon_name), includeLabel, defaultRowWidth);
+            }
+
+            __instance.AddTab(LangKey.DEBUG_KNIGHT.InGameKey());
+            __instance.AppendSectionHeader(LangKey.DEBUG_CONTROL.InGameKey());
             __instance.AppendRow(1);
-            __instance.AppendBasicControl(LangKey.DEBUG_ALL_SKILL.Localize(), GiveAllSkills);
-            __instance.AppendRow(1, 1, 1);
-            __instance.AppendIncrementControl(LangKey.DEBUG_SCREAM_NAME.Localize(),
-                                                () => pd.GetInt(nameof(pd.screamLevel)),
-                                                () => IncreaseSpellLevel(Spell.Scream));
-            __instance.AppendIncrementControl(LangKey.DEBUG_FIREBALL_NAME.Localize(),
-                                                () => pd.GetInt(nameof(pd.fireballLevel)),
-                                                () => IncreaseSpellLevel(Spell.Fireball));
-            __instance.AppendIncrementControl(LangKey.DEBUG_QUAKE_NAME.Localize(),
-                                                () => pd.GetInt(nameof(pd.quakeLevel)),
-                                                () => IncreaseSpellLevel(Spell.Quake));
-            __instance.AppendRow(1, 1, 1);
-            __instance.AppendIncrementControl(LangKey.DEBUG_DASH_NAME.Localize(), GetDashLevel, ToggleDash);
-            __instance.AppendToggleControl(LangKey.DEBUG_WALL_JUMP_NAME.Localize(),
+            __instance.AppendToggleControl(LangKey.SWITCH_CHARACTER.InGameKey(), () => KnightInSilksong.IsKnight, KnightInSilksong.Instance.ToggleKnight);
+            __instance.AppendSectionHeader(LangKey.DEBUG_SKILL.InGameKey());
+            __instance.AppendRow(1);
+            __instance.AppendBasicControl(LangKey.DEBUG_ALL_SKILL.InGameKey(), GiveAllSkills);
+            AppendLeveledTile(LangKey.DEBUG_DASH_NAME.InGameKey(), GetDashLevel, CycleDash,
+                [KISHelper.ResourceTexture("inv_dash_cloak"), KISHelper.ResourceTexture("inv_shade_cloak")], false, 7);
+            AppendCustomImageTitleByName(LangKey.DEBUG_WALL_JUMP_NAME.InGameKey(),
                                             () => pd.hasWalljump,
-                                            ToggleWallJump);
-            __instance.AppendToggleControl(LangKey.DEBUG_DOUBLE_JUMP_NAME.Localize(),
+                                            ToggleWallJump,
+                                            "inv_mantis_claw", false, 7);
+            AppendCustomImageTitleByName(LangKey.DEBUG_DOUBLE_JUMP_NAME.InGameKey(),
                                             () => pd.GetBool(nameof(pd.hasDoubleJump)),
-                                            ToggleDoubleJump);
-            __instance.AppendRow(1, 1);
-            __instance.AppendIncrementControl(LangKey.DEBUG_DREAM_NAIL_NAME.Localize(), GetDreamNailLevel, ToggleDreamNail);
-            __instance.AppendToggleControl(LangKey.DEBUG_DREAM_GATE_NAME.Localize(),
+                                            ToggleDoubleJump,
+                                            "inv_emperor_wings", false, 7);
+            AppendLeveledTile(LangKey.DEBUG_DREAM_NAIL_NAME.InGameKey(), GetDreamNailLevel, CycleDreamNail,
+                [KISHelper.ResourceTexture("inv_dream_nail"), KISHelper.ResourceTexture("inv_dream_nail_upgraded")], false, 7);
+            AppendCustomImageTitleByName(LangKey.DEBUG_DREAM_GATE_NAME.InGameKey(),
                                             () => pd.GetBool(nameof(pd.hasDreamGate)),
-                                            ToggleDreamGate);
-            __instance.AppendRow(1, 1);
-            __instance.AppendToggleControl(LangKey.DEBUG_SUPER_DASH_NAME.Localize(),
+                                            ToggleDreamGate,
+                                            "inv_dream_gate", false, 7);
+            AppendCustomImageTitleByName(LangKey.DEBUG_SUPER_DASH_NAME.InGameKey(),
                                             () => pd.GetBool(nameof(pd.hasSuperDash)),
-                                            ToggleSuperDash);
-            __instance.AppendToggleControl(LangKey.DEBUG_ACID_SWIM_NAME.Localize(),
+                                            ToggleSuperDash,
+                                            "inv_crystal_heart", false, 7);
+            AppendCustomImageTitleByName(LangKey.DEBUG_ACID_SWIM_NAME.InGameKey(),
                                             () => pd.GetBool(nameof(pd.hasAcidArmour)),
-                                            ToggleAcidSwim);
-            __instance.AppendRow(1, 1, 1);
-            __instance.AppendToggleControl(LangKey.DEBUG_GREAT_SLASH_NAME.Localize(),
+                                            ToggleAcidSwim,
+                                            "inv_acid_armour", false, 7);
+            AppendLeveledTile(LangKey.DEBUG_SCREAM_NAME.InGameKey(), () => pd.GetInt(nameof(pd.screamLevel)), () => IncreaseSpellLevel(Spell.Scream),
+                [KISHelper.ResourceTexture("inv_scream_01"), KISHelper.ResourceTexture("inv_scream_02")], false, 7);
+            AppendLeveledTile(LangKey.DEBUG_FIREBALL_NAME.InGameKey(), () => pd.GetInt(nameof(pd.fireballLevel)), () => IncreaseSpellLevel(Spell.Fireball),
+                [KISHelper.ResourceTexture("inv_fireball_01"), KISHelper.ResourceTexture("inv_fireball_02")], false, 7);
+            AppendLeveledTile(LangKey.DEBUG_QUAKE_NAME.InGameKey(), () => pd.GetInt(nameof(pd.quakeLevel)), () => IncreaseSpellLevel(Spell.Quake),
+                [KISHelper.ResourceTexture("inv_quake_01"), KISHelper.ResourceTexture("inv_quake_02")], false, 7);
+            AppendCustomImageTitleByName(LangKey.DEBUG_GREAT_SLASH_NAME.InGameKey(),
                                             () => pd.GetBool(nameof(pd.hasDashSlash)),
-                                            () => ToggleNailArt(NailArt.GREAT_SLASH));
-            __instance.AppendToggleControl(LangKey.DEBUG_DASH_SLASH_NAME.Localize(),
+                                            () => ToggleNailArt(NailArt.GREAT_SLASH),
+                                            "inv_upgraded_slash", false, 7);
+            AppendCustomImageTitleByName(LangKey.DEBUG_DASH_SLASH_NAME.InGameKey(),
                                             () => pd.GetBool(nameof(pd.hasUpwardSlash)),
-                                            () => ToggleNailArt(NailArt.DASH_SLASH));
-            __instance.AppendToggleControl(LangKey.DEBUG_CYCLONE_NAME.Localize(),
+                                            () => ToggleNailArt(NailArt.DASH_SLASH),
+                                            "inv_dash_slash", false, 7);
+            AppendCustomImageTitleByName(LangKey.DEBUG_CYCLONE_NAME.InGameKey(),
                                             () => pd.GetBool(nameof(pd.hasCyclone)),
-                                            () => ToggleNailArt(NailArt.CYCLONE));
-            __instance.AppendSectionHeader("Charm");
-            __instance.AppendRow(1);
-            __instance.AppendBasicControl(LangKey.DEBUG_ALL_CHARMS.Localize(),
+                                            () => ToggleNailArt(NailArt.CYCLONE),
+                                            "inv_cyclone", false, 7);
+            __instance.AppendSectionHeader(LangKey.DEBUG_CHARM.InGameKey());
+            __instance.AppendRow(1, 1);
+            __instance.AppendBasicControl(LangKey.DEBUG_ALL_CHARMS.InGameKey(),
                                             GiveAllCharms);
-            __instance.AppendRow(1, 1);
-            __instance.AppendIncrementControl(LangKey.KING_SOUL.Localize(),
-                                                () => pd.GetInt(nameof(pd.royalCharmState)),
-                                                IncreaseRoyalGameState);
-            __instance.AppendIncrementControl(LangKey.GRIMM_CHILD.Localize(),
-                                                () => pd.GetInt(nameof(pd.grimmChildLevel)),
-                                                IncreaseGrimmChildLevel);
-            __instance.AppendRow(1, 1);
-            __instance.AppendBasicControl(LangKey.DEBUG_INCREASE_CHARMSLOTS.Localize(),
-                                                IncreaseCharmSlots);
-            __instance.AppendBasicControl(LangKey.DEBUG_DECREASE_CHARMSLOTS.Localize(),
-                                                DecreaseCharmSlots);
+            __instance.AppendBasicControl(LangKey.DEBUG_REMOVE_ALL_CHARMS.InGameKey(),
+                RemoveAllCharms);
             __instance.AppendRow(1);
-            __instance.AppendBasicControl(LangKey.DEBUG_REMOVE_ALL_CHARMS.Localize(),
-                                            RemoveAllCharms);
+            __instance.AppendNumericControl(LangKey.CHARMSLOT_NAME.InGameKey(),
+                                            () => pd.charmSlots,
+                                            3,
+                                            (val) => pd.SetInt(nameof(pd.charmSlots), (int)val),
+                                            IncreaseCharmSlots,
+                                            DecreaseCharmSlots,
+                                            () => pd.SetInt(nameof(pd.charmSlots), 3));
             __instance.AppendRow(1);
-            __instance.AppendBasicControl(LangKey.DEBUG_FIX_CHARMSLOTS.Localize(), () => pd.CalculateNotchesUsed());
-            __instance.AppendRow(1);
-            __instance.AppendRow(1);
-            var text = __instance.AppendSectionHeader(LangKey.DEBUG_PROMPT.Localize());
+            __instance.AppendBasicControl(LangKey.DEBUG_FIX_CHARMSLOTS.InGameKey(), FixCharmSlots);
+            //The assignment of `KnightInSilksong.Instance.charm` is earlier than here so it's OK.
+            CharmIconList charmIconList = KnightInSilksong.Instance.charm.FindGameObjectInChildren("Charm Icons").GetComponent<CharmIconList>();
+            for (int i = 1; i <= 40; i++)
+            {
+                if (i % 6 == 1) __instance.AppendTileRow(6);
+                Charm charm = (Charm)i;
+                if (charm.IsFragileCharm())
+                {
+                    string name = charm.ToString().Replace("Unbreakable", "").ToLower();
+                    AppendLeveledTile(charm.InGameKey(),
+                                                () => GetFragileState(charm),
+                                                () => CycleCharm(charm),
+                                                [KISHelper.ResourceTexture("charm_glass_"+name), KISHelper.ResourceTexture("charm_broken_"+name),
+                                                    KISHelper.ResourceTexture("charm_full_"+name)], false, 6);
+                    continue;
+                }
+                switch (charm)
+                {
+                    case Charm.Grimmchild:
+                        AppendLeveledTile(LangKey.GRIMM_CHILD.InGameKey(),
+                                                () => !pd.gotCharm_40 ? 0 : pd.grimmChildLevel,
+                                                () => CycleCharm(charm),
+                                                [KISHelper.ResourceTexture("charm_grimmkin_01"),
+                                                KISHelper.ResourceTexture("charm_grimmkin_02"),
+                                                KISHelper.ResourceTexture("charm_grimmkin_03"),
+                                                KISHelper.ResourceTexture("charm_grimmkin_04"),
+                                                KISHelper.ResourceTexture("charm_grimmkin_05")], false, 6);
+                        break;
+                    case Charm.VoidHeart:
+                        AppendLeveledTile(LangKey.KING_SOUL.InGameKey(),
+                                                () => !pd.gotCharm_36 ? 0 : pd.royalCharmState,
+                                                () => CycleCharm(Charm.VoidHeart),
+                                                [KISHelper.ResourceTexture("charm_white_left"), KISHelper.ResourceTexture("charm_white_right"),
+                                                    KISHelper.ResourceTexture("charm_white_full"), KISHelper.ResourceTexture("charm_black")], false, 6);
+                        break;
+                    default:
+                        AppendCustomImageTitleWithSprite(charm.InGameKey(),
+                                                            () => pd.GetBool("gotCharm_" + (int)charm),
+                                                            () => CycleCharm(charm),
+                                                            charmIconList.GetSprite(i), false, 6);
+                        break;
+                }
+            }
+            var text = __instance.AppendSectionHeader(LangKey.DEBUG_PROMPT.InGameKey());
             text.FontSize = MainPanel.KeybindHeaderFontSize;
 
         }
+        private static void RegisterBindableFunctions()
+        {
+            DebugMod.DebugMod.AddActionToKeyBindList(GiveAllSkills, LangKey.DEBUG_ALL_SKILL.InGameKey(), LangKey.DEBUG_KNIGHT.InGameKey());
+            DebugMod.DebugMod.AddActionToKeyBindList(GiveAllCharms, LangKey.DEBUG_ALL_CHARMS.InGameKey(), LangKey.DEBUG_KNIGHT.InGameKey());
+            DebugMod.DebugMod.AddActionToKeyBindList(RemoveAllCharms, LangKey.DEBUG_REMOVE_ALL_CHARMS.InGameKey(), LangKey.DEBUG_KNIGHT.InGameKey());
+            DebugMod.DebugMod.AddActionToKeyBindList(IncreaseCharmSlots, LangKey.DEBUG_INCREASE_CHARMSLOTS.InGameKey(), LangKey.DEBUG_KNIGHT.InGameKey());
+            DebugMod.DebugMod.AddActionToKeyBindList(DecreaseCharmSlots, LangKey.DEBUG_DECREASE_CHARMSLOTS.InGameKey(), LangKey.DEBUG_KNIGHT.InGameKey());
+            DebugMod.DebugMod.AddActionToKeyBindList(FixCharmSlots, LangKey.DEBUG_FIX_CHARMSLOTS.InGameKey(), LangKey.DEBUG_KNIGHT.InGameKey());
+            DebugMod.DebugMod.AddActionToKeyBindList(KnightInSilksong.Instance.ToggleKnight, LangKey.SWITCH_CHARACTER.InGameKey(), LangKey.DEBUG_KNIGHT.InGameKey());
+        }
+        private static void UpdateCharmsEffects()
+        {
+            PlayMakerFSM.BroadcastEvent("CHARM INDICATOR CHECK");
+            PlayMakerFSM.BroadcastEvent("CHARM EQUIP CHECK");
+
+            IEnumerator SpawnGrimmChild()
+            {
+                for (int i = 0; i < 2; i++) yield return null;
+                hc?.transform.Find("Charm Effects").gameObject.LocateMyFSM("Spawn Grimmchild").SendEvent("CHARM EQUIP CHECK");
+            }
+
+            Object.Destroy(GameObject.FindWithTag("Grimmchild"));
+            if (pd.equippedCharm_40) // Grimmchild
+            {
+                GameManager.instance.StartCoroutine(SpawnGrimmChild());
+            }
+        }
+
         public static void ToggleNailArt(NailArt nailArt)
         {
-            //yes, that's how tc did.
-            string name = nailArt switch
-            {
-                NailArt.GREAT_SLASH => nameof(pd.hasDashSlash),
-                NailArt.DASH_SLASH => nameof(pd.hasUpwardSlash),
-                NailArt.CYCLONE => nameof(pd.hasCyclone),
-                _ => null
-            };
+            var name = nailArt.PdGotField();
             pd.SetBool(name, !pd.GetBool(name));
-            UpdateNailArtStates();
-            return;
+            pd.SetBool(nameof(pd.hasNailArt), pd.GetBool(nameof(pd.hasDashSlash)) || pd.GetBool(nameof(pd.hasUpwardSlash)) || pd.GetBool(nameof(pd.hasCyclone)));
+            pd.SetBool(nameof(pd.hasAllNailArts), pd.GetBool(nameof(pd.hasDashSlash)) && pd.GetBool(nameof(pd.hasUpwardSlash)) && pd.GetBool(nameof(pd.hasCyclone)));
         }
         public static void ToggleAcidSwim()
         {
-            if (!pd.GetBool(nameof(pd.hasAcidArmour)))
-            {
-                pd.SetBool(nameof(pd.hasAcidArmour), true);
-                PlayMakerFSM.BroadcastEvent("GET ACID ARMOUR");
-            }
-            else
-            {
-                pd.SetBool(nameof(pd.hasAcidArmour), false);
-            }
+            var prior = pd.GetBool(nameof(pd.hasAcidArmour));
+            pd.SetBool(nameof(pd.hasAcidArmour), !prior);
+            if (!prior) PlayMakerFSM.BroadcastEvent("GET ACID ARMOUR");
         }
         public static void ToggleSuperDash()
         {
-            if (!pd.GetBool(nameof(pd.hasSuperDash)))
-            {
-                pd.SetBool(nameof(pd.hasSuperDash), true);
-                pd.SetBool(nameof(pd.canSuperDash), true);
-            }
-            else
-            {
-                pd.SetBool(nameof(pd.hasSuperDash), false);
-                pd.SetBool(nameof(pd.canSuperDash), false);
-            }
+            var prior = pd.GetBool(nameof(pd.hasSuperDash));
+            pd.SetBool(nameof(pd.hasSuperDash), !prior);
+            pd.SetBool(nameof(pd.canSuperDash), !prior);
         }
-        public static void ToggleDreamGate()
+        public static void ToggleDreamGate() // TODO: should dreamgate be rolled into Dream Nail level?
         {
-            if (!pd.GetBool(nameof(pd.hasDreamNail)) && !pd.GetBool(nameof(pd.hasDreamGate)))
+            if (!pd.GetBool(nameof(pd.hasDreamGate)))
             {
-                pd.SetBool(nameof(pd.hasDreamNail), true);
-                pd.SetBool(nameof(pd.hasDreamGate), true);
-                hc?.gameObject.LocateMyFSM("Dream Nail").FsmVariables.FindFsmBool("Dream Warp Allowed").Value = true;
-            }
-            else if (pd.GetBool(nameof(pd.hasDreamNail)) && !pd.GetBool(nameof(pd.hasDreamGate)))
-            {
+                if (!pd.GetBool(nameof(pd.hasDreamNail))) pd.SetBool(nameof(pd.hasDreamNail), true);
                 pd.SetBool(nameof(pd.hasDreamGate), true);
                 hc?.gameObject.LocateMyFSM("Dream Nail").FsmVariables.FindFsmBool("Dream Warp Allowed").Value = true;
             }
@@ -661,96 +704,63 @@ namespace KIS.Compatibility
             if (pd.GetBool(nameof(pd.hasDreamNail))) return 1;
             return 0;
         }
-        public static void ToggleDreamNail()
+        public static void CycleDreamNail()
         {
-            if (!pd.GetBool(nameof(pd.hasDreamNail)) && !pd.GetBool(nameof(pd.dreamNailUpgraded)))
-            {
-                pd.SetBool(nameof(pd.hasDreamNail), true);
-            }
-            else if (pd.GetBool(nameof(pd.hasDreamNail)) && !pd.GetBool(nameof(pd.dreamNailUpgraded)))
-            {
-                pd.SetBool(nameof(pd.dreamNailUpgraded), true);
-            }
-            else
-            {
-                pd.SetBool(nameof(pd.hasDreamNail), false);
-                pd.SetBool(nameof(pd.dreamNailUpgraded), false);
-            }
+            var nextState = (GetDreamNailLevel() + 1) % 3; // range 0-2
+            pd.SetBool(nameof(pd.hasDreamNail), nextState > 0);
+            pd.SetBool(nameof(pd.dreamNailUpgraded), nextState == 2);
         }
         public static void ToggleDoubleJump()
         {
-            if (!pd.GetBool(nameof(pd.hasDoubleJump)))
-            {
-                pd.SetBool(nameof(pd.hasDoubleJump), true);
-            }
-            else
-            {
-                pd.SetBool(nameof(pd.hasDoubleJump), false);
-            }
+            pd.SetBool(nameof(pd.hasDoubleJump), !pd.GetBool(nameof(pd.hasDoubleJump)));
         }
         public static void ToggleWallJump()
         {
-            if (!pd.hasWalljump)
-            {
-                pd.SetBool(nameof(pd.hasWalljump), true);
-                pd.SetBool(nameof(pd.canWallJump), true);
-            }
-            else
-            {
-                pd.SetBool(nameof(pd.hasWalljump), false);
-                pd.SetBool(nameof(pd.canWallJump), false);
-            }
+            //Due to the existence of one-time walljump, the logic of `GetBool("hasWalljump")` is specially processed, so we directly obtain its value
+            var prior = pd.hasWalljump;
+            pd.SetBool(nameof(pd.hasWalljump), !prior);
+            pd.SetBool(nameof(pd.canWallJump), !prior);
         }
         public static int GetDashLevel()
         {
-            if (pd.GetBool(nameof(pd.hasDash)) && pd.GetBool(nameof(pd.hasShadowDash))) return 2;
-            if (pd.GetBool(nameof(pd.hasDash))) return 1;
-            return 0;
+            return !pd.GetBool(nameof(pd.hasDash)) ? 0 :
+                pd.GetBool(nameof(pd.hasShadowDash)) ? 2 : 1;
         }
-        public static void ToggleDash()
+        public static void CycleDash()
         {
-            if (!pd.GetBool(nameof(pd.hasDash)) && !pd.GetBool(nameof(pd.hasShadowDash)))
-            {
-                pd.SetBool(nameof(pd.hasDash), true);
-                pd.SetBool(nameof(pd.canDash), true);
-            }
-            else if (pd.GetBool(nameof(pd.hasDash)) && !pd.GetBool(nameof(pd.hasShadowDash)))
-            {
-                pd.SetBool(nameof(pd.hasShadowDash), true);
-                pd.SetBool(nameof(pd.canShadowDash), true);
-                EventRegister.SendEvent("GOT SHADOW DASH");
-            }
-            else
-            {
-                pd.SetBool(nameof(pd.hasDash), false);
-                pd.SetBool(nameof(pd.canDash), false);
-                pd.SetBool(nameof(pd.hasShadowDash), false);
-                pd.SetBool(nameof(pd.canShadowDash), false);
-            }
+            var nextLevel = (GetDashLevel() + 1) % 3; // range 0-2
+            pd.SetBool(nameof(pd.hasDash), nextLevel > 0);
+            pd.SetBool(nameof(pd.canDash), nextLevel > 0);
+            pd.SetBool(nameof(pd.hasShadowDash), nextLevel == 2);
+            pd.SetBool(nameof(pd.canShadowDash), nextLevel == 2);
+            if (nextLevel == 2) EventRegister.SendEvent("GOT SHADOW DASH");
         }
         public static void GiveAllSkills()
         {
-            pd.SetInt(nameof(pd.screamLevel), 2);
-            pd.SetInt(nameof(pd.fireballLevel), 2);
-            pd.SetInt(nameof(pd.quakeLevel), 2);
-            pd.SetBool(nameof(pd.hasDash), true);
-            pd.SetBool(nameof(pd.canDash), true);
-            pd.SetBool(nameof(pd.hasShadowDash), true);
-            pd.SetBool(nameof(pd.canShadowDash), true);
-            pd.SetBool(nameof(pd.hasWalljump), true);
-            pd.SetBool(nameof(pd.canWallJump), true);
-            pd.SetBool(nameof(pd.hasDoubleJump), true);
-            pd.SetBool(nameof(pd.hasSuperDash), true);
-            pd.SetBool(nameof(pd.canSuperDash), true);
-            pd.SetBool(nameof(pd.hasAcidArmour), true);
-            pd.SetBool(nameof(pd.hasDreamNail), true);
-            pd.SetBool(nameof(pd.dreamNailUpgraded), true);
-            pd.SetBool(nameof(pd.hasDreamGate), true);
-            pd.SetBool(nameof(pd.hasNailArt), true);
-            pd.SetBool(nameof(pd.hasCyclone), true);
-            pd.SetBool(nameof(pd.hasDashSlash), true);
-            pd.SetBool(nameof(pd.hasUpwardSlash), true);
-            pd.SetBool(nameof(pd.hasAllNailArts), true);
+            pd?.screamLevel = 2;
+            pd?.fireballLevel = 2;
+            pd?.quakeLevel = 2;
+
+            pd?.hasDash = true;
+            pd?.canDash = true;
+            pd?.hasShadowDash = true;
+            pd?.canShadowDash = true;
+            pd?.hasWalljump = true;
+            pd?.canWallJump = true;
+            pd?.hasDoubleJump = true;
+            pd?.hasSuperDash = true;
+            pd?.canSuperDash = true;
+            pd?.hasAcidArmour = true;
+
+            pd?.hasDreamNail = true;
+            pd?.dreamNailUpgraded = true;
+            pd?.hasDreamGate = true;
+
+            pd?.hasNailArt = true;
+            pd?.hasCyclone = true;
+            pd?.hasDashSlash = true;
+            pd?.hasUpwardSlash = true;
+            pd?.hasAllNailArts = true;
         }
         public static void IncreaseCharmSlots()
         {
@@ -796,78 +806,87 @@ namespace KIS.Compatibility
             pd.SetBool(nameof(pd.fragileGreed_unbreakable), true);
             pd.SetBool(nameof(pd.fragileStrength_unbreakable), true);
             pd.SetBool(nameof(pd.fragileHealth_unbreakable), true);
-            pd.SetInt(nameof(pd.grimmChildLevel), 5);
+            pd.SetInt(nameof(pd.grimmChildLevel), 0);
             pd.SetInt(nameof(pd.charmCost_40), 2);
             pd.SetInt(nameof(pd.charmSlots), 3);
             pd.equippedCharms.Clear();
             pd.SetInt(nameof(pd.charmSlotsFilled), 0);
             UpdateCharmsEffects();
         }
-        public static void IncreaseGrimmChildLevel()
+        public static void FixCharmSlots()
         {
-            if (pd.GetBool(nameof(pd.gotCharm_40)))
-            {
-                pd.SetBool(nameof(pd.gotCharm_40), true);
-            }
-            int level = pd.GetInt(nameof(pd.grimmChildLevel));
-            level += 1;
-            if (level >= 6) level = 0;
-            int cost = level == 5 ? 3 : 2;
-            pd.SetInt(nameof(pd.grimmChildLevel), level);
-            pd.SetInt(nameof(pd.charmCost_40), cost);
-            pd.SetBool(nameof(pd.destroyedNightmareLantern), level == 5);
-            Object.Destroy(GameObject.FindWithTag("Grimmchild"));
-            UpdateCharmsEffects();
-            GameManager.instance.StartCoroutine(SpawnGrimmChild());
-
-            IEnumerator SpawnGrimmChild()
-            {
-                for (int i = 0; i < 2; i++) yield return null;
-                hc?.transform.Find("Charm Effects").gameObject.LocateMyFSM("Spawn Grimmchild").SendEvent("CHARM EQUIP CHECK");
-            }
+            pd.CalculateNotchesUsed();
         }
-        public static void IncreaseRoyalGameState()
+
+        public static void CycleCharm(int charmId) => CycleCharm((Charm)charmId);
+        public static void CycleCharm(Charm charm)
         {
-            if (!pd.GetBool(nameof(pd.gotCharm_36)))
+            var charmId = (int)charm;
+            var hasCharm = pd.GetBool($"gotCharm_{charmId}");
+
+            switch (charmId)
             {
-                pd.SetBool(nameof(pd.gotCharm_36), true);
+                case 40: // Grimmchild
+                    var newChildLevel = (pd.grimmChildLevel + 1) % 6; // Range 0-5
+                    pd.SetBool(nameof(pd.gotCharm_40), newChildLevel > 0);
+                    if (newChildLevel == 0) RemoveCharm(charmId);
+                    pd.SetInt(nameof(pd.charmCost_40), newChildLevel == 5 ? 3 : 2);
+                    pd.SetInt(nameof(pd.grimmChildLevel), newChildLevel);
+                    pd.SetBool(nameof(pd.destroyedNightmareLantern), newChildLevel == 5);
+                    break;
+                case 36: // Kingsoul
+                    var newKsLevel = (pd.royalCharmState + 1) % 5; // Range 0-4
+                    pd.gotCharm_36 = newKsLevel > 0;
+                    if (newKsLevel == 0) RemoveCharm(charmId);
+                    pd.royalCharmState = newKsLevel;
+                    pd.charmCost_36 = newKsLevel switch
+                    {
+                        3 => 5,
+                        4 => 0,
+                        _ => pd.charmCost_36
+                    };
+                    break;
+                case 23:
+                case 24:
+                case 25: // Fragile charms
+                    var nextState = (GetFragileState(charm) + 1) % 4;  // range 0-3
+                    pd.SetBool(charm.PdGotField(), nextState != 0);
+                    if (nextState == 0) RemoveCharm(charmId);
+                    pd.SetBool(charm.PdUnbreakableField(), nextState == 3);
+                    pd.SetBool(charm.PdBrokenField(), nextState == 2);
+                    break;
+                default:
+                    pd.SetBool($"gotCharm_{charmId}", !hasCharm);
+                    if (hasCharm) RemoveCharm(charmId);
+                    break;
             }
-            string name = nameof(pd.royalCharmState);
-            int num = pd.GetInt(name);
-            if (num < 4)
-            {
-                pd.SetInt(name, num + 1);
-                num = num + 1;
-            }
-            else
-            {
-                pd.SetInt(name, 1);
-                num = 1;
-            }
-            int cost = num switch
-            {
-                3 => 5,
-                4 => 0,
-                _ => pd.GetInt(nameof(pd.charmCost_36))
-            };
-            pd.SetInt(nameof(pd.charmCost_36), cost);
+            UpdateCharmsEffects();
+        }
+
+        public static void RemoveCharm(int id)
+        {
+            pd.SetBool($"equippedCharm_{id}", false);
+            pd.equippedCharms.Remove(id);
+            pd.CalculateNotchesUsed();
+        }
+
+        public static int GetFragileState(Charm charm)
+        {
+            if (!pd.GetBool(charm.PdGotField())) return 0; // unobtained
+            if (pd.GetBool(charm.PdUnbreakableField())) return 3; // unbreakable
+            return pd.GetBool(charm.PdBrokenField()) ? 2 : 1; // broken / unbroken
         }
         public static void IncreaseSpellLevel(Spell spell)
         {
-            string name = spell switch
+            var name = spell switch
             {
                 Spell.Fireball => nameof(pd.fireballLevel),
                 Spell.Quake => nameof(pd.quakeLevel),
                 Spell.Scream => nameof(pd.screamLevel),
-                _ => null
+                _ => throw new ArgumentOutOfRangeException(nameof(spell), spell, "Not a valid spell")
             };
-            if (name == null) return;
-            int num = pd.GetInt(name);
-            if (num < 2) pd.SetInt(name, num + 1);
-            else pd.SetInt(name, 0);
+            pd.SetInt(name, (pd.GetInt(name) + 1) % 3); // range 0-2
         }
         #endregion
     }
-
-
 }

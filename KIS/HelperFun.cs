@@ -451,11 +451,20 @@ public static class KISHelper
     public static Action OnQuitApp = null;
     //useful Enums
     internal const HeroDeathCocoonTypes knight_death_cocoon = (HeroDeathCocoonTypes)(1 << 30);
+    private static Dictionary<string, Texture2D> resourceTextures = new();
     public static string GetSaveDataDirectory(int slot)
     {
         return Path.Combine(Paths.ConfigPath, "shownyoung-KIS", "Slot" + slot);
     }
-    public static Texture2D LoadTexture(Stream stream)
+    public static Texture2D ResourceTexture(string name)
+    {
+        if (!resourceTextures.ContainsKey(name))
+        {
+            resourceTextures.Add(name, LoadTexture(Assembly.GetExecutingAssembly().GetManifestResourceStream("KIS.Resources.Sprites." + name + ".png")));
+        }
+        return resourceTextures[name];
+    }
+    private static Texture2D LoadTexture(Stream stream)
     {
         byte[] bytes = new byte[stream.Length];
         stream.Read(bytes, 0, bytes.Length);
@@ -469,7 +478,7 @@ public static class KISHelper
         }
         return null;
     }
-    public static Texture2D LoadTexture(string path)
+    private static Texture2D LoadTexture(string path)
     {
         // 创建文件流
         FileStream fileStream = new FileStream(path, FileMode.Open, FileAccess.Read);
@@ -605,6 +614,10 @@ public static class KISHelper
             return false;
         }
     }
+    public static String InGameKey(this LangKey langKey)
+    {
+        return MoreLanguge.GetInGameKey(langKey);
+    }
     public static LocalisedString Localize(this LangKey key)
     {
         return new($"Mods.{KnightInSilksong.Id}", MoreLanguge.GetInGameKey(key));
@@ -650,5 +663,35 @@ public static class KISHelper
         }
 
     }
-}
+    public static string InGameKey(this Charm charm)
+    {
+        switch (charm)
+        {
+            case Charm.VoidHeart:
+                return "CHARM_NAME_36_C";
+            default:
+                return "CHARM_NAME_" + (int)charm;
+        }
+    }
 
+    public static string PdGotField(this Charm charm) => $"gotCharm_{(int)charm}";
+    public static bool IsFragileCharm(this Charm charm) => (int)charm is >= 23 and <= 25;
+    public static string PdBrokenField(this Charm charm) => charm.IsFragileCharm() ?
+        $"brokenCharm_{(int)charm}" : throw new ArgumentOutOfRangeException(nameof(charm), charm, "Not a fragile charm!");
+    public static string PdUnbreakableField(this Charm charm) => charm switch
+    {
+        Charm.UnbreakableHeart => "fragileHealth_unbreakable",
+        Charm.UnbreakableGreed => "fragileGreed_unbreakable",
+        Charm.UnbreakableStrength => "fragileStrength_unbreakable",
+        _ => throw new ArgumentOutOfRangeException(nameof(charm), charm, "Not a fragile charm!")
+    };
+
+    public static string PdGotField(this NailArt nailArt) => nailArt switch
+    {
+        // These names look wrong. They are not. This is how TC named them :)
+        NailArt.GREAT_SLASH => "hasDashSlash",
+        NailArt.DASH_SLASH => "hasUpwardSlash",
+        NailArt.CYCLONE => "hasCyclone",
+        _ => throw new ArgumentOutOfRangeException(nameof(nailArt), nailArt, "Not a nail art!")
+    };
+}
