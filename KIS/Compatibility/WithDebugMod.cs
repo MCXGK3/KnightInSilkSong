@@ -381,7 +381,8 @@ namespace KIS.Compatibility
             {
                 infoText.OnUpdate += () =>
                 {
-                    infoText.Text = knight_info();
+                    if (KnightInSilksong.IsKnight)
+                        infoText.Text = knight_info();
                 };
             }
             void KnightBool(Func<bool> knight_info) => KnightInfo(() => InfoPanel.GetStringForBool(knight_info()));
