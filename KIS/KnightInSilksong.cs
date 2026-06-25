@@ -13,6 +13,7 @@ namespace KIS;
 
 [ModMenuIgnore]
 [BepInDependency(PrepatcherPlugin.PrepatcherPlugin.Id)]
+[BepInDependency(DebugMod.DebugMod.Id, BepInDependency.DependencyFlags.SoftDependency)]
 [BepInAutoPlugin(id: "io.github.shownyoung.knightinsilksong")]
 public partial class KnightInSilksong : BaseUnityPlugin
 {
@@ -36,6 +37,8 @@ public partial class KnightInSilksong : BaseUnityPlugin
     public static ConfigEntry<bool> default_sync;
     public static ConfigEntry<float> knight_scaleX;
     public static ConfigEntry<float> knight_scaleY;
+
+    internal static bool KeybindEnabled = true;
     internal static bool IsKnight => Instance.iskight;
     bool iskight = false;
     public static int KnightDamage => 1 << 30;
@@ -202,6 +205,7 @@ public partial class KnightInSilksong : BaseUnityPlugin
             DialogueBox._instance.hudFSM = hud_instance.LocateMyFSM("Slide Out");
         }
         KnightController.gameObject.transform.SetScale2D(new((KnightController.transform.localScale.x > 0 ? 1 : -1) * knight_scaleX.Value, knight_scaleY.Value));
+        ProgressionManager.setup();
         OnToggleKnight?.Invoke(iskight);
 
 
@@ -318,12 +322,9 @@ public partial class KnightInSilksong : BaseUnityPlugin
     }
     private void Update()
     {
-
-        if (Input.GetKeyDown(toggleButton.Value) || shouldToggleKnight)
+        if ((KeybindEnabled && Input.GetKeyDown(toggleButton.Value)) || shouldToggleKnight)
         {
             ToggleKnight();
-            ProgressionManager.setup();
-
             shouldToggleKnight = false;
         }
         if (HeroController.instance != null)

@@ -4,7 +4,7 @@
   Imports silksong path properties only if present in order to allow CI builds. The file should be gitignored.
   If you are checking out from git and need to create a new one, you can use `dotnet new silksongpath` to generate one.
   -->
-  <Import Condition="Exists('SilksongPath.props')" Project="SilksongPath.props" />
+  <Import Condition="Exists('../SilksongPath.props')" Project="../SilksongPath.props" />
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
@@ -17,6 +17,9 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <ModName>KnightInSilkSong</ModName>
     <NeutralLanguage>EN</NeutralLanguage>
+
+    <!--Shortens and anonymizes paths in debug symbols relative to the project directory. Breakpoints will not work, however.-->
+    <PathMap Condition="'$(Configuration)' == 'Release'">$(MSBuildProjectDirectory)=/</PathMap>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -31,18 +34,35 @@
     <PackageReference Include="Hamunii.BepInEx.AutoPlugin" Version="2.0.1" PrivateAssets="all" />
     <!--If you're unable resolve this dependency, check that you're using the nuget v3 package feed instead of v2.-->
     <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.3" PrivateAssets="all" />
-    <!-- <PackageReference Include="UnityEngine.Modules" Version="6000.0.50" IncludeAssets="compile" /> -->
+      
     <PackageReference Include="Silksong.PrepatcherPlugin" Version="1.3.0" PrivateAssets="all"/>
     <PackageReference Include="Silksong.DebugMod" Version="*" PrivateAssets="all" Publicize="true"/>
     <PackageReference Include="Silksong.ModMenu" Version="*" PrivateAssets="all" Publicize="true"/>
-
-    <LocalReferences Include="$(ManagedDir)*.dll" Exclude="$(ManagedDir)Mono*.dll;$(ManagedDir)netstandard.dll;$(ManagedDir)System*.dll;$(ManagedDir)mscorlib.dll" />
-    <Reference Include="@(LocalReferences)" Private="false" Publicize="true" />
-    <EmbeddedResource Include="Resources/*" />
+    
   </ItemGroup>
+
+    <!-- Conditionally choose local libs if available for decompilation compat; otherwise choose Silksong.Gamelibs for CI & Release builds -->
+    <Choose>
+      <When Condition="Exists('SilksongPath.props') And $(Configuration)=='Debug'">
+        <PropertyGroup>
+          <ManagedDir>$(SilksongFolder)\Hollow Knight Silksong_Data\Managed\</ManagedDir>
+        </PropertyGroup>
+        <ItemGroup>
+          <LocalReferences Include="$(ManagedDir)*.dll" Exclude="$(ManagedDir)Mono*.dll;$(ManagedDir)netstandard.dll;$(ManagedDir)System*.dll;$(ManagedDir)mscorlib.dll" />
+          <Reference Include="@(LocalReferences)" Private="false" Publicize="true" />
+        </ItemGroup>
+      </When>
+      <Otherwise>
+        <ItemGroup>
+          <PackageReference Include="Silksong.GameLibs" Version="1.2.0-silksong1.0.30000" />
+          <PackageReference Include="UnityEngine.Modules" Version="6000.0.50" IncludeAssets="compile" />
+        </ItemGroup>
+      </Otherwise>
+    </Choose>
 
   <ItemGroup>
     <ProjectReference Include="../Knight/Knight.csproj" Publicize="true"/>
+    <EmbeddedResource Include="Resources/**" />
   </ItemGroup>
   <ItemGroup>
       <Binaries Include="$(TargetPath)" LocalDir="/" PackDir="plugins" />
@@ -51,11 +71,9 @@
       </ItemGroup>
 
   <Target Name="CopyMod" AfterTargets="PostBuildEvent" Condition="'$(SilksongFolder)' != ''">
-
-
-      <Copy SourceFiles="@(Binaries)" DestinationFolder="$(SilksongFolder)/BepInEx/plugins/$(ModName)" />
-      <Copy SourceFiles="@(I18N)" DestinationFolder="$(SilksongFolder)/BepInEx/plugins/$(ModName)/languages" />
-      <Copy SourceFiles="../README.md" DestinationFolder="$(SilksongFolder)/BepInEx/plugins/$(ModName)" />
+      <Copy SourceFiles="@(Binaries)" DestinationFolder="$(SilksongPluginsFolder)/$(ModName)" />
+      <Copy SourceFiles="@(I18N)" DestinationFolder="$(SilksongPluginsFolder)/$(ModName)/languages" />
+      <Copy SourceFiles="../README.md" DestinationFolder="$(SilksongPluginsFolder)/$(ModName)" />
   </Target>
   <Target Name="BuildPushishPack" AfterTargets="CopyMod" Condition="'$(PublishFolder)' != ''">
       <ItemGroup>

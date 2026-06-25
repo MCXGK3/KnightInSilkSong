@@ -1,31 +1,49 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <Import Condition="Exists('../SilksongPath.props')" Project="../SilksongPath.props" />
+
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
      <LangVersion>latest</LangVersion>
     <Nullable>disable</Nullable>
-    <SilksongFolder>F:\r2modman_mod\HollowKnightSilksong\profiles\develop</SilksongFolder>
-    <UnityFolder> D:\unity\UnityProjects\BETTERALLHK\Assets\Plugins</UnityFolder>
-    <PublishFolder>E:\Github_Projects\Mod\SS</PublishFolder>
-    <ManagedDir>F:\SteamLibrary\steamapps\common\Hollow Knight Silksong\Hollow Knight Silksong_Data\Managed\</ManagedDir>
-    <ModName>KnightInSilkSong</ModName>
-  </PropertyGroup>
+    <!-- These should be moved to SilksongPath.props -->
+<!--    <UnityFolder> D:\unity\UnityProjects\BETTERALLHK\Assets\Plugins</UnityFolder>-->
+<!--    <PublishFolder>E:\Github_Projects\Mod\SS</PublishFolder>-->
 
-  <ItemGroup>
-    <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.3" PrivateAssets="all" />
-    <LocalReferences Include="$(ManagedDir)*.dll" Exclude="$(ManagedDir)Mono*.dll;$(ManagedDir)netstandard.dll;$(ManagedDir)System*.dll;$(ManagedDir)mscorlib.dll" />
-    <Reference Include="@(LocalReferences)" Private="false" Publicize="true" />
-    <!-- <PackageReference Include="Silksong.GameLibs" Version="1.1.0-silksong1.0.28650" /> -->
-    <!-- <PackageReference Include="UnityEngine.Modules" Version="6000.0.50" IncludeAssets="compile" /> -->
-  </ItemGroup>
-  <Target Name="CopyDLL" AfterTargets="PostBuildEvent" Condition="'$(SilksongFolder)' != ''">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <ModName>KnightInSilkSong</ModName>
+
+    <!--Shortens and anonymizes paths in debug symbols relative to the project directory. Breakpoints will not work, however.-->
+    <PathMap Condition="'$(Configuration)' == 'Release'">$(MSBuildProjectDirectory)=/</PathMap>
+  </PropertyGroup>
+    <!-- Conditionally choose local libs if available for decompilation compat; otherwise choose Silksong.Gamelibs for CI & Release builds -->
+    <Choose>
+        <When Condition="Exists('SilksongPath.props') And $(Configuration)=='Debug'">
+            <PropertyGroup>
+                <ManagedDir>$(SilksongFolder)\Hollow Knight Silksong_Data\Managed\</ManagedDir>
+            </PropertyGroup>
+            <ItemGroup>
+                <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.3" PrivateAssets="all" />
+                <LocalReferences Include="$(ManagedDir)*.dll" Exclude="$(ManagedDir)Mono*.dll;$(ManagedDir)netstandard.dll;$(ManagedDir)System*.dll;$(ManagedDir)mscorlib.dll" />
+                <Reference Include="@(LocalReferences)" Private="false" Publicize="true" />
+            </ItemGroup>
+        </When>
+        <Otherwise>
+            <ItemGroup>
+                <PackageReference Include="Silksong.GameLibs" Version="1.2.0-silksong1.0.30000" />
+                <PackageReference Include="UnityEngine.Modules" Version="6000.0.50" IncludeAssets="compile" /> 
+            </ItemGroup>
+        </Otherwise>
+    </Choose>
+    
+  <Target Name="CopyDLL" AfterTargets="PostBuildEvent" Condition="'$(SilksongPluginsFolder)' != ''">
       <ItemGroup>
           <Binaries Include="$(TargetPath)" />
           <Binaries Include="$(TargetDir)/$(TargetName).pdb" />
       </ItemGroup>
 
-      <Copy SourceFiles="@(Binaries)" DestinationFolder="$(SilksongFolder)/BepInEx/plugins/$(ModName)" />
-      <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(UnityFolder)"/>
+      <Copy SourceFiles="@(Binaries)" DestinationFolder="$(SilksongPluginsFolder)/$(ModName)" />
+      <Copy Condition="Exists($(UnityFolder))" SourceFiles="$(TargetPath)" DestinationFolder="$(UnityFolder)"/>
 
   </Target>
   <Target Name="BuildPushishPack" AfterTargets="CopyDLL" Condition="'$(PublishFolder)' != ''">

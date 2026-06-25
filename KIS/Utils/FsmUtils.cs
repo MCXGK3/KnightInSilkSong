@@ -221,17 +221,7 @@ namespace KIS.Utils
         /// <param name="onEventName"></param>
         public static void RemoveTransition(this FsmState state, string onEventName)
         {
-            var currTransitions = state.Transitions;
-            var transitions = new FsmTransition[currTransitions.Length - 1];
-            for (int i = 0, newPos = 0; i < currTransitions.Length; i++)
-            {
-                if (currTransitions[i].EventName != onEventName)
-                {
-                    transitions[newPos] = currTransitions[i];
-                    newPos++;
-                }
-            }
-            state.Transitions = transitions;
+            state.Transitions = state.Transitions.Where(t => t.EventName != onEventName).ToArray();
         }
 
         /// <summary>
@@ -252,17 +242,9 @@ namespace KIS.Utils
         /// <param name="state"></param>
         /// <param name="onEventName"></param>
         /// <returns></returns>
-        public static FsmTransition GetTransition(this FsmState state, string onEventName)
+        public static FsmTransition? GetTransition(this FsmState state, string onEventName)
         {
-            var transitions = state.Transitions;
-            for (int i = 0; i < transitions.Length; i++)
-            {
-                if (transitions[i].EventName == onEventName)
-                {
-                    return transitions[i];
-                }
-            }
-            return null;
+            return state.Transitions.FirstOrDefault(t => t.EventName == onEventName);
         }
 
         /// <summary>
